@@ -11,10 +11,11 @@
 | Final | 44% |
 
 ## Homeworks
-| Name | Score |
-|:---|:---:|
-| 1. Fixpoints and Grammar Filters (OCaml) | ??? |
-| 2. Naive Parsing of Context-Free Grammars (OCaml) | ??? |
+| Name | Language | Score |
+|:---|:---:|:---:|
+| 1. Fixpoints and Grammar Filters | OCaml | ??? |
+| 2. Naive Parsing of Context-Free Grammars | OCaml | ??? |
+| 3. Java Shared Memory Performance Races | Java | ??? |
 
 ## Exams
 | Exam | Score |
