@@ -1,0 +1,19 @@
+Lab 2.1
+1. 2^(3^4) --> (expt 2 (expt 3 4)) = 2417851639229258349412352
+	(< (expt 3 4) 63) --> yields nil
+
+2. C-h k --> describe-key
+   M-SPC --> just-one-space
+
+3. C-h k C-h k gives a more in-depth view of the command represented by C-h k, since it calls describe-key on C-h k
+
+4. M-SPC gives a more in-depth view of the command represented by M-SPC for the same reason listed above
+
+5. M-SPC is implemented in terms of cycle-spacing, which cycles between various space formats
+
+Python Scripting
+1. The program runs into an out of bounds errors since /dev/null is an empty file and there are no lines for optparse to parse through
+
+2. The program runs into a syntax error when running randline.py in Python3 since the randline.py was written for Python2, which means the file must contain syntax that is now out of date for Python3
+
+3. The program shuf.py runs fine on both Python2 and Python3, telling us that syntax in Python3 is compatible with Python2, but not vice versa

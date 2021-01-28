@@ -1,0 +1,291 @@
+diff --git a/Makefile b/Makefile
+index 95f0a06..40b81d1 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1023,7 +1023,7 @@ tzdata$(VERSION)-rearguard.tar.gz: rearguard.zi set-timestamps.out
+ 		sed '1s/$$/-rearguard/' \
+ 		  <version >tzdata$(VERSION)-rearguard.dir/version
+ 		: The dummy pacificnew pacifies TZUpdater 2.3.1 and earlier.
+-		touch -md 2020-10-12T22:53:00Z \
++		TZ=UTC0 touch -mt 202010122253.00 \
+ 		  tzdata$(VERSION)-rearguard.dir/pacificnew
+ 		touch -cmr version tzdata$(VERSION)-rearguard.dir/version
+ 		LC_ALL=C && export LC_ALL && \
+diff --git a/NEWS b/NEWS
+index 25cf8cb..328face 100644
+--- a/NEWS
++++ b/NEWS
+@@ -1,5 +1,23 @@
+ News for the tz database
+ 
++Release 2020d - 2020-10-21 11:24:13 -0700
++
++  Briefly:
++    Palestine ends DST earlier than predicted, on 2020-10-24.
++
++  Changes to past and future timestamps
++
++    Palestine ends DST on 2020-10-24 at 01:00, instead of 2020-10-31
++    as previously predicted (thanks to Sharef Mustafa.)  Its
++    2019-10-26 fall-back was at 00:00, not 01:00 (thanks to Steffen
++    Thorsen.)  Its 2015-10-23 transition was at 01:00 not 00:00, and
++    its spring 2020 transition was on March 28 at 00:00, not March 27
++    (thanks to Pierre Cashon.)  This affects Asia/Gaza and
++    Asia/Hebron.  Assume future spring and fall transitions will be on
++    the Saturday preceding the last Sunday of March and October,
++    respectively.
++
++
+ Release 2020c - 2020-10-16 11:15:53 -0700
+ 
+   Briefly:
+diff --git a/asia b/asia
+index e4d84e9..3ebfcb4 100644
+--- a/asia
++++ b/asia
+@@ -3221,13 +3221,40 @@ Zone	Asia/Karachi	4:28:12 -	LMT	1907
+ 
+ # From Sharef Mustafa (2019-10-18):
+ # Palestine summer time will end on midnight Oct 26th 2019 ...
+-# http://www.palestinecabinet.gov.ps/website/ar/ViewDetails?ID=43948
+ #
+-# From Paul Eggert (2019-04-10):
+-# For now, guess spring-ahead transitions are March's last Friday at 00:00.
++# From Steffen Thorsen (2020-10-20):
++# Some sources such as these say, and display on clocks, that DST ended at
++# midnight last year...
++# https://www.amad.ps/ar/post/320006
++#
++# From Tim Parenti (2020-10-20):
++# The report of the Palestinian Cabinet meeting of 2019-10-14 confirms
++# a decision on (translated): "The start of the winter time in Palestine, by
++# delaying the clock by sixty minutes, starting from midnight on Friday /
++# Saturday corresponding to 26/10/2019."
++# http://www.palestinecabinet.gov.ps/portal/meeting/details/43948
++
++# From Sharef Mustafa (2020-10-20):
++# As per the palestinian cabinet announcement yesterday , the day light saving
++# shall [end] on Oct 24th 2020 at 01:00AM by delaying the clock by 60 minutes.
++# http://www.palestinecabinet.gov.ps/portal/Meeting/Details/51584
++
++# From Tim Parenti (2020-10-20):
++# Predict future fall transitions at 01:00 on the Saturday preceding October's
++# last Sunday (i.e., Sat>=24).  This is consistent with our predictions since
++# 2016, although the time of the change differed slightly in 2019.
++
++# From Pierre Cashon (2020-10-20):
++# The summer time this year started on March 28 at 00:00.
++# https://wafa.ps/ar_page.aspx?id=GveQNZa872839351758aGveQNZ
++# http://www.palestinecabinet.gov.ps/portal/meeting/details/50284
++# The winter time in 2015 started on October 23 at 01:00.
++# https://wafa.ps/ar_page.aspx?id=CgpCdYa670694628582aCgpCdY
++# http://www.palestinecabinet.gov.ps/portal/meeting/details/27583
+ #
+-# From Tim Parenti (2016-10-19):
+-# Predict fall transitions on October's last Saturday at 01:00 from now on.
++# From Paul Eggert (2019-04-10):
++# For now, guess spring-ahead transitions are at 00:00 on the Saturday
++# preceding March's last Sunday (i.e., Sat>=24).
+ 
+ # Rule	NAME	FROM	TO	-	IN	ON	AT	SAVE	LETTER/S
+ Rule EgyptAsia	1957	only	-	May	10	0:00	1:00	S
+@@ -3243,10 +3270,10 @@ Rule Palestine	2004	only	-	Oct	 1	1:00	0	-
+ Rule Palestine	2005	only	-	Oct	 4	2:00	0	-
+ Rule Palestine	2006	2007	-	Apr	 1	0:00	1:00	S
+ Rule Palestine	2006	only	-	Sep	22	0:00	0	-
+-Rule Palestine	2007	only	-	Sep	Thu>=8	2:00	0	-
++Rule Palestine	2007	only	-	Sep	13	2:00	0	-
+ Rule Palestine	2008	2009	-	Mar	lastFri	0:00	1:00	S
+ Rule Palestine	2008	only	-	Sep	 1	0:00	0	-
+-Rule Palestine	2009	only	-	Sep	Fri>=1	1:00	0	-
++Rule Palestine	2009	only	-	Sep	 4	1:00	0	-
+ Rule Palestine	2010	only	-	Mar	26	0:00	1:00	S
+ Rule Palestine	2010	only	-	Aug	11	0:00	0	-
+ Rule Palestine	2011	only	-	Apr	 1	0:01	1:00	S
+@@ -3255,12 +3282,16 @@ Rule Palestine	2011	only	-	Aug	30	0:00	1:00	S
+ Rule Palestine	2011	only	-	Sep	30	0:00	0	-
+ Rule Palestine	2012	2014	-	Mar	lastThu	24:00	1:00	S
+ Rule Palestine	2012	only	-	Sep	21	1:00	0	-
+-Rule Palestine	2013	only	-	Sep	Fri>=21	0:00	0	-
+-Rule Palestine	2014	2015	-	Oct	Fri>=21	0:00	0	-
+-Rule Palestine	2015	only	-	Mar	lastFri	24:00	1:00	S
++Rule Palestine	2013	only	-	Sep	27	0:00	0	-
++Rule Palestine	2014	only	-	Oct	24	0:00	0	-
++Rule Palestine	2015	only	-	Mar	28	0:00	1:00	S
++Rule Palestine	2015	only	-	Oct	23	1:00	0	-
+ Rule Palestine	2016	2018	-	Mar	Sat>=24	1:00	1:00	S
+-Rule Palestine	2016	max	-	Oct	lastSat	1:00	0	-
+-Rule Palestine	2019	max	-	Mar	lastFri	0:00	1:00	S
++Rule Palestine	2016	2018	-	Oct	Sat>=24	1:00	0	-
++Rule Palestine	2019	only	-	Mar	29	0:00	1:00	S
++Rule Palestine	2019	only	-	Oct	Sat>=24	0:00	0	-
++Rule Palestine	2020	max	-	Mar	Sat>=24	0:00	1:00	S
++Rule Palestine	2020	max	-	Oct	Sat>=24	1:00	0	-
+ 
+ # Zone	NAME		STDOFF	RULES	FORMAT	[UNTIL]
+ Zone	Asia/Gaza	2:17:52	-	LMT	1900 Oct
+diff --git a/europe b/europe
+index af6c628..ea23736 100644
+--- a/europe
++++ b/europe
+@@ -1029,17 +1029,16 @@ Zone	Europe/Prague	0:57:44 -	LMT	1850
+ # Denmark, Faroe Islands, and Greenland
+ 
+ # From Jesper Nørgaard Welen (2005-04-26):
+-# http://www.hum.aau.dk/~poe/tid/tine/DanskTid.htm says that the law
+-# [introducing standard time] was in effect from 1894-01-01....
+-# The page http://www.retsinfo.dk/_GETDOCI_/ACCN/A18930008330-REGL
++# the law [introducing standard time] was in effect from 1894-01-01....
++# The page https://www.retsinformation.dk/eli/lta/1893/83
+ # confirms this, and states that the law was put forth 1893-03-29.
+ #
+ # The EU [actually, EEC and Euratom] treaty with effect from 1973:
+-# http://www.retsinfo.dk/_GETDOCI_/ACCN/A19722110030-REGL
++# https://www.retsinformation.dk/eli/lta/1972/21100
+ #
+ # This provoked a new law from 1974 to make possible summer time changes
+ # in subsequent decrees with the law
+-# http://www.retsinfo.dk/_GETDOCI_/ACCN/A19740022330-REGL
++# https://www.retsinformation.dk/eli/lta/1974/223
+ #
+ # It seems however that no decree was set forward until 1980.  I have
+ # not found any decree, but in another related law, the effecting DST
+@@ -1051,7 +1050,7 @@ Zone	Europe/Prague	0:57:44 -	LMT	1850
+ # The law is about the management of the extra hour, concerning
+ # working hours reported and effect on obligatory-rest rules (which
+ # was suspended on that night):
+-# http://www.retsinfo.dk/_GETDOCI_/ACCN/C19801120554-REGL
++# https://web.archive.org/web/20140104053304/https://www.retsinformation.dk/Forms/R0710.aspx?id=60267
+ 
+ # From Jesper Nørgaard Welen (2005-06-11):
+ # The Herning Folkeblad (1980-09-26) reported that the night between
+diff --git a/tz-art.html b/tz-art.html
+index 5de546a..72b9654 100644
+--- a/tz-art.html
++++ b/tz-art.html
+@@ -22,6 +22,10 @@ into problems that programmers have with timekeeping.</li>
+ Explaining The Mysteries Of Time Zones</a>" (2017; 2:15)
+ briefly says why France has more time zones than Russia.
+ <li>
++"<a href="https://www.youtube.com/watch?v=yRz-Dl60Lfc">Why Denmark is
++.17 Seconds Behind The World</a>" (2019; 6:29) explains why Denmark and
++the United Kingdom don't exactly follow their own law about civil time.
++<li>
+ "About Time" (1962; 59 minutes) is part of the
+ Bell Science extravaganza, with Frank Baxter, Richard Deacon, and Les Tremayne.
+ Its advisor was Richard Feynman, and it was voiced by Mel Blanc.
+diff --git a/tz-link.html b/tz-link.html
+index 606a83b..10c40b5 100644
+--- a/tz-link.html
++++ b/tz-link.html
+@@ -245,13 +245,12 @@ href="https://play.google.com/store/apps/details?id=com.google.android.timezone.
+ <a
+ href="http://userguide.icu-project.org/datetime/timezone"><abbr
+ title="International Components for Unicode">ICU</abbr></a>,
+-<a href="https://developer.ibm.com/javasdk/support/dst/jtzu/"><abbr>IBM</abbr></a>
+-and <a
+-href="https://www.oracle.com/technetwork/java/javase/tzupdater-readme-136440.html">Oracle</a>
+-Java, <a href="https://www.joda.org/joda-time/tz_update.html">Joda-Time</a>, <a
++<a href="https://developer.ibm.com/javasdk/support/dst/jtzu/"><abbr>IBM</abbr>
++JDK</a>,
++<a href="https://www.joda.org/joda-time/tz_update.html">Joda-Time</a>, <a
+ href="https://dev.mysql.com/doc/refman/en/time-zone-support.html">MySQL</a>,
+-and <a
+-href="https://nodatime.org/userguide/tzdb">Noda Time</a> (see below).
++<a href="https://nodatime.org/userguide/tzdb">Noda Time</a>, and <a
++href="https://www.oracle.com/java/technologies/javase/tzupdater-readme.html#usage">OpenJDK/Oracle JDK</a>.
+ </p>
+ <p>Sources for the <code><abbr>tz</abbr></code> database are
+ <a href="https://en.wikipedia.org/wiki/UTF-8"><abbr
+@@ -436,9 +435,13 @@ freely available under the <abbr>MIT</abbr> license.</li>
+ <li>Java-based compilers and libraries include:
+ <ul>
+ <li>The <a
+-href="https://www.oracle.com/technetwork/java/javase/tzupdater-readme-136440.html">TZUpdater
++href="https://www.oracle.com/java/technologies/javase/tzupdater-readme.html">TZUpdater
+ tool</a> compiles <code><abbr>tz</abbr></code> source into the format used by
+-Oracle Java.</li>
++<a href="https://openjdk.java.net/">OpenJDK</a> and
++<a href="https://jdk.java.net/">Oracle JDK</a>.
++Although its source code is proprietary, its executable is available under the
++<a href="https://www.oracle.com/a/tech/docs/tzupdater-lic.html">Java SE
++Timezone Updater License Agreement</a>.</li>
+ <li>The <a
+ href="https://www.oracle.com/technetwork/articles/java/jf14-date-time-2125367.html">Java
+ SE 8 Date and Time</a> <abbr>API</abbr> can be supplemented by <a
+@@ -451,11 +454,10 @@ and time <abbr>API</abbr></a> contains a class
+ Java 8 <code>java.time</code>, which its users should migrate to once
+ they can assume Java 8 or later. It is available under the <a
+ href="https://www.apache.org/licenses/LICENSE-2.0">Apache License</a>.</li>
+-<li><a href="https://bell-sw.com/pages/iana-updater/">IANA Updater</a>,
+-<a href="https://github.com/akashche/tzdbgen">tzdbgen</a>, and <a
++<li><a href="https://bell-sw.com/pages/iana-updater/">IANA Updater</a> and <a
+ href="https://www.azul.com/products/open-source-tools/ziupdater-time-zone-tool/">ZIUpdater</a>
+-are other alternatives to TZUpdater. IANA Updater's license is unclear;
+-the others are licensed under the <abbr>GPL</abbr>.</li>
++are alternatives to TZUpdater. IANA Updater's license is unclear;
++ZIUpdater is licensed under the <abbr>GPL</abbr>.</li>
+ <li><a href="https://github.com/MenoData/Time4A">Time4A: Advanced date and
+ time library for Android</a> and
+ <a href="https://github.com/MenoData/Time4J/">Time4J: Advanced date,
+@@ -515,7 +517,10 @@ It is freely available under a <abbr>BSD</abbr>-style license.</li>
+ <li><a href="http://pytz.sourceforge.net">pytz &ndash; World Timezone
+ Definitions for Python</a> compiles <code><abbr>tz</abbr></code> source into
+ <a href="https://www.python.org">Python</a>.
+-It is freely available under a <abbr>BSD</abbr>-style license.</li>
++It is freely available under a <abbr>BSD</abbr>-style license.
++In code that can assume Python 3.9 or later it is superseded by
++<a href="#python-zoneinfo"><code>zoneinfo.ZoneInfo</code></a>
++and the <a href="#pypi-tzdata"><code>tzdata</code> Python package</a>.</li>
+ <li><a href="https://tzinfo.github.io">TZInfo &ndash;
+ Ruby Timezone Library</a>
+ compiles <code><abbr>tz</abbr></code> source into
+@@ -579,14 +584,14 @@ DateTime::TimeZone::Tzfile</a>
+ is a <abbr>TZif</abbr> file reader written in Perl.
+ It is freely available under the same terms as Perl
+ (dual <abbr>GPL</abbr> and Artistic license).</li>
+-<li>Python has a <a
++<li>Python has a <a id="python-zoneinfo"
+ href="https://docs.python.org/3.9/library/zoneinfo.html"><code>zoneinfo.ZoneInfo</code>
+ class</a> that reads <abbr>TZif</abbr> data and creates objects
+ that represent <code><abbr>tzdb</abbr></code> timezones.
+ Python is freely available under the
+ <a href="https://docs.python.org/3.9/license.html">Python Software Foundation
+ License</a>.
+-A companion <a href="https://pypi.org/">PyPI</a> module
++A companion <a id="pypi-tzdata" href="https://pypi.org/">PyPI</a> module
+ <a href="https://pypi.org/project/tzdata/"><code>tzdata</code></a>
+ supplies TZif data if the underlying system data cannot be found;
+ it is freely available under the Apache License.</li>
+diff --git a/zic.c b/zic.c
+index a47c052..a902b34 100644
+--- a/zic.c
++++ b/zic.c
+@@ -658,7 +658,8 @@ static const char *	leapsec;
+ static const char *	tzdefault;
+ 
+ /* -1 if the TZif output file should be slim, 0 if default, 1 if the
+-   output should be fat for backward compatibility.  The default is slim.  */
++   output should be fat for backward compatibility.  ZIC_BLOAT_DEFAULT
++   determines the default.  */
+ static int bloat;
+ 
+ static bool
+@@ -795,8 +796,15 @@ _("%s: invalid time range: %s\n"),
+ 		}
+ 	if (optind == argc - 1 && strcmp(argv[optind], "=") == 0)
+ 		usage(stderr, EXIT_FAILURE);	/* usage message by request */
+-	if (bloat == 0)
+-	  bloat = strcmp(ZIC_BLOAT_DEFAULT, "slim") == 0 ? -1 : 1;
++	if (bloat == 0) {
++	  static char const bloat_default[] = ZIC_BLOAT_DEFAULT;
++	  if (strcmp(bloat_default, "slim") == 0)
++	    bloat = -1;
++	  else if (strcmp(bloat_default, "fat") == 0)
++	    bloat = 1;
++	  else
++	    abort(); /* Configuration error.  */
++	}
+ 	if (directory == NULL)
+ 		directory = TZDIR;
+ 	if (tzdefault == NULL)

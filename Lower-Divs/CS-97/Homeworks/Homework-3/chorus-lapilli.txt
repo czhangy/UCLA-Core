@@ -1,0 +1,20 @@
+- Building off of tic tac toe project
+- Set up function to check if a given move is valid based on start and end
+  position --> hard code valid moves
+- Add counters for the number of Xs and Os to the Game state
+- Set up an if-ladder to check what stage of the game is being played -->
+  differentiates between placing pieces and moving them
+- Update the early return condition in handleClick to return when an opposing
+  piece is clicked and if any piece is clicked while the game is still in the
+  placing phase
+- Make attribute in Game state to track which piece the player is moving
+- Update this attribute as appropriate
+- Create if statement to catch a moving piece case
+- Ensure if player is moving piece, the destination is valid
+- Move piece to destination if valid by modifying local square var
+- Create variable to track if current player is occupying the center by 
+  checking current player's piece with the middle of the squares array
+- If player is occupying center, code early return condition within the if
+  ladder if the move they're attempting to make won't win or vacate center
+- Use a temporary copy of squares to check if a win happens
+- Update jumpTo so that all added attributes are reset when jumped to

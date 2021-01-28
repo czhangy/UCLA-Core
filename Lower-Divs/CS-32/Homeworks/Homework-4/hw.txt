@@ -1,0 +1,9 @@
+2. The line that errors is attempting to use a comparison operator on a user-defined class, Coord. This is an error because the user never defined a != operator for Coord and therefore, the compiler has no indication of what makes one Coord equal to another.
+
+3. a) This program is O(N^3), as there is a nested for-loop inside another nested for-loop, and each of the 3 for loops run N times, meaning the time complexity is approximately N*N*N, or N^3.
+
+b) The time complexity of this program is still O(N^3). This is because the only change is making the first nested for-loop run i times instead of N times. However, that means the contents of this loop run approximately N^2 times (0 + 1 + ... + n-1 = n(n-1)/2), and therefore, the overall time complexity is N^2 * N, or N^3.
+
+4. a) The time complexity of this program is O(N^2). This is because the get() function inside the for-loop is of order N, as it needs to locate the index by iterating through the linked list with a for-loop. Due to the way it is implemented, it will only ever run through half of the linked list at most, but this is still of order N. Since this is nested inside a for-loop that iterates m.size() (N) times, the function as a whole is O(N^2).
+
+b) The time complexity of this program is O(N). This is because within the only for-loop in the function (which loops N times), all of the operations are constant-time operations, meaning the function as a whole is of order N.
