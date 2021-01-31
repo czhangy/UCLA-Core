@@ -1,0 +1,3 @@
+#!/bin/bash
+
+jar xf jmmplus.jar
