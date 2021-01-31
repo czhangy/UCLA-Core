@@ -14,9 +14,9 @@ class UnsafeMemory {
 			else if (args[0].equals("Synchronized"))
 				s = new SynchronizedState(nValues);
 			else if (args[0].equals("Unsynchronized"))
-			    s = new UnsynchronizedState(nValues);
+				s = new UnsynchronizedState(nValues);
 			else if (args[0].equals("AcmeSafe"))
-			    s = new AcmeSafeState(nValues);
+				s = new AcmeSafeState(nValues);
 			else
 				throw new Exception(args[0]);
 			dowork(nThreads, nTransitions, s);
