@@ -13,7 +13,7 @@
 ## Homeworks
 | Name | Language | Score |
 |:---|:---:|:---:|
-| 1. Fixpoints and Grammar Filters | OCaml | ??? |
+| 1. Fixpoints and Grammar Filters | OCaml | 97/100 |
 | 2. Naive Parsing of Context-Free Grammars | OCaml | ??? |
 | 3. Java Shared Memory Performance Races | Java | ??? |
 
