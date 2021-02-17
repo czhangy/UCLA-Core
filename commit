@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+MSG=$(date +'%D')
+MSG+=" update"
+
+while true
+do
+    echo -n "Class Name: "
+    read class
+    if [ -z "$class" ]
+    then
+        break
+    fi
+    MSG+=" | ${class}: "
+    echo -n "Content: "
+    read content
+    MSG+=${content}
+done
+
+if [ -z "$MSG" ] 
+then
+    echo "Enter a commit message!"
+else
+    git pull origin master && \
+    git add -A . && \
+    git commit -m "$MSG" && \
+    git push origin master && \
+    echo "Pushed!"
+fi
