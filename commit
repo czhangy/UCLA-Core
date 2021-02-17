@@ -3,6 +3,8 @@
 MSG=$(date +'%D')
 MSG+=" update"
 
+hold=""
+
 while true
 do
     echo -n "Class Name: "
@@ -15,9 +17,10 @@ do
     echo -n "Content: "
     read content
     MSG+=${content}
+    hold+="x"
 done
 
-if [ -z "$MSG" ] 
+if [ -z "$hold" ] 
 then
     echo "Enter a commit message!"
 else
