@@ -1,0 +1,7 @@
+#lang racket
+
+(define (expr-compare x y)
+    (cond [(equal? x y) x y])
+)
+
+(provide expr-compare)
