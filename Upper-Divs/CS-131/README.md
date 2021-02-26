@@ -14,7 +14,7 @@
 | Name | Language | Score |
 |:---|:---:|:---:|
 | 1. Fixpoints and Grammar Filters | OCaml | 97/100 |
-| 2. Naive Parsing of Context-Free Grammars | OCaml | ??? |
+| 2. Naive Parsing of Context-Free Grammars | OCaml | 100/100 |
 | 3. Java Shared Memory Performance Races | Java | ??? |
 | 4. KenKen Solver | Prolog | ??? |
 | 5. Scheme Code Difference Analyzer | Scheme | ??? |
