@@ -19,7 +19,7 @@
 | 4. KenKen Solver | Prolog | ??? |
 | 5. Scheme Code Difference Analyzer | Scheme | ??? |
 | 6. ??? | ??? | ??? |
-| Project | Python | ??? |
+| Project: Proxy Herd with asyncio | Python | ??? |
 
 ## Exams
 | Exam | Score |
