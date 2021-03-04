@@ -1173,3 +1173,866 @@
         fun listall Empty = nil
         |   listall (Node(x, y, z)) = listall x @ y :: listall z;
         ```
+
+## **1/7: Syntax**
+
+- Last time
+  - Orthogonality
+  - Efficiency
+  - Safety
+- One more issue
+  - Mutability - how easy it is to change or extend the language
+    - Successful languages must evolve
+    - BASIC was developed on the GE 225 mainframe
+      - Interpreter - very slow
+      - 40ms to add
+      - 500ms to divide
+      - 40 KiB RAM
+      - 20 simultaneous users
+      - Very stripped down language compared to modern languages
+    - C was developed on the PDP 11/45 (1975)
+      - 4ms to add
+      - 1.2ms memory cycle time → memory faster than CPU
+        - Uniform access to memory
+        - Results in syntax like `*p`
+          - Loads from/stores to memory → cheap
+          - `a + b` looks bigger → is slower
+        - Nowadays:
+          - Memory access is considerably slower than computation
+          - Caching is crucial
+          - Language design for older machines is aging out → not a good design for modern machines
+      - 16 KiB RAM
+    - C and porting
+      - In POSIX/Linux/Unix, close function called with an invalid file descriptor should return `-1` and set `errno` to `EBADF`
+      - In MSVC, `close` function called with an invalid file descriptor throws an exception
+      - Suppose you have a pile of code that assumes POSIX, but is run under MSVC
+        - You don’t want to have to change all your code
+        - Here’s what we did in Gnulib
+          - Ordinary code:
+
+            ```c++
+            #include <unistd.h>
+            int f (void) {
+              if (close (fd) != 0 && errno == EBADF) return 1;
+              else return 0;
+            }
+            ```
+
+          - Our own `unistd.h`:
+
+            ```c++
+            #include next <unistd.h>
+            #define close rpl_close
+            ```
+
+          - `workaround.h`:
+
+            ```c++
+            #ifdef MSVC
+            #define TRY try {
+            #define CATCH } catch {
+            #define DONE }
+            #else
+            …
+            #endif
+            ```
+
+          - Our own library
+
+            ```c++
+            #include <unistd.h>
+            #include <workaround.h>
+            int rpl_close (int fd) {
+                TRY
+                  int r = close (fd);
+                CATCH
+                  r = -1;
+                  errno = EBADF;
+                DONE
+                  return r;
+            }
+            ```
+
+      - Make C more portable
+    - Another example of syntax mutability: Prolog
+      - Lets you define your own operators
+
+        ```prolog
+        :-op(500, yfx, [+,-]).
+        ```
+
+        - `+` and `-` are operators with precedence 500, are binary operators, and are left associative
+
+        ```prolog
+        :-op(400, yfx. [*,/]).
+        ```
+
+        - `*` and `/` are operators with precedence 400, are binary operators, and are left associative
+        - Lower number for precedence represents a higher priority
+        - `f` = function symbol
+        - `y` = operand of equal or lower-numbered precedence
+        - `x` = operand of lower-number precedence
+
+        ```prolog
+        :-op(200, fy, [+,-]).
+        ```
+
+        - Can declare same operator to have a different meaning
+
+        ```prolog
+        :-op(200, xfy, [**])
+        ```
+
+        - Right-associative
+
+        ```prolog
+        :-op(700, xfx, [=, \=, ==, =<, >=, …]).
+        ```
+
+        - These are non-associative operators
+        - `a >= b >= c` is a syntax error
+        - Makes Prolog more useful/extensible
+        - Typically present in languages catering to specialities with their own notation
+          - Prolog → NLP
+      - Harder to implement, worried about confusing programmers
+        - You can overdo language customization
+- Syntax
+  - Definition - form independent of meaning
+    - Worried about what the programming language looks like without worrying about what it means
+    - Ambiguity is sometime desirable in English, but not in programming languages
+  - Why you should prefer one syntax to another
+    - It’s what people are already used to (why Java looks like C++)
+    - It’s simple and regular (Lisp)
+    - It’s readable
+      - Leibniz’s criterion: a proposition’s form should mirror its meaning
+    - It’s writable/concise
+    - It’s redundant - prefer redundancy to catch mistakes
+    - It’s unambiguous
+- Syntax technical issues
+  - 2 levels of syntax is very common
+    - Lower level: tokenization - easy - still matters + performance
+    - Higher level: parsing
+  - Tokenization - split up input into tokens
+    - Some stuff gets thrown away during tokenization
+      - Comments
+      - Whitespace
+    - Issue: do you allow whitespace within tokens?
+    - Tokenizers are greedy - they take the longest sequence of characters that would be a valid token → fast
+    - Issue: loss of information
+      - Token - which syntactic category
+      - Lexeme - token + extra info needed for semantics
+    - Issue: keywords vs. identifiers
+      - C and C++ have reserved words - look like identifiers, but are not
+        - There are certain strings like `“if”` that cannot be used as identifiers
+      - Makes extending the language harder
+
+          ```c++
+          int class = 29; // ok in C, not in C++
+          ```
+
+      - Some languages avoid this problem by not having reserved words (PL/I)
+        - Easier to extend the language
+        - Rules for tokenization are more complicated
+      - The C solution to this problem
+        - Reserves all identifiers beginning with `_` and then a capital letter or `_`
+        - New keywords in C all begin with `_` and a capital letter
+
+          ```c++
+          _Noreturn void f(void) {
+            ...
+          } // f never returns
+          ```
+
+  - Parsing
+    - Assumption is input is a finite sequence of tokens
+    - `“terminal symbol”` - token
+    - We need to specify the language in order to figure out how to parse it
+      - Context-Free Grammar (CFG) is the typical way it's done
+      - FORTRAN and Python are counterexamples
+    - Terminology:
+      - Terminal symbol - one of a chosen finite set (dozens to hundreds)
+      - String - finite sequence of terminal symbols
+      - Parser is given a string and asked to parse it
+      - How to generate a string that belongs to a particular language
+        - Language - set of strings
+        - CFG - set of terminal symbols + set of nonterminal symbols each representing a phrase + set of grammar rules + start symbol - (one of your nonterminal symbols)
+        - Rules - LHS (nonterminal symbol) and a RHS (finite sequence of symbols)
+        - Example:
+
+          ```json
+          S => Sa
+          S => Sb
+          S => c
+          ```
+
+      - Sentence - member of a language
+
+## 1/12: **Ambiguity**
+
+- Usage of grammars
+  - Computer science theory
+    - Language definitions
+    - How to automatically process languages
+  - Take a simple grammar
+
+    ```json
+    S -> S a
+    S -> b
+    S -> ( S )
+    ```
+
+    - This allows us to define a language
+    - Also allows us to parse sentences in the language
+      - Want the parser to be able to prove to us that a given string is in the language
+        - Leftmost derivation proof:
+          - We have a string of symbols, initially, just a single string containing just the start symbol
+          - Step: replace the leftmost nonterminal with a right-hand side of a rule which has that nonterminal as its left-hand side
+          - Keep repeating this step as long as there is any nonterminal left in the string
+
+            ```json
+            S 3
+            ( S ) 1
+            ( S a ) 1
+            ( S a a ) 2
+            ( b a a )
+            ```
+
+            - Can express as 3 1 1 2 in shorthand
+          - Don’t necessarily know which rule to use, just need to run it and check
+      - Parse tree representation
+        - Same power as derivations
+        - Easier to read for more complex grammars
+        - Multiple parse trees can exist for the same string
+          - If the grammar is unambiguous, every parseable sentence has a unique parse tree
+        - A tree where leaves are all terminals, interior nodes are all nonterminals, each interior node matches a rule (LHS is node, RHS is children)
+- Problems that you can run into with grammars
+  - Nonterminals that are used but not defined
+
+    ```json
+    S -> T b
+    S -> S a
+    S -> c
+    ```
+
+    - No definition for T despite use in rule 1
+  - Nonterminals that are defined but never used
+
+    ```json
+    S -> S a
+    S -> c
+    T -> S b
+    ```
+
+    - No use of T despite definition in rule 3
+  - Nonterminals that can never be reached from the start symbol
+
+    ```json
+    S -> S a
+    S -> c
+    T -> U d
+    U -> T e
+    ```
+
+    - T and U are both useless despite being used and defined
+  - Useless loops
+
+    ```json
+    S-> S a
+    S -> c
+    S -> S
+    ```
+
+    - Last rule is useless/counterproductive by introducing ambiguity for no reason
+  - Problems are similar to what you find in your ordinary programs
+  - Bugs like these in your grammar is likely to cause a similar bug in the corresponding parser
+  - Syntactic constraints that your grammar doesn’t capture
+    - Example from natural languages - small subset of English
+
+      ```json
+      N { dog, cats }
+      V { barks, meow }
+      Adj { brown, black }
+      Adv { loudly, quietly }
+      S -> NP VP .
+      NP -> N
+      NP -> Adj NP
+      VP -> V
+      VP -> VP Adv
+      ```
+
+      ```json
+      dog barks loudly
+      brown cats meow
+      dog meow softly
+      ```
+
+      - Should be bad → need to distinguish between singular and plural
+    - Grammar size grows exponentially with the number of attributes
+      - Typically not done
+  - Your grammar tries to capture too much detail
+    - Typically people lean towards leaving stuff out
+  - Ambiguity
+    - Can come up in seemingly reasonable grammars
+
+        ```json
+        E -> E + E
+        E -> E * E
+        E -> ID
+        E -> NUM
+        E -> ( E )
+        ```
+
+      - Ambiguous for `a + b * c` → will result in 2 different interpretations
+        - `(a + b) * c`
+        - `a + (b * c)`
+        - Doesn’t capture precedence/associativity
+      - Fix this ambiguity
+
+        ```json
+        E -> E + T
+        E -> T
+        T -> T * F
+        T -> F
+        F -> ID
+        F -> NUM
+        F -> ( E )
+        ```
+
+    - Ex) Subset of C programming language
+
+      ```json
+      STMT -> ;
+      STMT -> EXPR ;
+      STMT -> return ;
+      STMT -> return EXPR ;
+      STMT -> break ;
+      STMT -> continue ;
+      STMT -> while (EXPR) STMT
+      STMT -> do STMT while (EXPR) ;
+      STMT -> if (EXPR) STMT
+      STMT -> if (EXPR) STMT else STMT
+      STMT -> for (EXPROPT ; EXPROPT ; EXPROPT) STMT
+      STMT -> switch (EXPR) STMT
+      STMT -> {STMTS}
+      EXPROPT -> EXPR
+      EXPROPT ->
+      STMTS ->
+      STMTS -> STMTS STMT
+      ```
+
+      - Why do `STMT -> return EXPR ;` and not `STMT -> return (EXPR) ;`
+        - C designers didn’t want to clutter code with unnecessary parentheses
+          - Not going to be ambiguous without them, semicolon is good enough
+        - `STMT while (EXPR) STMT` instead of `STMT -> while EXPR STMT`
+          - C would be ambiguous otherwise → `while x < y ++x;`
+          - Hard to figure out where expression stops and where statement starts
+          - Trickled down to `do-while` due to consistency, despite not being necessary for ambiguity
+      - `If-then-else` ambiguity
+        - `if (EXPR) if (EXPR) STMT else STMT`
+          - Entire `if-else` nested, or just the `if` nested?
+          - `else` matches closest `if` that it can
+          - Fix:
+
+            ```json
+            STMT -> if (EXPR) STMT
+            STMT -> if (EXPR) LSTMT else STMT
+            LSTMT can be anything except an else-less if → doubles the grammar size
+            STMT -> LSTMT
+            STMT -> if (EXPR) STMT
+            ```
+
+            - Replace all other `STMT` rules with `LSTMT`
+    - Avoiding ambiguity clutters your grammar, and may people don’t want to bother
+      - Concrete - the unambiguous grammar
+      - Abstract - ambiguous grammar
+        - Parsers prefer this due to simplicity and speed
+- Alternate notations for grammars
+  - `E -> E + E`
+  - `<E> ::= <E> + <E>`
+  - `expr: expr + expr`
+  - Internet RFCs (Request for Comments)
+
+    ```json
+    msg-id = “<” id-left “@” id-right “>”
+    id-left = dot-atom-text / obs-id-left
+    id-right = dot-atom-text / no-fold-literal / obs-id-right
+    no-fold-literal = “[“ *dtext “]”
+    ```
+
+    - Rule: LHS = RHS
+    - Nonterminals are `id-left`, `id-right`
+    - Terminals are quoted
+    - Example `msg-id`: `Message-ID: <11232143.fsf@cs.ucla.edu>`
+    - This set of rules is an extended version of the rules we’ve seen so far, in that `*X` in the RHS is shorthand for 0+ occurrences of `X`
+
+## **1/14: Functional Programming**
+
+- We can turn our grammars into regular expressions
+  - Can you do this with any BNF grammar? No
+  - Regular expressions can’t count, they can’t deal with nesting
+    - Impossible:
+
+      ```json
+      Expr -> “(“ Expr “)”
+      Expr -> ...
+      ```
+
+    - Possible:
+
+      ```json
+      Seq -> Unit
+      Seq -> Unit Seq
+      ```
+
+      - Doable because it only performs tail recursion
+- ISO standard for EBNF
+  - International Standardization Organization
+  - CS applications tend to use different EBNF notations → hard to read
+    - Basic idea is to have an ISO standard for EBNF
+  - Double/single quote terminal symbols
+  - Nonterminal symbols can contain spaces
+  - `(A)` - Can parenthesize to override precedences
+  - `[A]` - 0 or 1 of a nonterminal
+  - `{A}` - 0 or more of a nonterminal
+  - `N*A` - `N` or more `A`s
+  - `A - B` - `A` but not `B`
+  - `A, B` - `A` concatenated with `B`
+  - `A | B` - `A` or `B`
+  - `id = A` - rules
+  - Used a grammar to formally specify the syntax of ISO EBNF, used ISO EBNF
+
+      ```json
+      syntax = syntax rule, {syntax rule}
+      syntax rule = meta id, ‘=’, defns list, ‘;’;
+      defns list = defn, {‘|’, defn};
+      defn = term, {‘,’, term};
+      term = factor, [‘-’, exception];
+      exception = factor;
+      factor = [integer, ‘*’], primary
+      ...
+      ```
+
+  - Philosophically in trouble:
+    - We’ve defined ISO EBNF by using ISO EBNF
+- Syntax graphs/syntax diagrams
+  - Used in manuals/documentation for big languages
+    - SQL - used for database queries
+      - Many suppliers provide extensions to SQL
+      - They need to document the syntax for their extensions
+      - Diagrams can simplify the description of the syntax
+    - Shorter example - Scheme
+      - Example is a simple one → may not be motivating
+- Functional programming
+  - Motivations
+    - Clarity - traditional programming languages use non-mathematical notation
+      - Build on top of mathematicians’ work instead of reinventing it
+      - Also a problem of performance
+    - Performance - parallelizability
+      - C++, Python, etc. force you to think/write code sequentially
+      - Compilers often can’t optimize code through parallelization
+  - Key idea: avoid side effects
+    - A side effect is a change to the machine state because a statement was executed
+      - Changing contents of visible storage
+      - Do I/O
+    - Code free of side effects has better modularity
+    - Avoiding side effects avoids the problem of the same name meaning different things to different people
+      - No assignment statements
+      - Better clarity and better caching
+      - Technical term - referential transparency
+  - Many functional languages - ML, OCaml, F#, Scala, etc.
+    - Used for scientific programming (number crunching, needed parallelization)
+    - Functional programming makes it easier to write programs that reason about other programs
+      - Side effects get in the way of this sort of reasoning
+  - OCaml vs. ML
+    - OCaml is more popular at UCLA
+      - Little more flexible and more support
+    - Minor syntactic differences
+    - Floating point arithmetic is more of a pain
+  - Basic properties of OCaml
+    - Static type checking using type inferencing
+      - Like C++, Java, etc.
+    - You need not write down types all the time
+      - Like Python, Scheme, etc.
+    - No need to worry about storage management - has a garbage collector
+      - Like Java, Python, Scheme, etc.
+    - Good support for higher-order functions
+    - Operates on a REPL
+    - `If-then-else` branches must be the same type
+    - Tuples can be heterogeneous, lists cannot
+      - Lists can be flexible in length, tuples cannot
+    - `‘a` is a type variable, makes a generic type for type inference
+    - Everything is immutable in our subset of OCaml
+
+## 1/19: **OCaml**
+
+- Idea is to see how to explain OCaml in a basic core + add-ons
+  - You see this all the time - C++ core language + libraries
+  - OCaml also has core language + libraries/modules
+- What’s the core of the OCaml language (add-ons will still be part of the language)
+  - Our add-ons will be syntactic sugar - a nice way of writing something that’s an extra feature of the language that you could’ve - done without
+    - C++: `i++` and `i += 1` and `i = i + 1`
+  - In `val f : int -> int = <fun>` in OCaml REPL, the `<fun>` stands for the machine code to implement a function
+  - Traditionally, every function needs a name
+    - Functional languages introduce the idea of anonymous functions
+      - Names and functions are orthogonal
+    - Creeps into traditional languages as lambda functions
+  - Every function in OCaml has 1 parameter
+    - OCaml handles multi-parameter functions through currying → function takes 1 argument, then returns a function to take in the - next argument, and so on
+    - Nowadays, this is not simply a notational convenience
+    - Can also pass as a tuple
+    - Currying more powerful → don’t need all of the parameters when the function is called
+  - If you just write `x y z`, it’s parsed as 2 function calls
+    - First is a call to `x`, then a call to whatever `x y` returns
+    - OCaml’s optimizer optimizes away the excess `call` and `ret` instructions or uses cheaper versions of the instructions
+    - When these execute, the code knows about the first parameter, how?
+      - OCaml interpreter could clone the machine code and mentally substitutes the first parameter for all of its occurrences → now has a new machine code sequence for next function
+      - Typically, OCaml interpreter creates a pointer that implements the next function
+        - OCaml functions are represented by fat pointers
+          - Pointer to the machine code
+          - Pointer to the environment that the code executes in
+      - You cannot do this in C/C++ - their pointers only point to machine code, they are single word pointers
+        - You can achieve the effect by passing an extra environment argument to the function manually
+  - OCaml has syntactic sugar for common operators
+    - `3 + 4` vs. `(+) 3 4`
+    - Operators are functions
+- OCaml patterns are used in match expressions
+
+  ```ocaml
+  match l with
+  | h::t -> 3::h::t
+  | [] -> [4]
+  ```
+
+- Some OCaml patterns
+  - `a` - matches anything, binds `a` to that value
+  - `_` - matches anything, and discards it
+  - `0` - matches only itself (any constant)
+  - `P, Q` - matches any tuple with 2 elements, first matches `P`, second matches `Q`
+  - `()` - matches any tuple with 0 elements
+  - `[P;Q;R]` - matches any 3 element list whose components match `P`, `Q`, and `R` respectively
+  - `P::Q` - matches any list whose head matches `P` and tail matches `Q`
+  - `T P` - matches any object built from constructor `T` with argument matching the pattern `P`
+    - `::` is just another constructor (with 2 arguments)
+- Higher order function that does pattern matching
+  - Goal: find the maximum element in an `int list`
+
+    ```ocaml
+      let rec maxlist l = 
+        match l with
+        | h::t -> let mt = maxlist t in
+            if mt < h then h else mt
+        | _ -> -999999999
+    ```
+
+  - Let’s generalize it to list of anything
+
+    ```ocaml
+    let rec maxlist lt identity = function
+      | h::t -> let mt = maxlist lt identity t in
+          if lt mt h then h else mt
+      | [] -> identity
+    ```
+
+- 2 keywords: `fun` and `function`
+  - They operate differently (syntactic sugar in different ways)
+  - `fun` is for currying
+
+    ```ocaml
+    fun x y -> x + y
+    ```
+
+  - `function` is for pattern matching
+
+    ```ocaml
+    function 
+      | [] -> 0 
+      | _::l -> f l
+    ```
+
+## **1/21: OCaml and Types**
+
+- Simple OCaml function to reverse a list
+
+  ```ocaml
+  let rec reverse = function
+    | [] -> []
+    | h::t -> (reverse t) @ h
+  ```
+
+  - This is wrong, because the type is wrong
+
+  ```ocaml
+  let rec reverse = function
+    | [] -> []
+    | h::t -> (reverse t) @ [h]
+  ```
+
+  - Bad performance, `O(N^2)` due to repeated work with the `@` operator
+  - Add an accumulator - an extra argument that accumulates the work you’ve already done
+
+    ```ocaml
+    let rec revall a l =
+      match l with
+      | [] -> a
+      | h::t -> reverse h::a t
+    let reverse l = revapp [] l
+    ```
+
+    - Can simplify further
+
+      ```ocaml
+      let reverse =
+        let rec revapp a =
+          match l with
+          | [] -> a
+          | h::t -> reverse h::a t
+      ```
+
+- You can debug your OCaml program by looking at types
+- Translation environments
+  - Compiler: translate from source code to machine code
+    - Walks through parse tree and generates an intermediate representation
+      - Set of instructions for a machine that doesn’t exist
+      - Designed for compiler convenience
+    - The intermediate representation is optimized
+    - Then translated to assembly, `.o`, linking, executable, RAM, etc.
+    - The software tools approach → you have a POSIX pipeline of programs
+      - Used for low-level stuff (IoT)
+      - Preprocess → compile to assembly → assembly to object → link to executable → run
+    - The integrated development environment approach → single app that does it all
+      - Do modularization of this app via object-oriented techniques rather than a POSIX style pipeline
+      - Used more for high-level stuff
+    - Hybrids
+      - Dynamic linking - executable can run dynamic linker to bring code into RAM so that the executable can run the code
+        - Self-modifying code
+        - Performance implications
+      - Just-in-time compilation - conventional system takes in a program and turns it into a `.class` file
+        - Class file fed into the executable, which has a slow interpreter
+        - Can speed up the interpreter by having a compiler that compiles bytecode into machine code
+        - As the program is running, the working memory keeps track of how often each method is executed
+          - Commonly executed code is translated from byte code to machine code to improve runtime at the cost of added complexity
+  - Interpreter: keep source code analog in RAM, an interpreter executes the text of the program
+    - Code is never translated to machine code, uses the interpreter’s machine code
+    - Often converts to byte code for efficiency, a software-defined instruction set
+    - Worse runtime performance than compiling, easier to debug
+
+## **1/26: Types**
+
+- Types in OCaml, Java, C++, etc.
+  - We’ll start by looking at static type checking
+- Why do we have types?
+  - “Types are more trouble than they’re worth” - is that so?
+- What is a type?
+  - A type is a set of values
+    - `int = { INT_MIN, …, -1, 0, 1, …, INT_MAX }`
+    - There are set-oriented languages
+      - Allows for countably and uncountably infinite sets through predicates
+  - A type describes how objects are represented in memory
+
+    ```c++
+    struct s { 
+      int a;
+      char b[7];
+      double c;
+    } x;
+
+    &x.b[0] - (char *) &x.a == sizeof (int)
+    ```
+
+    - Not exactly the same
+      - `char *` and `int *` have the same representation on x86-64 → not guaranteed on non-byte-addressable platforms
+    - Some details, but not all
+  - A type is a set of objects and operations defined on those objects
+    - Like C++ in which a `class` has everything private except for some constructors and methods
+    - Probably the one gaining in popularity
+  - (Research) a type is a set of objects, operations, and axioms about the objects
+- Distinction between primitive and constructed types
+  - Primitive types are built-in (`int`, `double`, `bool`, `char`, etc.)
+  - Constructed types are defined by the programmer (`char b[7]`, `struct s {...};`, `char *const *p`, etc.)
+- Primitive types have plenty of problems all by themselves
+  - Portability issues
+    - What are the set of integer values? It’s machine-dependant
+      - 32-bit 2’s complement integers is most common
+      - 16-bit or 36-bit, ones’ complement, signed magnitude, etc. still exist
+    - `char` goes from `-128` to `127` if using `GCC`, other compilers may disagree
+    - IEEE-754 floating point arithmetic
+      - Set of objects for `float`s: 32-bit representation split into 1 bit sign, 8-bit exponent, and the 23-bit fraction
+        - The number represented is `2**(e - 127) * 1.f`
+        - `+`/`-` depends on the sign
+        - `1.f` stands for the base-2 number
+        - Only true if `0 < e < 255`
+      - `e = 0 → 2**(-126) * 0.f` → denormalized value
+        - The number `0` is in this category
+        - All bits `0` represents `+0`, there is a `-0`, both are equal numerically
+        - 2 distinct representations of `0` → issue
+      - `e = 255` and `f = 0` → `+`/`-` `infinity`
+        - `f` / `g` returns `infinity`, protects against overflow
+        - `(f / g - f / g)` → no answer is mathematically valid, returns `NaN`
+      - `+- NaN` if `e = 255`, `f != 0`
+
+        ```c++
+        float f = 0;
+        f / f = NaN
+        ```
+
+        - How do you compare `NaN`s to numbers?
+
+          ```c++
+          float f = 0;
+          float nan = f / f;
+          if (nan < 5) // by convention, NaNs are never <, =, or > than anything
+          float f = 0.0/0.0, g = f;
+          f != g && memcmp (&f, &g, sizeof f) == 0;
+          ```
+
+          - `NaN` can’t be equal to anything, but `f` and `g` have the same bits
+      - An axiom we’d like to be true:
+        - `f != g` implies that `f - g != 0`
+          - True of real numbers, is it true with floats? Yes because of tiny numbers
+      - Common fallacy - never compare floating point values for equality
+        - Not `if (f == g)`, should be `if (fabs(f - g) < 0.000001 * f)`
+        - Not necessarily true
+        - Perfectly valid to compare for equality with caution/knowledge of how type works
+      - Note that there are no exceptions in conventional floating point arithmetic, special values used instead
+        - An alternative approach would be to throw an exception if you over/underflow → no `NaN`s, just exceptions
+        - Should you use exceptions or special values?
+          - Partial functions vs. total functions
+          - x86-64 hardware supports both models → hardly anybody does this
+            - Due to inertia and the fact that lot’s of useful computations do better without it
+- Some uses of types
+  - Annotations (`int x` tells the programmer that `x` is an `int`)
+    - Also tells the compiler useful information that allows it to generate better code
+      - Makes compilers faster
+  - Inference (`int i; float f; return i * f;` tells the programmer and compiler what types are returned
+    - Annotations and inference kind of fight each other
+    - OCaml is big on type inference
+  - Checking
+    - Static vs. dynamic type checking
+      - This can be a spectrum
+      - Some languages have both (C++/Java are primarily static, but have ways to do dynamic)
+    - Static - done before the program starts (compile-time or linking-time)
+    - Dynamic - at runtime, as the program runs
+      - The same code can succeed sometimes and fail other times
+    - Strongly typed - all operations are type-checked
+      - C is not strongly typed → you can cast pointers
+        - Can get you into undefined behavior
+      - Favored for reliability
+- Type equivalence
+  - Two types `T` and `U` → does `T = U`?
+  - 2 standard answers
+    - Name equivalence - 2 types are the same if they have the same name
+    - Structural equivalence - 2 types are the same if they’re laid out in memory the same
+      - If they behave the same, as far as the ABI goes
+        - ABI = Application Binary Interface
+    - Example of name equivalence in C/C++
+
+      ```c++
+      struct s { int a; struct s*  next; };
+      struct t { int a; struct t*  next; };
+      ```
+
+      - Different names = different types
+    - Example of structural equivalence in C/C++
+
+      ```c++
+      typedef int s;
+      typedef int t
+      s x;
+      t y = x; // this is OK
+      ```
+
+    - Suppose we wanted structural equivalence in C/C++
+
+      ```c++
+      struct s {
+        int a;
+        struct t* next; 
+      };
+
+      struct t {
+        int a;
+        struct s* next;
+      };
+      ```
+
+- Subtypes
+  - 2 types `T` and `U`, is `T` a subtype of `U`?
+    - Assumption is that if `T` is a subtype of `U` and `U` is a subtype of `T`, then `T` and `U` are equivalent
+  - Why do we need subtypes?
+    - General idea: we have a specific value of type `T` that we want to pass as an argument of type `U` to a more general function
+    - Should work regardless of equivalence type
+  - Examples
+    - Pascal:
+      - `type lower_case_alpha = ‘a’...’z’;` is a subtype of the type `char`
+    - Common Lisp:
+      - `(declare (type (and integer (satisfies evenp)) x))` is a subtype of `integer` → set of all integers for which `(evenp i)` returns `true`
+    - In class-based systems, a subclass is a subtype
+      - `class C extends P { … }` → `C` is a subtype of `P`
+    - Generally speaking, subtypes can have operations that supertypes lack
+      - Subset of values implies superset of operations
+    - C++
+      - `char *` vs. `char const *`
+      - Which of these is a subtype of the other?
+        - Unrestricted pointer vs. restricted (only reads allowed) pointer
+        - `char *` is a subtype of `char const *` → more operations available on `char *`
+- Polymorphism
+  - Occurs when you have some part of your program that has many types all at once
+  - A function that accepts many forms is polymorphic
+    - Many languages are polymorphic in this sense
+    - Lisp : `(+ 3 4)` is based on ints, `(+ 3.0 4)` is based on `int` and `float`
+  - 2 major forms of ad hoc polymorphism in conventional languages
+    - Overloading
+      - Identifying which function to call by examining the types of its arguments (and sometimes the type of the context)
+      - Arithmetic operators in C, C++, Java, etc.
+      - In statically-compiled languages, this is often implemented by having several different functions at the machine level to - implement one source code function
+        - `f = cos(y)` → `call cosf` (`float`), `call cosld` (`long double`)
+      - This can even work in C++ where you can define your own overloaded functions via name mangling
+        - Works as long as caller and callee agree on the name mangling convention
+    - Coercion
+      - Implicit type conversion
+        - `double f = 0;` → uses coercion, different types
+        - `double d = f + 1;` → no `+ : double -> int -> double`, only have homogeneous operators
+          - Coerce `1` to `double` first, then use built-ins
+        - Adds convenience, but also complexity
+          - `double f(int, double)`
+          - `double f(double, int)`
+            - `f(1, 0)` is ambiguous in this situation
+              - C++ rule is to disallow this
+  - We want something better and cleaner than this if we can get it
+- Parametric polymorphism
+  - Want the polymorphism to be more structured than ad hoc
+  - When a function’s type contains one or more type variables
+  - Walk through a collection of strings and remove all the strings of length 1
+    - Without:
+
+      ```java
+      static void remove1 (Collection C) {
+        for (Iterator i = c.iterator(); i.hasNext(); )
+          if (i.next().length() == 1)
+            i.remove();
+      }
+      ```
+
+      - Won’t compile without a case because `i.next()` returns `Object` and `Object` doesn’t have a `length()` method → cast result of `i.next()` to `String`
+      - Slow and ugly → extra runtime check due to strong-typing of Java
+      - Risk of crashing
+    - With:
+
+      ```java
+      static void remove1 (Collection<String> c) {
+        for (Iterator<String> i = c.iterator(); i.hasNext(); )
+          if (i.next().length() == 1)
+            i.remove();
+      }
+      ```
+
+      - No cast needed, no runtime check
+      - Code is safer → no runtime exception possible
+  - 2 typical ways to do parametric polymorphism
+    - Templates (C++, Ada) represent code that doesn’t exist yet, but it will exist once you instantiate it
+      - Compiler can finish the job of compiling the code when say what the types actually are in a caller or user of the template
+      - May require multiple copies of the machine code, one for each type of instantiation
+    - Generics (OCaml, Java) - code is compiled and type-checked just once
+      - Only one copy of the machine code needs to exist, it’ll work on any types of arguments
+      - This works because all types smell the same in the language
+        - Every object is represented via a 64-bit pointer
