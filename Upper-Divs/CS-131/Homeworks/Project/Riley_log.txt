@@ -1,0 +1,8 @@
+INFO:root: 2021-03-03 19:23:23.020842: Riley constructed
+INFO:root: 2021-03-03 19:23:23.021707: Riley initialized
+INFO:root: 2021-03-03 19:23:27.010007: Riley received command: "hi"
+INFO:root: 2021-03-03 19:23:27.010313: Riley replied with: "? hi"
+INFO:root: 2021-03-03 19:23:48.802266: Riley received command: "IAMAT kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-03 19:23:48.802539: Riley replied with: "AT Riley +619099.883533001 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-03 19:27:39.663710: Riley received command: ""
+INFO:root: 2021-03-03 19:27:39.664766: Client disconnected

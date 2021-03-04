@@ -37,8 +37,8 @@
 - Servers should continue to operate if their neighboring servers go down
 - Servers log I/O into a file, design the format
 - Servers only handle one request per connection
-- Messages are ended by EOF, can be handled by `reader.read`
-- Server must manually create HTTP GET requests using the `aiohttp` library
+- Messages are ended by `EOF`, can be handled by `reader.read`
+- Server must manually create `HTTP GET` requests using the `aiohttp` library
   - `asyncio` only supports TCP and SSL protocols
 - Main file names `server.py`
   - Takes one command line argument: `python3 server.py [SERVER_ID]`
@@ -62,7 +62,7 @@
 - Compare overall approach of `asyncio` to Node.js
 - Focus on:
   - How easy is it to write asyncio-based programs that run and exploit server herds?
-  - What are the performance implications of using asyncio?
+  - What are the performance implications of using `asyncio`?
   - How important is it to rely on asyncio features of Python 3.9 or later, such as `asyncio.run` and `python -m asyncio`, or is it easy to get by with older versions of Python?
 - LaTeX styling
 - 5 pages maximum
@@ -85,11 +85,17 @@
 
 ## Relevant Links
 
+- **[`aiohttp` documentation](https://aiohttp.readthedocs.io/en/stable/)**
 - **[`asyncio` source code](https://github.com/python/cpython/tree/master/Lib/asyncio)**
 - **[`asyncio` documentation](https://docs.python.org/3/library/asyncio.html)**
-- **[`aiohttp` documentation](https://aiohttp.readthedocs.io/en/stable/)**
+- **[`argparse` documentation](https://docs.python.org/3/library/argparse.html)**
 - **[Flooding algorithm](http://en.wikipedia.org/wiki/Flooding_%28computer_networking%29)**
 - **[Google Places API key](https://console.developers.google.com/flows/enableapi?apiid=places_backend&keyType=SERVER_SIDE&reusekey=true)**
 - **[Google Places Place Search Documentation](https://developers.google.com/maps/documentation/places/web-service/search)**
+- **[`json` documentation](https://docs.python.org/3/library/json.html)**
+- **[`logging` documentation](https://docs.python.org/3/library/logging.html)**
 - **[Postman](https://www.postman.com/)**
+- **[Python Standard Library](https://docs.python.org/3/library/)**
+- **[`sys` documentation](https://docs.python.org/3/library/sys.html)**
+- **[`time` documentation](https://docs.python.org/3/library/time.html)**
 - **[USENIX style templates](https://www.usenix.org/conferences/author-resources/paper-templates)**
