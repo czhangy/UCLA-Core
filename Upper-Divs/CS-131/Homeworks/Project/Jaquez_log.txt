@@ -1,0 +1,9 @@
+INFO:root: 2021-03-04 17:49:18.038746: Jaquez constructed
+INFO:root: 2021-03-04 17:49:18.039473: Jaquez initialized
+INFO:root: 2021-03-04 17:50:31.660822: Jaquez received command: "AT Riley +699902.74040699 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-04 17:50:31.661098: Received "AT Riley +699902.74040699 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997" from Riley
+INFO:root: 2021-03-04 17:50:31.662258: Jaquez failed to connect to Riley
+INFO:root: 2021-03-04 17:50:31.662830: Jaquez failed to connect to Bernard
+INFO:root: 2021-03-04 17:50:31.662954: Jaquez replied with: "AT Riley +699902.74040699 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-04 17:50:31.663113: Client disconnected
+INFO:root: 2021-03-04 17:51:10.212094: Jaquez failed to start

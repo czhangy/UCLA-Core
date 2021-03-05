@@ -244,3 +244,18 @@
 - Design is opposite of analysis
 
 ## **3/1: Decoders**
+
+- Decoder has `n` inputs, `2^n` outputs
+  - Can be used for main memory
+  - Essentially translates binary to minterms
+- Coincident Decoder
+  - 2 decoders connected by AND gates
+  - `n` total inputs --> creates `2^n` outputs from smaller decoders
+- Tree Decoder
+  - 1 decoder's output connected to enable ports
+  - Inputs shared between decoders
+- Encoder has `2^n` inputs, `n` outputs
+  - Only one of the input bits can be `1`
+  - Translates from minterm to binary
+  - Priority Binary Encoder
+    - Ignores bits past the leading `1`

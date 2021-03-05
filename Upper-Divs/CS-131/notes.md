@@ -86,7 +86,7 @@
         #include <x.h>
         
         x arr;
-        x f(int x) {// will break if x is an array type, non-flexible implementation
+        x f(int x) { // will break if x is an array type, non-flexible implementation
             ...
         }
         ```
