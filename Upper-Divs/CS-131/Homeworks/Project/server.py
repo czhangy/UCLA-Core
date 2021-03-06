@@ -1,7 +1,6 @@
-#!/usr/bin/python
-
 # Example Commands
 # IAMAT kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997
+# WHATSAT kiwi.cs.ucla.edu 10 5
 
 import aiohttp
 import argparse
@@ -27,6 +26,9 @@ server_comms = {"Riley": ["Jaquez", "Juzang"],
                 "Campbell": ["Juzang", "Bernard"],
                 "Bernard": ["Jaquez", "Juzang", "Campbell"]}
 
+# API Key
+KEY = # Insert API key here
+
 # Server Class
 class Server:
     def __init__(self, server_name, server_port, server_ip):
@@ -34,7 +36,7 @@ class Server:
         self.name = server_name
         self.port = server_port
         self.ip = server_ip
-        self.client_data = dict()
+        self.domain_info = dict()
         # Log server start-up
         logging.info(f' {str(datetime.now())}: {self.name} constructed')
 
@@ -69,7 +71,7 @@ class Server:
                 reply = await self.handle_IAMAT(ops)
             # Handle WHATSAT requests
             elif ops[0] == "WHATSAT":
-                reply = self.handle_WHATSAT(ops)
+                reply = await self.handle_WHATSAT(ops)
             # Handle AT requests (propagations)
             elif ops[0] == "AT":
                 reply = await self.handle_AT(ops)
@@ -109,27 +111,44 @@ class Server:
             return True
         # Check syntax of IAMAT command
         if check_IAMAT(cmd):
-            # Calculate timestamp difference
+            # Calculate and format timestamp difference
             time_diff = time.time() - float(cmd[3])
             if time_diff > 0:
                 time_diff = "+" + str(time_diff)
             # Reply with AT
             reply = f'AT {self.name} {time_diff} {cmd[1]} {cmd[2]} {cmd[3]}'
-            self.client_data[cmd[1]] = float(cmd[3])
+            # Save domain information
+            self.domain_info[cmd[1]] = reply
             # Propagate to neighboring servers
-            print(reply)
             await self.flooding_algo(reply)
         # Invalid command
         else:
             reply = f'? + {" ".join(cmd)}'
         return reply
 
-    # Handle potential WHATSAT commands
-    def handle_WHATSAT(self, cmd):
-        return ""
+    # Handle potential WHATSAT commands --> cmd[1] = domain, cmd[2] = radius, cmd[3] = info amnt
+    async def handle_WHATSAT(self, cmd):
+        # Function to check WHATSAT syntax
+        def check_WHATSAT(cmd):
+            # Check if the domain exists
+            if cmd[1] not in self.domain_info:
+                return False
+            # Check if radius and info amnt are numbers
+            if not self.is_num(cmd[2]) or not self.is_num(cmd[3]):
+                return False
+            # Check if radius and info amnt are within bounds
+            if int(cmd[2]) < 0 or int(cmd[2]) > 50 or int(cmd[3]) < 0 or int(cmd[3]) > 20:
+                return False
+            return True
+        if check_WHATSAT(cmd):
+            # Get JSON data from Google Places
+            json_data = await self.access_api(self.domain_info[cmd[1]].split()[-2], cmd[2], int(cmd[3]))
+            reply = '{}\n{}\n\n'.format(self.domain_info[cmd[1]], str(json_data).rstrip('\n'))
+        else:
+            reply = f'? + {" ".join(cmd)}'
+        return reply
 
-    # Handle potential AT commands --> cmd[1] = origin server, cmd[2] = time diff, cmd[3] = domain, cmd[4] = lat/long,
-    #                                  cmd[5] = timestamp
+    # Handle potential AT commands --> cmd[1] = origin server, cmd[2] = time diff, cmd[3] = domain, cmd[4] = lat/long, cmd[5] = timestamp
     async def handle_AT(self, cmd):
         # Function to check AT syntax
         def check_AT(cmd):
@@ -148,18 +167,18 @@ class Server:
             return True
         # Check command syntax
         if check_AT(cmd):
-            if cmd[3] in self.client_data and self.client_data[cmd[3]] >= float(cmd[5]):
-                logging.info(f' {str(datetime.now())}: Propagation from {cmd[1]} already received')
+            # Shut down repeat propagations
+            if cmd[3] in self.domain_info and float(self.domain_info[cmd[3]].split()[-1]) >= float(cmd[5]):
+                logging.info(f' {str(datetime.now())}: Message from {cmd[1]} already received')
                 reply = None
             else:
-                # Update current server's timestamp
-                self.client_data[cmd[3]] = float(cmd[5])
                 # Log propagation
                 logging.info(f' {str(datetime.now())}: Received "{" ".join(cmd)}" from {cmd[1]}')
                 # Propagate to neighbors
-                print(" ".join(cmd))
                 await self.flooding_algo(" ".join(cmd))
                 reply = " ".join(cmd)
+                # Update current server's domain info
+                self.domain_info[cmd[3]] = reply
         # Invalid command
         else:
             reply = f'? + {" ".join(cmd)}'
@@ -170,7 +189,7 @@ class Server:
         for server in server_comms[self.name]:
             try:
                 # Open connection to other server and send message
-                reader, writer = await asyncio.open_connection('127.0.0.1', server_ports[server])
+                _, writer = await asyncio.open_connection('127.0.0.1', server_ports[server])
                 writer.write(cmd.encode())
                 await writer.drain()
                 # Log propagated message
@@ -182,6 +201,36 @@ class Server:
             except:
                 # Log failed connection
                 logging.info(f' {str(datetime.now())}: {self.name} failed to connect to {server}')
+
+    # Get JSON data for WHATSAT command
+    async def access_api(self, coords_str, radius, info_amnt):
+        # Use HTTP
+        async with aiohttp.ClientSession() as client:
+            # Format long/lat for API access
+            ind = max(map(coords_str.find, '+-'))
+            coords = f'{coords_str[0:ind]},{coords_str[ind:]}'
+            # Log API access attempt
+            logging.info(f' {str(datetime.now())}: {self.name} accessing API for location {coords}')
+            # Build URL using API key and parameters
+            url = f'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={coords}&radius={radius}&key={KEY}'
+            # Fetch data
+            json_data = await self.fetch(client, url)
+            # Log data retrieval
+            logging.info(f' {str(datetime.now())}: {self.name} retrieved data for location {coords} from API')
+            # Get Python object
+            json_dict = json.loads(json_data)
+            # Check if data amount overloads the max bound of the WHATSAT command
+            if (len(json_dict["results"]) > info_amnt):
+                # Truncate
+                json_dict["results"] = json_dict["results"][0:info_amnt]
+                return json.dumps(json_dict, indent = 4, sort_keys = True)
+            # Data was fine, return original JSON result
+            return json_data
+
+    # Access Google Places API
+    async def fetch(self, client, url):
+        async with client.get(url) as req:
+            return await req.text()
 
 # Starting point
 def main():
@@ -195,15 +244,14 @@ def main():
         sys.exit()
     else:
         # Init logs
-        logging.basicConfig(filename=f'./{args.server_name}_log.txt', filemode="+w", level=logging.INFO)
+        logging.basicConfig(filename=f'./{args.server_name}_log.txt', level=logging.INFO)
         # Init server using name, corresponding port, and local IP
         s = Server(args.server_name, server_ports[args.server_name], '127.0.0.1')
         try:
             asyncio.run(s.manage_server())
         except:
-            logging.info(f' {str(datetime.now())}: {args.server_name} failed to start')
+            logging.info(f' {str(datetime.now())}: {args.server_name} closed')
             sys.exit()
-
 
 # Boilerplate
 if __name__ == '__main__':

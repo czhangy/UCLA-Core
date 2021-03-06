@@ -61,7 +61,7 @@
   - Compare to Java approach
 - Compare overall approach of `asyncio` to Node.js
 - Focus on:
-  - How easy is it to write asyncio-based programs that run and exploit server herds?
+  - How easy is it to write `asyncio`-based programs that run and exploit server herds?
   - What are the performance implications of using `asyncio`?
   - How important is it to rely on asyncio features of Python 3.9 or later, such as `asyncio.run` and `python -m asyncio`, or is it easy to get by with older versions of Python?
 - LaTeX styling
@@ -70,18 +70,18 @@
 ## Submission
 
 - Source code in gzipped file named `project.tgz`
-  - [ ] Create servers/address command line
-  - [ ] Implement `IAMAT` command
-  - [ ] Implement a flooding algorithm
-  - [ ] Implement `WHATSAT` command
-  - [ ] Perform testing
+  - [X] Create servers/address command line
+  - [X] Implement `IAMAT` command
+  - [X] Implement a flooding algorithm
+  - [X] Implement `WHATSAT` command
+  - [X] Perform testing
 - Report in file named `report.pdf`
   - [ ] Create template
   - [ ] Address pros and cons
   - [ ] Problems run into
   - [ ] Address Python vs. Java
   - [ ] Address `asyncio` vs. Node.js
-  - [ ] Address dependance on Python 3.9+ features
+  - [ ] Address dependence on Python 3.9+ features
 
 ## Relevant Links
 

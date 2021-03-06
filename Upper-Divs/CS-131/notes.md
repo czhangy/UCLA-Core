@@ -241,7 +241,7 @@
     - Can contain skips, multiple paths, loops, etc. to represent the various features of BNF/EBNF
     - Easy for beginner representations, hard to formulate the final parse tree
   - Formal grammars
-    - Context-free grammars - children of a node of a parse tree are only dependant on that node, not on neighboring nodes
+    - Context-free grammars - children of a node of a parse tree are only dependent on that node, not on neighboring nodes
     - Regular grammars - less expressive
     - Context-sensitive grammars - more expressive
 - Many variations of representations for programming language grammars → underlying concept is generally the same
@@ -312,7 +312,7 @@
     val it = “Hello World” : string
     ```
 
-  - Comparison operators remain standard and can be used on strings, chars, ints, or reals
+  - Comparison operators remain standard and can be used on `string`s, `char`s, `int`s, or `real`s
 
     ```ml
     - 2 < 3;
@@ -376,7 +376,7 @@
     - `real` - `int` → `real`
     - `floor` - `real` → `int` (rounding down)
     - `ceil` - `real` → `int` (rounding up)
-    - `round` - `real` → `int` (round to nearest int)
+    - `round` - `real` → `int` (round to nearest `int`)
     - `trunc` - `real` → `int` (rounds towards 0)
     - `ord` - `char` → `int` (gets ASCII code)
     - `chr` - `int` → `char` (uses ASCII code)
@@ -1207,7 +1207,7 @@
       - In MSVC, `close` function called with an invalid file descriptor throws an exception
       - Suppose you have a pile of code that assumes POSIX, but is run under MSVC
         - You don’t want to have to change all your code
-        - Here’s what we did in Gnulib
+        - Here’s what we did in GNUlib
           - Ordinary code:
 
             ```c++
@@ -1292,7 +1292,7 @@
         - These are non-associative operators
         - `a >= b >= c` is a syntax error
         - Makes Prolog more useful/extensible
-        - Typically present in languages catering to specialities with their own notation
+        - Typically present in languages catering to specialties with their own notation
           - Prolog → NLP
       - Harder to implement, worried about confusing programmers
         - You can overdo language customization
@@ -1851,7 +1851,7 @@
   - Constructed types are defined by the programmer (`char b[7]`, `struct s {...};`, `char *const *p`, etc.)
 - Primitive types have plenty of problems all by themselves
   - Portability issues
-    - What are the set of integer values? It’s machine-dependant
+    - What are the set of integer values? It’s machine-dependent
       - 32-bit 2’s complement integers is most common
       - 16-bit or 36-bit, ones’ complement, signed magnitude, etc. still exist
     - `char` goes from `-128` to `127` if using `GCC`, other compilers may disagree
@@ -1979,7 +1979,7 @@
   - Occurs when you have some part of your program that has many types all at once
   - A function that accepts many forms is polymorphic
     - Many languages are polymorphic in this sense
-    - Lisp : `(+ 3 4)` is based on ints, `(+ 3.0 4)` is based on `int` and `float`
+    - Lisp : `(+ 3 4)` is based on `int`, `(+ 3.0 4)` is based on `int` and `float`
   - 2 major forms of ad hoc polymorphism in conventional languages
     - Overloading
       - Identifying which function to call by examining the types of its arguments (and sometimes the type of the context)
@@ -2036,3 +2036,430 @@
       - Only one copy of the machine code needs to exist, it’ll work on any types of arguments
       - This works because all types smell the same in the language
         - Every object is represented via a 64-bit pointer
+
+## **3/2: Storage Management**
+
+- Storage management
+  - Memory management of activation records last time
+    - Usually on the stack
+  - Stack management is easy: LIFO so you can put it into an array
+    - `sp` tells you how much you're using
+- Heap storage management
+  - Not LIFO - objects can be deallocated "at random"
+  - You can't easily use an array with just an `sp`
+  - There will be gaps in your storage
+- Think of the heap as being in an arena - a big array of memory
+  - We're trying to manage storage within that arena
+  - Sometimes we'll have multiple arenas, but just 1 for now
+- Primitives to manipulate this heap:
+  - `P = malloc(N)` - allocate a new `N`-byte piece of storage
+  - `free(P)` - free the block of storage addressed by `P`
+- Issues that come up when doing heap management
+  - How to keep track of roots - outside-the-heap pointer that points into the heap
+    - Where do roots reside?
+      - Stack (local variable in some stack frame)
+      - Static storage (global or static variables)
+      - Machine registers ("invisible" to programming language, still important in generated code)
+    - Why do we need to know where the roots are?
+      - We have 2 kinds of heap managers:
+        - Explicit `free` is required to free storage
+          - C, C++, Ada, ... (lower-level, more efficient)
+          - The programmer has to help the heap manager to avoid memory leaks
+          - The programmer keeps track of the roots in the program that they write
+            - More efficient if the programmer doesn't make mistakes
+            - Traditional garbage collectors may take a while to run, which will make your program's performance jerky
+        - No `free` operation - heap manager frees storage automatically
+          - These have garbage collectors that do this
+          - The heap manager keeps track of roots
+          - More popular nowadays
+            - Fewer dumb errors that can crash your program
+
+              ```c++
+              p = malloc(100);
+              free(p);
+              p->next = NULL; // ERROR
+              free(p); // ERROR
+              ```
+
+            - Fewer dumb errors that can bloat your program
+
+              ```c++
+              p = malloc(100);
+              p = malloc(200); // not an error, but 100 bytes wasted
+              ```
+
+      - The find the roots question is crucial for garbage collector-based systems
+      - One way (very simple, but can be slow):
+        - Have just 1 root (in static storage in a well-known location)
+          - It points to a big object that contains all of your static variables, plus a pointer to the newest frame in your stack
+      - Another way:
+        - Get help from the compiler
+          - The compiler records where the roots are in a (read-only) data structure that it puts into the program where the garbage collector can see it
+          - This data structure could represent things like this:
+            - "There's a root at location `12345678`"
+            - "If the currently executing function is `F`, then `F`'s frame has a root at offset `28`"
+            - "If the current `ip` is in the range `10000-11000`, then `%rbp` is a root
+      - Other possibilities too
+  - How do you keep track of the free space?
+    - The heap manager needs this to implement `malloc(N)`
+    - A simple solution: maintain a free list
+
+      ```c++
+      struct free {
+        void *freeblock;
+        size_t blocksize;
+        struct free *next;
+      };
+      struct free *freelist
+      ```
+
+      - Create a linked list to represent the free areas
+        - Here's how to allocate:
+
+          ```c++
+          void *malloc(size_t n) {
+            for (struct free **p = &freelist; *p; p=&p->next)
+              if ((*p)->blocksize >= n) {
+                void *result = p;
+                *p = (*p)->next;
+                return result;
+              }
+            return NULL;
+          }
+          ```
+
+        - Here's how to free:
+
+          ```c++
+          void free(void *p) {
+            struct free *f = p;
+            p->m ...
+          }
+          ```
+
+        - Problem: where do we store the free list? In a separate heap somewhere?
+          - No, there's a better place to store the free list
+          - Store the free list objects into the free areas themselves:
+
+            ```c++
+            struct free {
+              size_t blocksize;
+              struct free *next;
+            };
+            struct free *freelist
+            ```
+
+            ```c++
+            void *malloc(size_t n) {
+              // This might take a while if N is large
+              for (struct free **p = &freelist; *p; p=&p->next)
+                if ((*p)->blocksize >= n) {
+                  void *result = p;
+                  *p = (*p)->next;
+                  return result;
+                }
+              return NULL;
+            }
+            ```
+
+            ```c++
+            void free(void *p) {
+              struct free *f = p;
+              f->next = freelist;
+              freelist = f;
+            }
+            ```
+
+          - This sample code is too simple - its performance will be lacking
+            - It wastes storage by allocating a big block even if the user wanted a small one
+              - To fix this: we should split free blocks when the user asks for a small one and we have a big one
+            - We need to coalesce adjacent free blocks
+              - Free list can become more and more fragmented as we free
+              - How can we coalesce adjacent free blocks efficiently?
+                - The obvious algorithm is `O(length of the free list)`, too slow for large systems
+                - The usual approach here, is for the memory manager to keep extra words before and/or after each block, that record the block's size
+                  - These words are not visible to the user
+
+                    ```c++
+                    void free(void *p) {
+                      size_t sp = p;
+                      size_t object_size = sp[-1];
+                      size_t previous_object_size = sp[-2];
+                      ...
+                    }
+                    ```
+
+                  - These extra words are invisible to the programmer, but are crucial for performance
+                  - Has safety downsides for languages that don't support subscript checking
+            - Now, `free` is fast - `O(1)`, but `malloc` is slow - `O(|free list|)`
+              - There's a common problem here: small blocks at the start of the free list
+                - If you start off with large blocks at the start of the free list, and the caller does a lot of `malloc(16)`s, you'll carve out 16 bytes from the first block, until it shrinks to 15 bytes or fewer
+                  - You then do this to the 2nd block and 3rd block and etc.
+                  - You end up with a bunch of small blocks at the start of the free list, so every call to `malloc(16)` will take a long time
+                - One possible solution: make the free list a circular list and use a roving pointer for tour free list pointer
+                  - Each time you call `malloc`, you start with `freelist` being where it was after the most recent `malloc`
+                  - This avoids some of the problem, but not all
+                - Fancier solutions:
+                  - Walk away from the first-fit approach, but use a best-fit approach instead
+                    - This complicates the data structure, need a way to find the best block
+                - The basic issue here is fragmentation
+                  - External fragmentation: you have 1MB of free space all in tiny separated blocks, so `malloc(1000000)` fails even though you have enough space
+                  - Internal fragmentation: user does `malloc(3)`, but you require all allocations to be a multiple of 16 for your data structures
+                  - Want to avoid fragmentation and we also want a good CPU efficiency
+- Traditional garbage collection
+  - Mark and sweep algorithm, 2 phases:
+    - `MARK` - start at the roots and mark every object that the roots point at
+      - Assume that all objects have a spare bit that's initially `0`
+      - Marking turns that bit into a `1`
+      - Then look at all the pointers in all the marked objects, and mark all the objects they point to
+      - Keep doing this as long as you keep finding objects that you haven't marked before
+      - Typically done as a DFS of a "tree", since you don't follow cycles due to the marked bits
+        - Cost: `O(number of objects in use + number of roots)`
+    - `SWEEP` - walk through all the objects in your system
+      - If an object is not marked, free it
+      - Otherwise, clear its mark bit
+    - You can think of `MARK`+`SWEEP` as being 2 subroutines of `malloc`, it calls `SWEEP` right after calling `MARK`
+    - Do this whenever storage gets low
+    - Simple, easy to implement
+    - Can cause `malloc(10)` to take a long time
+      - To overcome this problem:
+        - Do garbage collection in a separate thread
+          - This introduces race conditions
+        - Every `malloc` and `free` call does a bit of `MARK`+`SWEEP`
+          - Real-time garbage collectors do this
+          - Slows down you allocation
+          - Allocation time becomes more predictable
+        - Just live with the problem
+          - Can often be the best if the unstable performance can be tolerated
+        - Use reference counts
+          - Basic idea: the memory manager keeps an extra word with each object
+            - This word counts the number of pointers to that object
+
+              ```python
+              q = "def"
+              p = "abc" # "abc"'s reference count is 1
+              q = p # "abc"'s reference count is increased, "def"'s reference count is decreased
+              ```
+
+            - Whenever a reference count decreases to 0, the memory manager frees the object
+          - This slows down pointer assignment
+            - Python is slow anyways, so who cares?
+          - You don't need a garbage collector's `MARK`+`SWEEP`
+          - The memory manager can reclaim objects exactly when they become garbage
+          - Problem: circular data structures
+
+              ```python
+              p = { "a": 1, "b": 2 } # reference count of the dict is 1
+              p["c"] = p # reference count of the dict is 2
+              p = "def" # reference count of the dict is 1, not 0 --> dict not freed
+              ```
+
+            - Python traditional answer to this:
+              - Don't write programs like that
+                - Avoid circular data structures if you can
+                - If you create a circular data structure, code should explicitly break the cycle before it stops using the data structure
+            - C Python has fixed this by adding a garbage collector as a backup when reference counting leaks
+            - Other Python implementations use garbage collection only
+    - Can you do garbage collection in an application written in C++ or C for reliability's sake?
+      - `free` and `del` induce dangling pointer bugs
+        - We want something like:
+
+          ```c++
+          #define free(p) ((void) 0) // This turns free into a no-op
+          ```
+
+      - We want the memory manager to figure out how to free things, without my advice
+        - This is done in Emacs (C), GCC (C++), Chrome (C++), etc.
+      - Conservative Garbage Collection
+        - C++/C compilers don't tell the memory manager where the roots are
+        - So a memory manager cannot do `MARK`, because root locations are unknown
+        - The basic idea: memory manager knows only where roots might be
+          - Static variables (containing pointers)
+            - This is in a single area, typically not that large, containing both pointers and other data
+          - Stack
+            - This is in a single area, typically not that large, containing both pointers and other data
+          - Machine registers
+            - This is tiny, containing both pointers and other data
+          - The memory manager looks at all words in these 3 areas
+            - If it looks like it could be a pointer into the heap, treat it as if it were a pointer into the heap
+            - Heap addresses tend to be large and unusual integers
+            - Occasionally, this will make an error, but the error is merely a memory leak; it won't crash the program
+            - This finds all pointers, as well as some values that aren't really pointers
+        - This also works on object contents
+        - So you can have a conservative `MARK` algorithm, your `SWEEP` algorithm will run as normal
+- These approaches are popular, but they still have a performance problem
+  - Allocation is still too slow for some users that like to allocate lots of small objects
+    - Classic example is a Scheme program that calls `cons` a lot
+    - `(cons a b)` allocates a 2-word object and it gets called a lot
+    - We can speed this up by using a common trick: specialized allocators for certain common sizes
+      - This works well in C/C++, but it's terrible for Java --> next time
+
+## **3/4: Parameter Passing**
+
+- Finishing up on storage management
+- Generation-based copying garbage collection
+  - Based on generations and copying
+    - Generations - sections of the arena that is the heap
+      - Older generations are allocated long ago and can be treated as relatively stable
+        - There is little garbage here, don't waste time garbage collecting here
+      - Newest generation, called the nursery, has a heap pointer `hp` and a limit pointer `lp`
+        - From `hp` to `lp` is free space
+        - The objects in the nursery are the newest objects
+        - High percentage of garbage here
+      - In terms of pointers that cross generations, they typically point from newer to older
+        - If this assumption is made, we can simply follow our roots to our nursery/newer objects and garbage collect without worrying about dangling pointers
+        - Handle the exceptional case where pointer point backward separately
+          - Should be uncommon --> solution may be complex
+      - Focus the garbage collector on the new area
+      - No free list, space allocated by looking at the nursery --> check if enough space
+        - Allocation is very cheap
+        - If not enough space, we can either garbage collect or allocate a new nursery from the OS
+          - Decision is based on efficiency (time vs. space)
+    - To garbage collect a generation (nursery):
+      - Look at the roots into the nursery
+      - Allocate a new nursery and copy the objects in the order we find them into the new nursery
+        - Has overhead
+  - Cost is only proportional to number of reachable objects
+    - `MARK`+`SWEEP` is proportional to number of total objects
+  - Squishing objects together into similar spots makes better use of caching
+  - You have to update references to moved objects
+    - This includes pointers within the objects themselves
+  - There's a Java-specific problem with this approach: the `finalize` method
+    - `Object` class defines a `finalize` method that's called by the garbage collector whenever it discovers an object to be garbage
+      - This is a hook from the garbage collector into your code to let you free stuff that isn't garbage collector-managed
+      - One of the main advantages of a copying collector is it doesn't need to free objects; this saves CPU time and cache accesses
+        - This means that the copying collector doesn't even know where the freed objects are --> what happens if one of these freed objects has a `finalize` method?
+      - The reason we have `finalize` is because the `MARK`+`SWEEP` garbage collectors of the 1990s made it cheap
+    - Common solution: have 2 garbage collectors
+      - `MARK`+`SWEEP` for the objects that have `finalize`, use a copying collector for everyone else
+- Another problem with allocation (true of `MARK`+`SWEEP` or nursery-based): multithreaded applications
+
+  ```c++
+  static lock_t lock;
+  static char *hp, *lp // global variables, subject to races
+  void *malloc(size_t n) {
+    lock(&lock) // terrible performance, critical section is a bottleneck
+    if (n <= lp - hp) {
+      void *r = hp;
+      hp += n;
+      unlock(&lock);
+      return r;
+    } else expensive(); // this must unlock too
+  }
+  ```
+
+  - Better solution: give each thread its own free list/nursery --> no locks needed
+    - This complicates the garbage collector
+      - Suppose an object in one nursery references an object in another nursery (rare)
+- Object pooling or quick lists - your app maintains its own private free list for objects that it allocates and frees a lot
+  - This can make allocation very fast in the common case where there's a correctly-sized object on the free list
+  - In a copying collector, this approach can slow your program down
+    - The garbage collector sees your free list pointer as a root, carefully copies all the free objects
+      - Slow - we're copying garbage
+    - Allocation from the nursery will be just as fast or faster than allocating from your private free list
+- Parameter Passing
+  - Syntactic issues (what a function call looks like)
+    - How argument values are matched to function parameters
+      - Positional (caller and callee agree about number/order of arguments)
+      - Variable number of arguments?
+        - In Scheme, `(list 3 4 #f)` => `(3 4 #f)`
+          - Defined by `(define list (lambda x x))`
+            - `x` is bound to a list of caller arguments
+        - In C, `#include <stdarg.h>`
+          - Lower-level languages have a harder time with this
+        - In Python, `def make_tuple(*x)`
+          - Arguments passed as a tuple
+      - Keyword correspondence
+
+        ```python
+        def arctan(y, x):
+          ...
+        return arctan(x=27, y=15)
+        ```
+
+        ```python
+        def foo(a, *b, **c): # positional correspondence for a, varargs go into b, keyword args go into c (a dictionary)
+          ...
+        foo(27, 19, "xy", a=19, b="zw") # a = 27, b = 19, c = { "a": 19, "b": "zw" }
+        ```
+
+  - Semantic issues (what does it mean/how does it work?) harder
+    - We want 2 incompatible things here:
+      - Efficiency - function calls are very common, often with large arguments
+      - Clarity - this often wars with efficiency
+    - Call by value - the most common, and it's simple (C, C++, OCaml, Python, Scheme, etc.)
+      - Caller evaluates the argument, gets a value, passes copy to callee
+      - Callee's modifications to its parameter are local to callee
+      - Good isolation between caller and callee
+      - Large objects make this slow --> copy required
+      - Suppose callee doesn't use parameter's value --> caller has done unnecessary work
+    - Call by reference (Fortran, C++ (as an option))
+      - Caller evaluates the argument only to get its address (not its value), passes that address to the callee
+      - Callee always accesses parameter indirectly, through that pointer
+      - Large objects can be passed efficiently
+      - Callee can modify caller's objects (which can simplify API)
+      - Less isolation between caller and callee
+      - Aliasing can be a big problem --> hurts optimization, forces compilers to be cautious
+
+        ```c++
+        int f (int &a, int &b) {
+          a = 1;
+          b = 2;
+          return a + b;     
+        }
+
+        int m;
+        int n = f(m, m); // value overwritten, common optimizations not possible
+        ```
+
+        - Hurts human readers (misunderstanding code or spend a lot of time reading it)
+        - Because of these aliasing problems, there are alternatives that have less aliasing
+    - Call by result (Ada)
+      - Caller doesn't evaluate its argument; just says where it is
+      - Callee must initialize the corresponding parameter
+      - When the callee returns, it copies the parameter's value back to the caller
+      - Classic example: `read` system call of C (C does this by call by value):
+
+        ```c++
+        read(0, buf, sizeof buf); // 2nd argument is call by result --> callee must set buf accordingly
+        ```
+
+        - Difference between C and Ada is the aliasing rules
+          - In C, if 2 variables alias, the compiler must generate slow code that respects the aliasing
+            - It cannot do optimizations that would require the variables be distinct
+          - In Ada, call by result parameter is separate, so no aliasing, so the compiler can optimize better, code is clearer, etc.
+    - Call by value-result (Ada)
+      - Caller passes copy to callee
+      - Callee can modify its copy
+      - When it returns, it passes the copy back
+    - Call by name
+      - Call by name : call by reference :: function : pointers
+      - Basic idea is that caller doesn't evaluate its argument; instead, it passes to the callee a think representing its argument
+        - A thunk is a parameterless procedure that, when you call it, will return the value you're interested in
+      - Whenever the callee needs to know the value of a parameter, it calls the thunk
+      - This avoid unnecessary work if the callee doesn't use the parameter
+
+        ```c++
+        void printSummary(int nitems, int avg) {
+          if (nitems == 0) // Protects the procedure from being called in call by name
+            printf("no items");
+          else
+            printf("%d items, avg is %d\n", nitems, avg);
+        }
+
+        int sum = 0;
+        int n = 0;
+        printSummary(n, sum / n) // This will crash in call by value: division by 0
+        ```
+
+      - Downside: performance
+        - Overhead to building thunks
+        - Bigger deal is that you need a function call on every access to a parameter
+    - Call by need (Haskell)
+      - Like call by name, but you call a thunk at most once and cache its return value
+      - "Lazy evaluation" vs. "Eager evaluation"
+        - Don't evaluate an argument to a function until you actually need it
+        - Big picture: the program never actually does anything, it constantly puts things off in its to-do list
+          - Your code forces it to do something by having it do an action whose result you can see
+          - The system does the minimal amount of work to satisfy your demand
+      - For many functional applications, this can be a win, due to optimization
