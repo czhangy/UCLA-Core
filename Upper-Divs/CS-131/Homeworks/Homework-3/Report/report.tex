@@ -36,7 +36,7 @@
 %
 %   * \section* => \begin{abstract} ... \end{abstract}
 %
-%   * Make template self-contained in terms of bibtex entires, to allow
+%   * Make template self-contained in terms of bibtex entries, to allow
 %     this file to be compiled. (And changing refs style to 'plain'.)
 %
 %   * Make template self-contained in terms of figures, to
@@ -87,7 +87,7 @@
 %don't want date printed
 \date{}
 
-% make title bold and 14 pt font (Latex default is non-bold, 16 pt)
+% make title bold and 14 pt. font (Latex default is non-bold, 16 pt.)
 \title{\Large \bf Homework 3 Report}
 
 \maketitle
@@ -117,7 +117,7 @@ while also analyzing potential performance gains compared to the use of the
 Performance-wise, the problem with \texttt{SynchronizedState} was that of locking.
 As described in Lea's paper, use of \texttt{synchronized} blocks in the program
 results in mutual exclusion of execution. This adds extra overhead to our runtime,
-as threads are requried to process Acquire mode reads and Release mode writes in
+as threads are required to process Acquire mode reads and Release mode writes in
 order to maintain a DRF state. As seen in all tests run on \texttt{SynchronizedState},
 this extra overhead resulted in a worse runtime when compared to single-thread
 execution:
@@ -170,12 +170,12 @@ were to repeat these tests, I would attempt to automate them in some way.
 %-------------------------------------------------------------------------------
 
 \begin{figure}
-  \includegraphics[scale=0.8]{synchronized-06.png}
+  \includegraphics[scale=0.8]{./Assets/synchronized-06.png}
   \caption{\label{fig:vectors} Table of total time results from testing SynchronizedState on lnxsrv06, measured in seconds. }
 \end{figure}
 
 \begin{figure}
-  \includegraphics[scale=0.8]{synchronized-11.png}
+  \includegraphics[scale=0.8]{./Assets/synchronized-11.png}
   \caption{\label{fig:vectors} Table of total time results from testing SynchronizedState on lnxsrv11, measured in seconds. }
 \end{figure}
 
@@ -194,12 +194,12 @@ across different hardware implementations. The results of these test cases
 are pictured above. 
 
 \begin{figure}
-  \includegraphics[scale=0.8]{acmesafe-06.png}
+  \includegraphics[scale=0.8]{./Assets/acmesafe-06.png}
   \caption{\label{fig:vectors} Table of total time results from testing AcmeSafeState on lnxsrv06, measured in seconds. }
 \end{figure}
 
 \begin{figure}
-  \includegraphics[scale=0.8]{acmesafe-11.png}
+  \includegraphics[scale=0.8]{./Assets/acmesafe-11.png}
   \caption{\label{fig:vectors} Table of total time results from testing AcmeSafeState on lnxsrv11, measured in seconds. }
 \end{figure}
 

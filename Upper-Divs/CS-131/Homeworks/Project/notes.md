@@ -76,7 +76,7 @@
   - [X] Implement `WHATSAT` command
   - [X] Perform testing
 - Report in file named `report.pdf`
-  - [ ] Create template
+  - [X] Create template
   - [ ] Address pros and cons
   - [ ] Problems run into
   - [ ] Address Python vs. Java
