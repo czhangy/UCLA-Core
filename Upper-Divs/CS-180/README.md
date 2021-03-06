@@ -1,9 +1,11 @@
 # CS 180 - Introduction to Algorithms and Complexity
+
 # Sarrafzadeh - Fall '20
 
 ## Overall: A | Raw Percentage: 93.3%
 
 ## Grading
+
 | Category | Percentage |
 |:---:|:---:|
 | Homeworks | 25% |
@@ -11,6 +13,7 @@
 | Final | 45% |
 
 ## Homeworks
+
 | # | Score |
 |:---:|:---:|
 | 1 | 50/60 |
@@ -21,6 +24,7 @@
 | 6 | 58/60 |
 
 ## Exams
+
 | Exam | Score |
 |:---:|:---:|
 | Midterm | 93/100 |

@@ -1,4 +1,4 @@
-# COM SCI 1 - Fall '19
+# COM SCI 1 - Fall '19 - UCLA CS Faculty
 
 ## **9/27: Quantum Computing**
 
@@ -30,7 +30,7 @@
 - Misc.
   - John von Neumann, Richard Feynman, Einstein
   - Merging of quantum computing and machine learning
-  - Superposition: Idea that a computer can be in more than one state at the same time, both `|1>` and `|0>`, Ex) can put many different inputs and - compute all of it at the same time to one output bitstring
+  - Superposition: Idea that a computer can be in more than one state at the same time, both `|1>` and `|0>`, Ex) can put many different inputs and - compute all of it at the same time to one output bit-string
   - Entanglement: If we know something about one qubit, then we know something about every other qubit (gloves), doesn’t break relativity: no transfer of information
   - Motivations to simulate quantum chemistry, solve optimization, requires large enough problems to overwhelm classic computers (~3000 perfect qubits required for quantum advantage), factor large numbers, solve NP problems
   - Languages of pyQuil, Q# (Microsoft)
@@ -368,7 +368,7 @@
   - Mathematics
     - Especially geometry, linear algebra, applied math, numerical methods
   - Programming and software development
-    - Especially C/C++, OpenGL, Javascript
+    - Especially C/C++, OpenGL, JavaScript
   - Creativity and an appreciation of Art + Science + Engineering
   - Core computer graphics subjects
     - Rendering - synthesizing images from mathematical representations
@@ -400,7 +400,7 @@
 - Ideology Detection via Single Type of Links
   - Assumptions
     - People tend to follow, mention, or retweet others who share similar ideology score
-    - One’s true idology score is different from one’s public image ideology score
+    - One’s true ideology score is different from one’s public image ideology score
 - Objective Function
   - Maximize the likelihood of observed positive links and sample negative links
   - Maximize the weighted sum of the likelihood function for each link type
@@ -557,7 +557,7 @@
   - Replicated state machine: run copies of same state machine across many servers
     - Challenge: doing this efficiently
 - Video
-  - Youtube:
+  - YouTube:
     - Goal: high quality, no rebuffering, smoothness
     - Challenges: variable/unpredictable network, conflicting QoE goals
     - Solution: dynamically pick chunk qualities based on QoE metric and network prediction

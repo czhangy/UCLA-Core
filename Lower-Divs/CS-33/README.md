@@ -1,9 +1,11 @@
 # CS 33 - Introduction to Computer Organization
+
 # Reinman - Spring '20
 
 ## Overall: A+ | Raw Percentage: 99.9%
 
 ## Grading
+
 | Category | Percentage |
 |:---:|:---:|
 | Homeworks | 5% |
@@ -11,6 +13,7 @@
 | Exams | 55% |
 
 ## Homeworks
+
 | # | Score |
 |:---:|:---:|
 | 1 | 1/1 |
@@ -20,6 +23,7 @@
 | 5 | 1/1 |
 
 ## Labs
+
 | Name | Score |
 |:---|:---:|
 | Warmup Lab | 1/1 |
@@ -29,6 +33,7 @@
 | Parallel Lab (Dropped) | 25/100 |
 
 ## Exams
+
 | Exam | Score |
 |:---:|:---:|
 | Midterm | 100/100 |

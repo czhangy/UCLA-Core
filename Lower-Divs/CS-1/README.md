@@ -1,9 +1,11 @@
 # CS 1 - Freshman Computer Science Seminar
+
 # UCLA CS Faculty - Fall '19
 
 ## Overall: A | Raw Percentage: 97.0%
 
 ## Grading
+
 | Category | Percentage |
 |:---:|:---:|
 | Quizzes | 60% |
@@ -11,6 +13,7 @@
 | Essay | 30% |
 
 ## Quizzes
+
 | # | Score |
 |:---|:---:|
 | 1 | 5/5 |
@@ -24,6 +27,7 @@
 | 9 | 5/5 |
 
 ## Essay
+
 | Topic | Score |
 |:---:|:---:|
 | Virtual Reality | 100/100 |

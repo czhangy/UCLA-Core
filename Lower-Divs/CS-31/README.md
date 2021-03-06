@@ -1,9 +1,11 @@
 # CS 31 - Introduction to Computer Science I
+
 # Smallberg - Fall '19
 
 ## Overall: A- | Raw Percentage: 89.7%
 
 ## Grading
+
 | Category | Percentage |
 |:---:|:---:|
 | Projects | 40% |
@@ -11,6 +13,7 @@
 | Final | 35% |
 
 ## Projects
+
 | Name | Score |
 |:---|:---:|
 | 1. Getting Started with C++ | 100/100 |
@@ -22,6 +25,7 @@
 | 7. Bad Blood | 88/100 |
 
 ## Exams
+
 | Exam | Score |
 |:---:|:---:|
 | Midterm | 95/100 |

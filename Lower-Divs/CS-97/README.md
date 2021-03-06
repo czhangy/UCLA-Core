@@ -1,9 +1,11 @@
 # CS 97 - Software Construction Projects
+
 # Eggert - Fall '20
 
 ## Overall: P | Raw Percentage: 84.7%
 
 ## Grading
+
 | Category | Percentage |
 |:---:|:---:|
 | Homeworks | 24% |
@@ -13,6 +15,7 @@
 | Project | 35% |
 
 ## Homeworks
+
 | Name | Score |
 |:---|:---:|
 | 1. Editing and Scripting (Emacs) | 95/100 |
@@ -24,6 +27,7 @@
 | Project: BruinByte | 90/100 |
 
 ## Exams
+
 | Exam | Score |
 |:---:|:---:|
 | Midterm | 57/100 |

@@ -63,7 +63,7 @@
   - Integer total = `price + fees`
 - Higher-level language
   - A program is compiled by the compiler
-- C - 1971, C++ - 1979/1980, Objective-C - kept alive by Apple, Java, C# - based on Java, Microsoft, Swift - Apple, Python, Perl, Ruby, Javascript
+- C - 1971, C++ - 1979/1980, Objective-C - kept alive by Apple, Java, C# - based on Java, Microsoft, Swift - Apple, Python, Perl, Ruby, JavaScript
 - C++ - designed by Bjarne Stroustrup in ~1980, widespread in 1985
   - Standardization efforts start, released C++ standard in 1998 by ISO (C++98)
   - 2011- revision of C++ Standard (C++11)
@@ -148,7 +148,7 @@ int main() {
 - `14 / 5.0 = 2.8`
   - If any operand is a `double`, the result will be a `double`
 - `14 / 5 = 2`
-  - If all operands are int, the result will be an int, cuts off the decimal
+  - If all operands are `int`, the result will be an `int`, cuts off the decimal
 - `14 % 5 → 4` (mod), same precedence as multiplication/division
 
 ```c++
@@ -558,15 +558,15 @@ cout << "The number of E's (upper and lowercase) is " << numberOfEs << endl;
 
 - Characters use single-quotes
 - Characters left alone in `and`/`or` statements will always evaluate as `true`
-- `string s = "Hello";` - s is a string; "Hello" is a string literal
-- `char ch = s[1];` - ch is a char, initialized to a lowercase 'e', 'E' is a character constant
+- `string s = "Hello";` - `s` is a `string`; `"Hello"` is a string literal
+- `char ch = s[1];` - `ch` is a `char`, initialized to a lowercase `'e'`, `'E'` is a character constant
 - `'\t'` = tab, `'\n'` = newline
 - Characters are not strings, strings are not characters
   - `char c = 'A';` - ok
   - `char c = "A";` - will not compile
   - `string s = "A";` - ok
   - `string s = 'A';` - will not compile
-- `#include <cctype>` - declares `isdigit`, `isalpha`, etc
+- `#include <cctype>` - declares `isdigit`, `isalpha`, etc.
   - `isdigit(character)` tests `true` for the 10 digit characters
   - `islower(character)` tests `true` for lowercase letters
   - `isupper(character)` tests `true` for uppercase letters

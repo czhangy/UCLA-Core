@@ -1,9 +1,11 @@
 # CS 32 - Introduction to Computer Science II
+
 # Smallberg - Winter '20
 
 ## Overall: A | Raw Percentage: 91.5%
 
 ## Grading
+
 | Category | Percentage |
 |:---:|:---:|
 | Project 1 | 1% |
@@ -13,6 +15,7 @@
 | Final | 30% |
 
 ## Projects
+
 | Name | Score |
 |:---|:---:|
 | 1. Bad Blood | 75/100 |
@@ -21,6 +24,7 @@
 | 4. GooberEats | 76/100 |
 
 ## Homeworks
+
 | # | Score |
 |:---|:---:|
 | 1 | 99/100 |
@@ -30,6 +34,7 @@
 | 5 | 100/100 |
 
 ## Exams
+
 | Exam | Score |
 |:---:|:---:|
 | Midterm 1 | 27/35 |

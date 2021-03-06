@@ -1,14 +1,17 @@
 # CS M51A - Logic Design of Digital Systems
+
 # Abari - Winter '21
 
 ## Overall: IP | Raw Percentage: IP
 
 ## Grading
+
 | Category | Percentage |
 |:---:|:---:|
 | Homeworks | 100% |
 
 ## Homeworks
+
 | # | Score |
 |:---:|:---:|
 | 1 | 78/80 |
