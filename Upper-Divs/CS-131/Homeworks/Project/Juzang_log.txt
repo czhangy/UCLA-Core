@@ -1,0 +1,25 @@
+INFO:root: 2021-03-04 17:54:55.140398: Juzang constructed
+INFO:root: 2021-03-04 17:54:55.141246: Juzang initialized
+INFO:root: 2021-03-04 17:55:04.383427: Juzang received command: "AT Riley +700175.4618759155 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-04 17:55:04.383654: Received "AT Riley +700175.4618759155 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997" from Riley
+INFO:root: 2021-03-04 17:55:04.384412: Juzang propagated "AT Riley +700175.4618759155 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997" to Riley
+INFO:root: 2021-03-04 17:55:04.384704: Juzang closed connection to Riley
+INFO:root: 2021-03-04 17:55:04.385154: Juzang failed to connect to Campbell
+INFO:root: 2021-03-04 17:55:04.385699: Juzang failed to connect to Bernard
+INFO:root: 2021-03-04 17:55:04.385801: Juzang replied with: "AT Riley +700175.4618759155 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-04 17:55:04.385905: Client disconnected
+INFO:root: 2021-03-04 17:55:19.178606: Juzang received command: "AT Riley +700190.2580680847 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-04 17:55:19.178780: Propagation from Riley already received
+INFO:root: 2021-03-04 17:55:19.178872: Client disconnected
+INFO:root: 2021-03-04 17:55:40.314305: Juzang received command: "IAMAT kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-04 17:55:40.315598: Juzang propagated "AT Juzang +700211.3956000805 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997" to Riley
+INFO:root: 2021-03-04 17:55:40.316143: Juzang closed connection to Riley
+INFO:root: 2021-03-04 17:55:40.316931: Juzang failed to connect to Campbell
+INFO:root: 2021-03-04 17:55:40.317424: Juzang failed to connect to Bernard
+INFO:root: 2021-03-04 17:55:40.317520: Juzang replied with: "AT Juzang +700211.3956000805 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-04 17:56:00.434664: Juzang received command: "IAMAT kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-04 17:56:00.435758: Juzang propagated "AT Juzang +700231.5159471035 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997" to Riley
+INFO:root: 2021-03-04 17:56:00.436222: Juzang closed connection to Riley
+INFO:root: 2021-03-04 17:56:00.437206: Juzang failed to connect to Campbell
+INFO:root: 2021-03-04 17:56:00.437729: Juzang failed to connect to Bernard
+INFO:root: 2021-03-04 17:56:00.437828: Juzang replied with: "AT Juzang +700231.5159471035 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
