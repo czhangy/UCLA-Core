@@ -27,7 +27,7 @@ server_comms = {"Riley": ["Jaquez", "Juzang"],
                 "Bernard": ["Jaquez", "Juzang", "Campbell"]}
 
 # API Key
-KEY = # Insert API key here
+KEY = 1 # Insert API key here
 
 # Server Class
 class Server:
@@ -244,7 +244,7 @@ def main():
         sys.exit()
     else:
         # Init logs
-        logging.basicConfig(filename=f'./Logs/{args.server_name}_log.txt', level=logging.INFO)
+        logging.basicConfig(filename=f'./{args.server_name}_log.txt', level=logging.INFO)
         # Init server using name, corresponding port, and local IP
         s = Server(args.server_name, server_ports[args.server_name], '127.0.0.1')
         try:

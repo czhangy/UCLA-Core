@@ -1,0 +1,238 @@
+INFO:root: 2021-03-05 18:25:12.114519: Riley constructed
+INFO:root: 2021-03-05 18:25:12.115310: Riley initialized
+INFO:root: 2021-03-05 18:25:30.806712: Riley received command: "IAMAT kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-05 18:25:30.807542: Riley propagated "AT Riley +788401.8879563808 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997" to Jaquez
+INFO:root: 2021-03-05 18:25:30.807984: Riley closed connection to Jaquez
+INFO:root: 2021-03-05 18:25:30.808525: Riley propagated "AT Riley +788401.8879563808 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997" to Juzang
+INFO:root: 2021-03-05 18:25:30.808915: Riley closed connection to Juzang
+INFO:root: 2021-03-05 18:25:30.809007: Riley replied with: "AT Riley +788401.8879563808 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-05 18:25:36.761504: Riley received command: "WHATSAT kiwi.cs.ucla.edu 10 1"
+INFO:root: 2021-03-05 18:25:36.761870: Riley accessing API for location +34.068930,-118.445127
+INFO:root: 2021-03-05 18:25:36.980518: Riley retrieved data for location +34.068930,-118.445127 from API
+INFO:root: 2021-03-05 18:25:36.981220: Riley replied with: "AT Riley +788401.8879563808 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997
+{
+    "html_attributions": [],
+    "results": [
+        {
+            "geometry": {
+                "location": {
+                    "lat": 34.06888734586305,
+                    "lng": -118.4450168552283
+                },
+                "viewport": {
+                    "northeast": {
+                        "lat": 34.0702312302915,
+                        "lng": -118.4436835197085
+                    },
+                    "southwest": {
+                        "lat": 34.0675332697085,
+                        "lng": -118.4463814802915
+                    }
+                }
+            },
+            "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/geocode-71.png",
+            "name": "Westwood Plaza",
+            "place_id": "ChIJ6Re7qYi8woAR22jVhVAye2M",
+            "reference": "ChIJ6Re7qYi8woAR22jVhVAye2M",
+            "scope": "GOOGLE",
+            "types": [
+                "route"
+            ],
+            "vicinity": "Los Angeles"
+        }
+    ],
+    "status": "OK"
+}
+
+"
+INFO:root: 2021-03-05 18:33:44.002946: Riley received command: "                      IAMAT kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-05 18:33:44.003926: Riley propagated "AT Riley +788895.0842347145 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997" to Jaquez
+INFO:root: 2021-03-05 18:33:44.004495: Riley closed connection to Jaquez
+INFO:root: 2021-03-05 18:33:44.005084: Riley propagated "AT Riley +788895.0842347145 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997" to Juzang
+INFO:root: 2021-03-05 18:33:44.005308: Riley closed connection to Juzang
+INFO:root: 2021-03-05 18:33:44.005409: Riley replied with: "AT Riley +788895.0842347145 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-05 18:34:05.545495: Riley received command: "IAMAT kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-05 18:34:05.546401: Riley propagated "AT Riley +788916.6267910004 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997" to Jaquez
+INFO:root: 2021-03-05 18:34:05.547307: Riley closed connection to Jaquez
+INFO:root: 2021-03-05 18:34:05.547918: Riley propagated "AT Riley +788916.6267910004 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997" to Juzang
+INFO:root: 2021-03-05 18:34:05.548129: Riley closed connection to Juzang
+INFO:root: 2021-03-05 18:34:05.548239: Riley replied with: "AT Riley +788916.6267910004 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-05 18:34:51.938267: Riley received command: "hi"
+INFO:root: 2021-03-05 18:34:51.938495: Riley replied with: "? hi"
+INFO:root: 2021-03-05 18:57:00.951113: Riley received command: ""
+INFO:root: 2021-03-05 18:57:00.951357: Client disconnected
+INFO:root: 2021-03-06 14:27:29.186232: Riley constructed
+INFO:root: 2021-03-06 14:27:29.187092: Riley initialized
+INFO:root: 2021-03-06 14:28:09.806615: Riley received command: "IAMAT kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-06 14:28:09.807727: Riley failed to connect to Jaquez
+INFO:root: 2021-03-06 14:28:09.808080: Riley failed to connect to Juzang
+INFO:root: 2021-03-06 14:28:09.808165: Riley replied with: "AT Riley +860560.8882865906 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-06 17:56:18.795571: Riley constructed
+INFO:root: 2021-03-06 17:56:18.796325: Riley initialized
+INFO:root: 2021-03-06 17:57:15.076371: Riley received command: "IAMAT kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-06 17:57:15.077250: Riley propagated "AT Riley +873106.1576054096 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997" to Jaquez
+INFO:root: 2021-03-06 17:57:15.077726: Riley closed connection to Jaquez
+INFO:root: 2021-03-06 17:57:15.078260: Riley propagated "AT Riley +873106.1576054096 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997" to Juzang
+INFO:root: 2021-03-06 17:57:15.078669: Riley closed connection to Juzang
+INFO:root: 2021-03-06 17:57:15.078757: Riley replied with: "AT Riley +873106.1576054096 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-06 17:57:15.079543: Riley received command: "AT Riley +873106.1576054096 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-06 17:57:15.079660: Message from Riley already received
+INFO:root: 2021-03-06 17:57:15.079750: Client disconnected
+INFO:root: 2021-03-06 17:57:15.080079: Riley received command: "AT Riley +873106.1576054096 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-06 17:57:15.080183: Message from Riley already received
+INFO:root: 2021-03-06 17:57:15.080263: Client disconnected
+INFO:root: 2021-03-06 17:57:39.901131: Riley received command: "WHATSAT kiwi.cs.ucla.edu 10 5"
+INFO:root: 2021-03-06 17:57:39.901897: Riley accessing API for location +34.068930,-118.445127
+INFO:root: 2021-03-06 17:57:40.077083: Riley retrieved data for location +34.068930,-118.445127 from API
+INFO:root: 2021-03-06 17:57:40.077474: Riley replied with: "AT Riley +873106.1576054096 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997
+{
+   "html_attributions" : [],
+   "results" : [
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 34.06888734586305,
+               "lng" : -118.4450168552283
+            },
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 34.0702312302915,
+                  "lng" : -118.4436835197085
+               },
+               "southwest" : {
+                  "lat" : 34.0675332697085,
+                  "lng" : -118.4463814802915
+               }
+            }
+         },
+         "icon" : "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/geocode-71.png",
+         "name" : "Westwood Plaza",
+         "place_id" : "ChIJ6Re7qYi8woAR22jVhVAye2M",
+         "reference" : "ChIJ6Re7qYi8woAR22jVhVAye2M",
+         "scope" : "GOOGLE",
+         "types" : [ "route" ],
+         "vicinity" : "Los Angeles"
+      },
+      {
+         "business_status" : "OPERATIONAL",
+         "geometry" : {
+            "location" : {
+               "lat" : 34.068921,
+               "lng" : -118.4451811
+            },
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 34.0828575,
+                  "lng" : -118.42990995
+               },
+               "southwest" : {
+                  "lat" : 34.0575047,
+                  "lng" : -118.46313815
+               }
+            }
+         },
+         "icon" : "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/school-71.png",
+         "name" : "University of California, Los Angeles",
+         "photos" : [
+            {
+               "height" : 2875,
+               "html_attributions" : [
+                  "\u003ca href=\"https://maps.google.com/maps/contrib/115979970008848604123\"\u003eAlana Calvin\u003c/a\u003e"
+               ],
+               "photo_reference" : "ATtYBwJa92zOS08aJ6pI7AS0zf00twyAoY-TBa6XBKNKVss5DKGBoW6C73I7xeKtaqAA_LYvboMTPSyGLjQ9B4JS69abJX4AgWqzww2Z07Vxqh-XaGBg2yb5v1-UL7vrQIvWh9VXbomrDCFYxisCMs0xF-k4NL5bEpQyEB8c1UgFKvnFEEJa",
+               "width" : 4791
+            }
+         ],
+         "place_id" : "ChIJZQ9c8IW8woARN0gTXFiTqSU",
+         "plus_code" : {
+            "compound_code" : "3H93+HW Los Angeles, CA, USA",
+            "global_code" : "85633H93+HW"
+         },
+         "rating" : 4.5,
+         "reference" : "ChIJZQ9c8IW8woARN0gTXFiTqSU",
+         "scope" : "GOOGLE",
+         "types" : [ "university", "point_of_interest", "establishment" ],
+         "user_ratings_total" : 1855,
+         "vicinity" : "Los Angeles"
+      },
+      {
+         "geometry" : {
+            "location" : {
+               "lat" : 34.0522342,
+               "lng" : -118.2436849
+            },
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 34.33730608759191,
+                  "lng" : -118.155289077463
+               },
+               "southwest" : {
+                  "lat" : 33.70365193147634,
+                  "lng" : -118.6681759484859
+               }
+            }
+         },
+         "icon" : "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/geocode-71.png",
+         "name" : "Los Angeles",
+         "photos" : [
+            {
+               "height" : 800,
+               "html_attributions" : [
+                  "\u003ca href=\"https://maps.google.com/maps/contrib/101789704485468713638\"\u003ePrabhakar rokaya\u003c/a\u003e"
+               ],
+               "photo_reference" : "ATtYBwLt7x6cxRSTXDJCX0pLNZqC0bawty_3BwWZJoVZ8bR4HZqE46OaX8B9gunDS92minArk1hTgF9D0gjOyYbluBnKaewjCQUb86NJm-PvvnJ-_rJqLxd3KNnA0Vaao1tu7vPaH1FdIKYgDHqbcopUF09GLtF5rT8Qpj5Re3DP5l_XMWEn",
+               "width" : 1440
+            }
+         ],
+         "place_id" : "ChIJE9on3F3HwoAR9AhGJW_fL-I",
+         "reference" : "ChIJE9on3F3HwoAR9AhGJW_fL-I",
+         "scope" : "GOOGLE",
+         "types" : [ "locality", "political" ],
+         "vicinity" : "Los Angeles"
+      }
+   ],
+   "status" : "OK"
+}
+
+"
+INFO:root: 2021-03-06 17:57:51.315670: Riley received command: "WHATSAT kiwi.cs.ucla.edu 10 1"
+INFO:root: 2021-03-06 17:57:51.316406: Riley accessing API for location +34.068930,-118.445127
+INFO:root: 2021-03-06 17:57:51.439740: Riley retrieved data for location +34.068930,-118.445127 from API
+INFO:root: 2021-03-06 17:57:51.440557: Riley replied with: "AT Riley +873106.1576054096 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997
+{
+    "html_attributions": [],
+    "results": [
+        {
+            "geometry": {
+                "location": {
+                    "lat": 34.06888734586305,
+                    "lng": -118.4450168552283
+                },
+                "viewport": {
+                    "northeast": {
+                        "lat": 34.0702312302915,
+                        "lng": -118.4436835197085
+                    },
+                    "southwest": {
+                        "lat": 34.0675332697085,
+                        "lng": -118.4463814802915
+                    }
+                }
+            },
+            "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/geocode-71.png",
+            "name": "Westwood Plaza",
+            "place_id": "ChIJ6Re7qYi8woAR22jVhVAye2M",
+            "reference": "ChIJ6Re7qYi8woAR22jVhVAye2M",
+            "scope": "GOOGLE",
+            "types": [
+                "route"
+            ],
+            "vicinity": "Los Angeles"
+        }
+    ],
+    "status": "OK"
+}
+
+"
+INFO:root: 2021-03-06 17:58:00.110642: Riley received command: ""
+INFO:root: 2021-03-06 17:58:00.111147: Client disconnected

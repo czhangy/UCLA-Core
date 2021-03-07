@@ -1,0 +1,40 @@
+INFO:root: 2021-03-05 18:03:36.273223: Campbell constructed
+INFO:root: 2021-03-05 18:03:36.273993: Campbell initialized
+INFO:root: 2021-03-05 18:04:03.589797: Campbell received command: "AT Riley +787114.6661486626 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-05 18:04:03.590055: Received "AT Riley +787114.6661486626 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997" from Riley
+INFO:root: 2021-03-05 18:04:03.590957: Campbell propagated "AT Riley +787114.6661486626 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997" to Juzang
+INFO:root: 2021-03-05 18:04:03.591383: Campbell closed connection to Juzang
+INFO:root: 2021-03-05 18:04:03.592618: Campbell propagated "AT Riley +787114.6661486626 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997" to Bernard
+INFO:root: 2021-03-05 18:04:03.592854: Campbell received command: "AT Riley +787114.6661486626 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-05 18:04:03.593019: Received "AT Riley +787114.6661486626 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997" from Riley
+INFO:root: 2021-03-05 18:04:03.593587: Campbell closed connection to Bernard
+INFO:root: 2021-03-05 18:04:03.593750: Campbell replied with: "AT Riley +787114.6661486626 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-05 18:04:03.593942: Client disconnected
+INFO:root: 2021-03-05 18:04:03.594507: Campbell propagated "AT Riley +787114.6661486626 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997" to Juzang
+INFO:root: 2021-03-05 18:04:03.594937: Campbell closed connection to Juzang
+INFO:root: 2021-03-05 18:04:03.596146: Campbell propagated "AT Riley +787114.6661486626 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997" to Bernard
+INFO:root: 2021-03-05 18:04:03.596307: Campbell received command: "AT Riley +787114.6661486626 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-05 18:04:03.596414: Propagation from Riley already received
+INFO:root: 2021-03-05 18:04:03.596495: Client disconnected
+INFO:root: 2021-03-05 18:04:03.596763: Campbell closed connection to Bernard
+INFO:root: 2021-03-05 18:04:03.596857: Campbell replied with: "AT Riley +787114.6661486626 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-05 18:04:03.596988: Client disconnected
+INFO:root: 2021-03-06 17:56:41.175476: Campbell constructed
+INFO:root: 2021-03-06 17:56:41.176340: Campbell initialized
+INFO:root: 2021-03-06 17:57:15.080766: Campbell received command: "AT Riley +873106.1576054096 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-06 17:57:15.080973: Received "AT Riley +873106.1576054096 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997" from Riley
+INFO:root: 2021-03-06 17:57:15.081592: Campbell propagated "AT Riley +873106.1576054096 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997" to Juzang
+INFO:root: 2021-03-06 17:57:15.081935: Campbell closed connection to Juzang
+INFO:root: 2021-03-06 17:57:15.082951: Campbell propagated "AT Riley +873106.1576054096 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997" to Bernard
+INFO:root: 2021-03-06 17:57:15.083217: Campbell closed connection to Bernard
+INFO:root: 2021-03-06 17:57:15.083304: Campbell replied with: "AT Riley +873106.1576054096 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-06 17:57:15.083452: Client disconnected
+INFO:root: 2021-03-06 17:57:15.084991: Campbell received command: "AT Riley +873106.1576054096 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-06 17:57:15.085573: Message from Riley already received
+INFO:root: 2021-03-06 17:57:15.085670: Client disconnected
+INFO:root: 2021-03-06 17:57:15.088128: Campbell received command: "AT Riley +873106.1576054096 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-06 17:57:15.088455: Message from Riley already received
+INFO:root: 2021-03-06 17:57:15.088538: Client disconnected
+INFO:root: 2021-03-06 17:57:15.089574: Campbell received command: "AT Riley +873106.1576054096 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-06 17:57:15.089699: Message from Riley already received
+INFO:root: 2021-03-06 17:57:15.089783: Client disconnected
