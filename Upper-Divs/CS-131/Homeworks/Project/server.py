@@ -27,7 +27,7 @@ server_comms = {"Riley": ["Jaquez", "Juzang"],
                 "Bernard": ["Jaquez", "Juzang", "Campbell"]}
 
 # API Key
-KEY = # Insert API key here
+KEY = 1 # Insert API key here
 
 # Server Class
 class Server:
