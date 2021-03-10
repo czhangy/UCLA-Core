@@ -1,5 +1,9 @@
 # COM SCI 180 - Fall '20 - Sarrafzadeh
 
+
+
+[TOC]
+
 ## **Lecture 1: The Famous Problem**
 
 - Precision required in the design and understanding of the algorithm
@@ -89,7 +93,7 @@
     - If there exists a man without a match, he will propose to the highest rank remaining in his list
       - The order that these men are iterated through doesn't affect the success of the algorithm → it's arbitrary
 
-## **Discussion 1**
+## **Discussion 1: Famous Problem and Gale-Shapely**
 
 - Von Neumann architecture
   - CPU and memory share a bus → connection between CPU and memory costs us a unit of time
@@ -221,7 +225,7 @@
   - Repeat until all nodes have been checked
   - Can look at as a FIFO queue
 
-## **Discussion 2**
+## **Discussion 2: Interval Scheduling and BSTs**
 
 - Interval scheduling runtime → `O(n log n)` time due to sorting of intervals
 - Binary Search Tree
@@ -438,6 +442,7 @@
 - Grouping of elements that have some similar characteristic
 - Represent elements as nodes, similarities as weighted edges → small weight = more similar
 - Come up with a clustering that maximizes the minimum pairwise distance between 2 clusters → objective function
+  
   - Given a weighted graph `G` and number `K`, find `K` clusters abiding by the objective function
 - Clustering algorithm is very similar to Kruskal's → stop when `k` clusters are visible
   - Algorithm generates a bunch of clusters, `C_1, ... , C_k`

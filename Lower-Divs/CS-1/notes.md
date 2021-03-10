@@ -1,6 +1,10 @@
 # COM SCI 1 - Fall '19 - UCLA CS Faculty
 
-## **9/27: Quantum Computing**
+
+
+[TOC]
+
+## **Lecture 1: Quantum Computing**
 
 - Hardware improving, i.e. Google in Santa Barbara
   - Google, Intel, IBM: largest players
@@ -36,7 +40,7 @@
   - Languages of pyQuil, Q# (Microsoft)
   - 788 qualified people in quantum computing, needed in the industry
 
-## **10/4: Network Algorithmics**
+## **Lecture 2: Network Algorithmics**
 
 - Algorithmics to speed abstractions in all systems
   - Ex. 1) Virtual Memory
@@ -110,7 +114,7 @@
     - All problems (switching, lookups, ACLs, scheduling) had reasonable hardware
     - New algorithmics problems after 2000 in measurement and security and flexible routers
 
-## **10/11: Natural Language Processing**
+## **Lecture 3: Natural Language Processing**
 
 - Information extraction - unstructured text to database entries
   - Processing social media, archives, medical records, reviews, stocks, medicine, etc.
@@ -129,7 +133,7 @@
 - Machine Learning - Input → Label space, identify the association between labels
 - Prerequisites - Linear algebra, calculus, probability, programming skills, algorithm/data structure, Intro to ML, NLP
 
-## **10/18: Computer Architecture for Machine Learning**
+## **Lecture 4: Computer Architecture for Machine Learning**
 
 - What is architecture?
   - You can have a computer without having an architecture
@@ -189,7 +193,7 @@
   - Traditional Von Neumann ISA and general purpose computers hard to improve
   - Further co-design across devices, architectures, and algorithms
 
-## **10/25: Challenges in Deep Learning**
+## **Lecture 5: Challenges in Deep Learning**
 
 - Prediction error by 2015 outperforms humans in ideal conditions
 - Input → decision rule → output
@@ -265,7 +269,7 @@
   - Similar problem: domain shift, Ex) self-driving cars w/ weather and environment, medical data w/ different race/sensors
 - Model interpretability
 
-## **11/1: Computer Graphics and Vision**
+## **Lecture 6: Computer Graphics and Vision**
 
 - Graphics and Vision: A Unified View
   - This major field is about computers and images
@@ -376,7 +380,7 @@
     - Animation - kinematics, dynamics, motion control
     - Interactive techniques - human-computer interaction, GUIs, games, etc.
 
-## **11/8: Data Mining and Social Science**
+## **Lecture 7: Data Mining and Social Science**
 
 - Existing Work
   - 1-D ideal point model
@@ -428,7 +432,7 @@
     - Ideology detection for Twitter users via heterogeneous network mining
     - The co-evolution model that can explain and predict the dynamics
 
-## **11/15: Robotic Space Exploration**
+## **Lecture 8: Robotic Space Exploration**
 
 - JPL aims to:
   - Understand how the Earth works and how its changing
@@ -449,7 +453,7 @@
 - Small satellites are a growing component of space exploration
 - MarCO - first interplanetary CubeSat mission
 
-## **11/22: Distributed Web and Mobile Systems**
+## **Lecture 9: Distributed Web and Mobile Systems**
 
 - What is a Distributed System?
   - Multiple interconnected computers that cooperate to provide some service

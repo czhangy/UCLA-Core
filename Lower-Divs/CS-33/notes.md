@@ -1,5 +1,9 @@
 # COM SCI 33 - Spring '20 - Reinman
 
+
+
+[TOC]
+
 ## Lecture 1: Bits and Bytes
 
 - Pre-processor -> compiler -> assembler -> linker
@@ -17,15 +21,15 @@
 - Encoding integers
 
   - Unsigned:
-    $$
+    - $$
     B2U(x) = \sum^w_{i=0}x_i\cdot2^i
     $$
   - Two's Complement:
-    $$
+    - $$
     -x_{w-1}\cdot 2^{w-1}+\sum^w_{i=0}x_i\cdot 2^i
     $$
 
-    - Most significant bit indicates sign
+      - Most significant bit indicates sign
 
   - | Binary | Unsigned | Two's Complement |
     | :----: | :------: | :--------------: |
@@ -159,15 +163,15 @@
 
   - Ex)
 
-    ```c++
-    if (x < y)
-        return x - y;
-    else
-        return y - x;
-    ```
+    - ```c++
+      if (x < y)
+          return x - y;
+      else
+          return y - x;
+      ```
 
-    - Writes both results into registers before evaluating condition
-    - Decides which to return based on condition
+      - Writes both results into registers before evaluating condition
+      - Decides which to return based on condition
 
   - Compiler stores alternatives that will be performed to be returned/selected later
 

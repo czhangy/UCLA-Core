@@ -1,6 +1,10 @@
 # COM SCI 97 - Fall '20 - Eggert
 
-## **10/2: Discussion 1**
+
+
+[TOC]
+
+## **Discussion 1: Intro to Emacs**
 
 - `export` is used to set an environmental variable
   - Can be used to prepend to a `PATH`
@@ -29,7 +33,7 @@
   - A shell is a UI that allows access to an OS's services
   - Common Unix Shells: Bash, zsh, sh, csh
 
-## **10/6: The Command Line**
+## **Lecture 1: The Command Line**
 
 - C++: objects working with operations
   - C++ programs operate in a process
@@ -102,7 +106,7 @@
   - For metainformation
   - When your file has the wrong name
 
-## **10/8: REPL**
+## **Lecture 2: REPL**
 
 - Emacs and the shell are both instances of the same pattern
   - The Read-Eval-Print loop pattern
@@ -173,7 +177,7 @@
         - Don't begin with `/`
         - Meaning depends on the current working directory
 
-## **10/13: Scripting**
+## **Lecture 3: Scripting**
 
 - Client-server application:
   - Several different ways to hook small parts of an app into larger ones
@@ -282,7 +286,7 @@
 - A major problem in software construction is configuration
   - If you configure, say, SAP wrong, LAUSD won't be able to pay its employees
 
-## **10/15: Scripting Continued**
+## **Lecture 4: Scripting Continued**
 
 - Scripting is just programming - but it's also a way to think about gluing together large programs out of small ones
   - Maybe the script is at the top level
@@ -302,27 +306,27 @@
   - It's a full-fledged language - lots of stuff in it
     - Contains various control structures (while loops, for loops, `if-else` statements, etc.)
 
-        ```bash
-        while cmd1; do cmd2; done
+        - ```bash
+          while cmd1; do cmd2; done
 
-        for i in $v; do echo $i; done
+          for i in $v; do echo $i; done
 
-        if cmd2; then cmd2; else cmd3; fi
+          if cmd2; then cmd2; else cmd3; fi
 
-        if grep {thing} /etc/passwd > /dev/null; then
-            echo 'statement 1'
-        else
-            echo 'statement 2'
-        fi
-        ```
+          if grep {thing} /etc/passwd > /dev/null; then
+              echo 'statement 1'
+          else
+              echo 'statement 2'
+          fi
+          ```
 
     - Can define functions
 
-        ```bash
-        function f() { body of function; }
+        - ```bash
+          function f() { body of function; }
 
-        f a b c
-        ```
+          f a b c
+          ```
 
     - Meta-execution → crucial part of software construction, using software to create software/program writes part of itself
       - You can put a shell script into a file and the file becomes a command
@@ -435,7 +439,7 @@
       - `C-h m` - tutorial for the debugger
     - Trivia: dividing 1 by 0 doesn't error since floating point arithmetic overflows to `infinity`
 
-## **10/16: Discussion 2**
+## **Discussion 2: Lisp**
 
 - Lisp
   - High level programming language that used parenthesized prefix notation
@@ -462,16 +466,16 @@
   - Defining a function: `(defun NAME (ARGS) BODY)`
   - Ex)
 
-      ```lisp
-      (defun foo (ab)
-          (+ a b))
-      ```
+      - ```lisp
+        (defun foo (ab)
+            (+ a b))
+        ```
 
 - Python
   - `If-else`/`for`/etc.
     - Indent-sensitive
 
-## **10/20: Python Scripting**
+## **Lecture 5: Python Scripting**
 
 - Python is often used as a string processing language
   
@@ -523,23 +527,24 @@
     - `isinstance(o, c)` - returns `true` if `o` is an instance of `c`
     - Functions
 
-      ```python
-      def f(x):
-          return x + 1
-      ```
+      - ```python
+        def f(x):
+            return x + 1
+        ```
   
       - Defines a function and assigns it to `f`
       - You don't need to name functions
+        
         - `h = lambda x: x + 10`
-    - Classes in Python
-
-      ```python
-      class a(b,c): # b and c are the parent classes, multiple inheritance
-      var = 12
-      def method(self, x, y): # self is the object this method is being called on behalf of (this)
-      return x + y + self.m2(var)
-      ```
-
+- Classes in Python
+  
+      - ```python
+        class a(b,c): # b and c are the parent classes, multiple inheritance
+        var = 12
+        def method(self, x, y): # self is the object this method is being called on behalf of (this)
+        return x + y + self.m2(var)
+    ```
+    
       - Variables are looked up by a depth-first, left-to-right traversal across the parent hierarchy
       - Namespace control
         - A class is an object
@@ -563,8 +568,9 @@
       - Mappings - dictionaries (sets of name-value pairs)
       - Callables - functions, classes, methods
       - Internal
+    ```
 
-## **10/22: Python Operations**
+## **Lecture 6: Python Operations**
 
 - Claim: Python standard types and operations on those types are at least partially responsible for its success
 - When you talk about writing code in Python: language + library
@@ -610,21 +616,24 @@
             - Worst case: `s.append(v)` is `O(n)`
             - `s.append(v)` is `O(1)` amortized
     - `s.extend(a)` - append every element of `a` to `s`
+      
       - Costs `O(len(a))` amortized
     - `s.insert(i,v)` - insert the value `v` just before `s[i]`
-      - `s[i:i] = [v]`, but faster
+    
+  - `s[i:i] = [v]`, but faster
     - `s.pop(i)` - `delete s[i]`, return its previous value
-
-        ```python
-        t = s[i]
-        del s[i]
-        return t
-        ```
-
+    
+        - ```python
+          t = s[i]
+          del s[i]
+          return t
+          ```
+    
     - `s.pop() - s.pop(len(s - 1))` - deletes the last element of the list and returns it
     - `s.count(v)` - return a count of all members of `s` equal to `v`
     - `s.index(v)` - returns the index of the first occurrence of `v` in `s`
     - `s.remove(v)` - removes first element of `s` equal to `v`
+      
       - `s.pop(s.index(v))`
     - `s.reverse()` - trade `s[0]` with `s[-1]`, `s[1]` with `s[-2]`, etc.
     - `s.sort()` - you don't have to implement quicksort
@@ -669,7 +678,7 @@
       - `d.get(k[, v])` - returns `d[k]` if it exists, `v` otherwise
         - `v` defaults to `None`
 
-## **10/23: Discussion 3**
+## **Discussion 3: Regex and React**
 
 - Regular Expressions
   - `+` - one or more
@@ -688,7 +697,7 @@
   - Flexible
   - Efficient → uses virtual DOM
 
-## **10/27: Python Modularization**
+## **Lecture 7: Python Modularization**
 
 - Modularization and Packaging - meta-tools for writing software
   - Techniques for managing your code
@@ -723,32 +732,32 @@
       - Callers that do this: `foo(27, 19, z = 12)` will work with both versions of the code
   - Functions can also have attributes:
 
-      ```python
-      foo.secure = 1 # where foo is a function
-      ```
+      - ```python
+        foo.secure = 1 # where foo is a function
+        ```
 
 - Classes and Typing
 - Recall that Python does dynamic type checking, not static
   - Dynamic - during runtime not compile time
 
-    ```python
-    a = ...
-    b = ...
-    return a + b
-    ```
+    - ```python
+      a = ...
+      b = ...
+      return a + b
+      ```
 
   - So, how does it work?
     - `a.__add__(b)` → invoking add method on `a` with parameter `b`
       - Leading and trailing `__` means the Python interpreter reserves these names
 
-        ```python
-        class c:
-            def __add__(self, other):
-                return self.name + "+" + other.name
-        
-        x = c()
-        return x + y
-        ```
+        - ```python
+          class c:
+              def __add__(self, other):
+                  return self.name + "+" + other.name
+          
+          x = c()
+          return x + y
+          ```
 
   - So, what does it mean to have a "type error" in Python?
     - C++ - compile error, Python - runtime error
@@ -773,26 +782,26 @@
     - Typical modules are a single file with Python code to be executed at the right time
       - `ocean.py` file contains:
 
-        ```python
-        abc = 27
-        def f(x):
-        return x + 2
+        - ```python
+          abc = 27
+          def f(x):
+          return x + 2
 
-        class c:
-            def __init(self):
-                self.val = 0
-            def bar(self, y):
-                return self.val + y
+          class c:
+              def __init(self):
+                  self.val = 0
+              def bar(self, y):
+                  return self.val + y
 
-        # Other code
-        ```
+          # Other code
+          ```
 
       - The right time occurs when you execute a statement to access the module
 
-        ```python
-        if x < 0:
-            import ocean
-        ```
+        - ```python
+          if x < 0:
+              import ocean
+          ```
 
         - Up to the caller to determine the "right time"
         - Certain things happen when `import FOO` is executed
@@ -802,17 +811,18 @@
             - `FOO` is bound to the newly created namespace
     - How to run a module from the top level → when Python starts up
       - `$ python3 modulename a b c ...`
+        
         - Imports module named `modulename` with `__name__ == '__main__'`
       - Lots of modules are not intended to be top-level programs, they're intended to be used as parts of other programs
       - Still it's helpful to use this convention as a way of testing a module that isn't top-level
-        - `foo.py`:
-
-            ```python
-            # Definitions of some sort
-            if __name == '__main__':
-                # Test cases for foo.py
-            ```
-
+  - `foo.py`:
+    
+       - ```python
+          # Definitions of some sort
+          if __name == '__main__':
+              # Test cases for foo.py
+          ```
+          
         - If `foo` isn't intended to be a standalone program, you turn it into one that runs test cases for `foo`
           - Test-first software development → first write the test cases for a module, then write the module's code
           - Why is this a good idea?
@@ -878,7 +888,7 @@
     - Get it from a standard place in your application's virtual environment
       - Can install modules that disagree with each other without clashing
 
-## **10/29: React and JS**
+## **Lecture 8: React and JS**
 
 - Basic idea for Python
   - We want a language core (reasonably small, general-purpose) + extensions via:
@@ -1010,7 +1020,7 @@
       - What's the delay between a user request, and the response back to the user?
         - Typical user requirement: latency < 1 ms
 
-## **11/3: Client-Server Apps**
+## **Lecture 9: Client-Server Apps**
 
 - Client server computing
   - Last time - performance throughput and latency
@@ -1140,7 +1150,7 @@
         - Callable from any language
         - JS is the most common language
 
-## **11/10: More Client-Server Model**
+## **Lecture 10: More Client-Server Model**
 
 - HTML
 - DOM (Document Object Model)
@@ -1174,9 +1184,9 @@
       - You wanted to see the tree directly as an HTML-like syntax
 - JSX - extension to JavaScript that allows easy generation of DOM/HTML via a syntax that looks like what you're generating
 
-    ```jsx
-    const header = <h1 lang="en">blah</h1>; // angle brackets signal beginning of JSX
-    ```
+    - ```jsx
+      const header = <h1 lang="en">blah</h1>; // angle brackets signal beginning of JSX
+      ```
 
   - Can be used anywhere in JS that a function call could be used
   - JSX produces a React element that implements the JSX
@@ -1184,12 +1194,12 @@
       - You have to know both JSX and JS levels to debug a system that you're building
   - Use JS inside of JSX
 
-      ```jsx
-      const language = "en";
-      const class = "CS 97";
-      const n = 3;
-      const header = <h1 lang={language}>{class} assignment {n + 2}</h1?>;
-      ```
+      - ```jsx
+        const language = "en";
+        const class = "CS 97";
+        const n = 3;
+        const header = <h1 lang={language}>{class} assignment {n + 2}</h1?>;
+        ```
 
 - Efficiency issues can be understood by knowing how the browser takes/executes your code - browser rendering pipeline
   - HTML → DOM → ... → pixels on screen
@@ -1209,11 +1219,12 @@
   - JS runtime for asynchronous events
     - Runtime - set of cooperative classes and methods for supporting a particular style of programming
     - Callbacks - user-defined functions that are called at particular points during execution
+      
       - Cedes control from a called function back to the caller
     - Event handlers - callbacks executed when particular events occur (e.g. the arrival of a request from browser, press of a button, etc.)
-    - Event loop - basic programming construct
-
-        ```javascript
+- Event loop - basic programming construct
+  
+    - ```javascript
         int main (void) {
             for (;;) {
                 Event e = waitForNextEvent();
@@ -1221,7 +1232,7 @@
             }
         }
         ```
-
+    
       - Event handlers don't do I/O and don't block or wait for anything
         - Can request, but can't complete
       - No locks (needed for multithreading)
@@ -1231,6 +1242,7 @@
         - Can scale with multiple computers (multiple web servers)
         - Can scale with multiple processes on the same computer
 - Node.js and React are built atop these ideas
+  
   - Uses JSON, JSX, etc.
 - You can use this idea to build lots of cooperating servers or to implement code that runs in browsers
 - Node.js also provides packages
@@ -1261,7 +1273,7 @@
       - `git diff` - compares 2 commits and tells you the differences
   - Where Git came from, what problems made Git?
 
-## **11/12: Version Control**
+## **Lecture 11: Version Control**
 
 - Basic Git continued
   - `index.js` - says what changes you're planning to make in the next commit/set of commits
@@ -1318,7 +1330,7 @@
     - `$ gcc -E dumb.c` → just run preprocessor (expands macros)
     - `$ gcc -S dumb.i` → compiles from macro-free C to assembly language
 
-## **11/17: Low-Level Programming**
+## **Lecture 12: Low-Level Programming**
 
 - Low-level programming
   - We want to have the ability to write some low level code
@@ -1394,7 +1406,7 @@
 - What is GCC useful for once it's built?
   - Generate machine code of course
 
-## **11/19: More Low-Level Programming**
+## **Lecture 13: More Low-Level Programming**
 
 - What GCC is good for, besides compiling your program?
   - GCC is good for security improvement
@@ -1459,7 +1471,7 @@
     - `gcc -Wextra` → more controversial warnings (less likely to be useful to everybody)
       - `-Wtype-limits` → warns about sign conventions
 
-## **11/24: Debugging**
+## **Lecture 14: Debugging**
 
 - Using GCC, you're only ever looking at a single function
   - Don't look at a single function, look at the entire compilation unit (the whole source code file → includes `.h` files, etc.)
@@ -1543,7 +1555,7 @@
         - Every now and then, save entire app state into file in a format so that you can later restore that state
       - Assertions
 
-## **12/1: GDB**
+## **Lecture 15: GDB**
 
 - Defensive Programming
   - Trying to prevent disasters
@@ -1653,7 +1665,7 @@
       - Developers or ops staff wondering why the code is the way it is
       - Looking here is often the most efficient way to understand a program
 
-## **12/3: DevOps and Version Control**
+## **Lecture 16: DevOps and Version Control**
 
 - Version control needs
   - Backups - you've messed things up
@@ -1821,7 +1833,7 @@
       - Design a new system from scratch
       - Do the data structure first
 
-## **12/8: Git Internals**
+## **Lecture 17: Git Internals**
 
 - Git implementation/internals
   - Versioning filesystems are built into the OS
@@ -1886,7 +1898,7 @@
     - A Git tree is like a POSIX directory (blobs are like POSIX files)
     - A tree contains a list of entries, each have a name (of the subtree/blob), type (blob or tree), mode (octal number that represents Linux permissions of the corresponding file), and SHA-1 hash of the entry
 
-## **12/10: Git Externals**
+## **Lecture 18: Git Externals**
 
 - Blobs
   - Take the SHA-1 checksum of the blob

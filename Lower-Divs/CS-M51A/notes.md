@@ -1,6 +1,10 @@
 # COM SCI M51A - Winter '21 - Abari
 
-## **1/4: Introduction**
+
+
+[TOC]
+
+## **Lecture 1: Introduction**
 
 - Digital system - inputs and outputs are a finite number of discrete values
   - Ex) Calculator
@@ -35,7 +39,7 @@
   - How characters and numbers are represented in a typical computer
   - Characters - ASCII (7 bits)
 
-## **1/6: Data Representation**
+## **Lecture 2: Data Representation**
 
 - Switching function - relation between inputs and outputs
   - Typically presented in a truth table
@@ -55,7 +59,7 @@
   - De Morgan’s Law - `(a + b)’ = a’b’`, `(ab)’ - a’ + b’`
 - Logic gates
 
-## **1/13: Sum of Products and Minterms**
+## **Lecture 3: Sum of Products and Minterms**
 
 - Product terms - terms containing 0 or more ANDs
   - `x0`, `x2x1`, `x3x1x0’`
@@ -83,7 +87,7 @@
 - Get all maxterms from those lines
 - Expression is AND of all those terms
 
-## **1/20: Transistors**
+## **Lecture 4: Transistors**
 
 - CMOS - complementary metal oxide semiconductor
 - Representation of binary variables
@@ -105,7 +109,7 @@
   - For each row of table, check if output has clean path to power or ground
     - Neither (floating)/both - bad design
 
-## **1/25: Transmission Gates**
+## **Lecture 5: Transmission Gates**
 
 - Transmission gate
   - 3 state buffer
@@ -118,7 +122,7 @@
   - Can control module → output transition
   - Can be used to build multiplexer
 
-## **1/27: Timing Analysis**
+## **Lecture 6: Timing Analysis**
 
 - Find delays between changing input → changing output
   - `TpLH` → time from low to high
@@ -139,7 +143,7 @@
   - Single output networks
   - Minimum number of gates and inputs
 
-## **2/1: Two-Level Systems**
+## **Lecture 7: Two-Level Systems**
 
 - 2 types: OR-AND and AND-OR
 - k-Maps:
@@ -149,7 +153,7 @@
   - Graphical aid in simplifying expressions
 - Any 2 neighboring cells have a 1-variable difference
 
-## **2/8: Sequential Systems**
+## **Lecture 8: Sequential Systems**
 
 - Output is a function of the input over a given period of time
 - In addition to input and output, we define a state for our system at time `t`
@@ -171,7 +175,7 @@
   - States are equivalent if they have exactly the same outputs
   - States are 2-equivalent if a string of 2 inputs result in the same outputs
 
-## **2/17: Flip-Flops**
+## **Lecture 9: Flip-Flops**
 
 - Sequential System Implementation
   - Combinational network takes in present input, gives output
@@ -215,7 +219,7 @@
 - Network hold time: `th(net) = th(cell)`
 - Network propagation delay: `tp(net) = tp(cell) + d2`
 
-## **2/22: Design of Canonical Networks**
+## **Lecture 10: Design of Canonical Networks**
 
 - Design
   - Translate states and inputs to binary
@@ -243,7 +247,7 @@
   - Has PR and CLR inputs
 - Design is opposite of analysis
 
-## **3/1: Decoders**
+## **Lecture 11: Decoders**
 
 - Decoder has `n` inputs, `2^n` outputs
   - Can be used for main memory

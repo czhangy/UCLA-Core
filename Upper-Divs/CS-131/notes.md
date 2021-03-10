@@ -1,6 +1,10 @@
 # COM SCI 131 - Winter '21 - Eggert
 
-## **1/5: Introduction**
+
+
+[TOC]
+
+## **Lecture 1: Introduction**
 
 - Core of this class
   - Principles and limitations of programming tools
@@ -30,7 +34,7 @@
               - Simple introduction to the idea as a short paper → approached CACM (leading research journal)
               - Solve the word problem in tangled Pascal using a new data structure called a “hash trie” + included the CACM paper
               - Succeeded → Literate Programming is now common (JDK documentation, etc.)
-          - But, it was a set-up job → paper included an afterword by CACM editor which was a suggestion for a better solution using the - Unix shell
+          - But, it was a set-up job → paper included an afterword by CACM editor which was a suggestion for a better solution using the Unix shell
             - Find the words in the input: `tr -cs 'A-Za-z' '[\n*]'`
               - Takes the complement (`-c`) of the words and transliterates them into newlines
               - Squeezes out duplicates (`-s`)
@@ -113,7 +117,7 @@
   - Exception Handling
   - Mutability/Evolvability
 
-## **1/5: Programming Languages**
+## **Reading 1: Programming Languages**
 
 - 4 main types:
   - Imperative (C) - marked by iteration and assignment
@@ -145,7 +149,7 @@
     - Recursion and conditionals added to Lisp because they were needed for AI apps
   - Operating systems interact closely with language systems
 
-## **1/5: Defining Program Syntax**
+## **Reading 2: Defining Program Syntax**
 
 - The syntax of a programming language is the part of the language definition that says how programs look: their form and structure
   - What does an expression/statement/function definition look like?
@@ -253,7 +257,7 @@
   - Automatic tools - derive other programs from your grammar automatically
 - Languages with simple, readable, short grammars have simple, memorable phrase structures, allowing for easier learning and usage
 
-## **1/6: First Look at ML**
+## **Reading 3: First Look at ML**
 
 - ML operates in interactive mode - prompts an expression, type an expression, evaluates the expression, prints the value, repeat
 - ML attempts to infer the type of an expression's result
@@ -428,6 +432,7 @@
       ```
 
     - New definition of a variable doesn't overwrite the old one, it just adds a new definition on top of the previous one
+      
       - Any part of the program that used the old definition will still use the old definition afterwards → new definitions have no side - effects on older parts of the program
 - Garbage collection - ML's way of reclaiming pieces of memory that are no longer being used
   
@@ -635,7 +640,7 @@
         - One hint is usually enough to satisfy the need for a type annotation, but opt for the most readable option
   - More important for larger projects
 
-## **1/6: Second Look at ML**
+## **Reading 4: Second Look at ML**
 
 - ML functions work based on patterns
   - Single parameter `n` is a pattern
@@ -683,6 +688,7 @@
       ```
 
     - Nonexhaustive function definition - definition of a function that doesn't cover the whole domain type
+      
       - This function is only defined for lists with exactly 2 elements
 - Any cons of patterns is a legal pattern
   
@@ -713,6 +719,7 @@
     - `<fun-def> ::= fun <fun-bodies> ;`
     - `<fun-bodies> ::=- <fun-body> | <fun-body> '|' <fun-bodies>`
     - `<fun-body> ::= <fun-name> <pattern> = <expression>`
+      
       - `<fun-name>` must be the same in each alternative
 - Can overlap patterns → ML tries the patterns in order they're listed and uses the first one that matches
 
@@ -879,11 +886,12 @@
                 end;
       ```
 
-## **1/6: Third Look at ML**
+## **Reading 5: Third Look at ML**
 
 - Pattern Matching
   - A rule is a part of ML syntax that takes the form `<rule> ::= <pattern> => <expression>`
   - A match consists of 1+ rules separated by the `|` token: `<match> ::= <rule> | <rule> '|' <match>`
+    
     - Each rule in a match must have the same type of expression on the RHS
   - Case-expressions use matches
   - `<case-exp> ::= case <expression> of <match>`
@@ -1056,7 +1064,7 @@
       val it = “ghidefabc” : string
       ```
 
-## **1/6: Fourth Look at ML**
+## **Reading 6: Fourth Look at ML**
 
 - `bool` is not a primitive in ML - it's a defined type using the keyword `datatype`
 - Enumerations
@@ -1070,8 +1078,10 @@
 
   - Type inference of ML applies to new types
   - `day` in the example is called a type constructor and the member names are called data constructors
+    
     - Data constructor names are capitalized by convention
   - ML doesn't expose the underlying representation of values within an enumeration
+    
     - Only operations that are permitted are comparisons for equality
   - Can use data constructors in patterns
 
@@ -1180,7 +1190,7 @@
         |   listall (Node(x, y, z)) = listall x @ y :: listall z;
         ```
 
-## **1/7: Syntax**
+## **Lecture 2: Syntax**
 
 - Last time
   - Orthogonality
@@ -1299,8 +1309,10 @@
             - `a >= b >= c` is a syntax error
         - Makes Prolog more useful/extensible
         - Typically present in languages catering to specialties with their own notation
+          
           - Prolog → NLP
       - Harder to implement, worried about confusing programmers
+        
         - You can overdo language customization
 - Syntax
   - Definition - form independent of meaning
@@ -1373,7 +1385,7 @@
   
       - Sentence - member of a language
 
-## 1/12: **Ambiguity**
+## **Lecture 3: Ambiguity**
 
 - Usage of grammars
   - Computer science theory
@@ -1474,8 +1486,10 @@
 
         - Should be bad → need to distinguish between singular and plural
     - Grammar size grows exponentially with the number of attributes
+      
       - Typically not done
   - Your grammar tries to capture too much detail
+    
     - Typically people lean towards leaving stuff out
 - Ambiguity
   - Can come up in seemingly reasonable grammars
@@ -1535,19 +1549,21 @@
           - Trickled down to `do-while` due to consistency, despite not being necessary for ambiguity
       - `If-then-else` ambiguity
         - `if (EXPR) if (EXPR) STMT else STMT`
+          
           - Entire `if-else` nested, or just the `if` nested?
         - `else` matches closest `if` that it can
-          - Fix:
-  
+    - Fix:
+      
             - ```html
               STMT -> if (EXPR) STMT
               STMT -> if (EXPR) LSTMT else STMT
               LSTMT can be anything except an else-less if → doubles the grammar size
               STMT -> LSTMT
               STMT -> if (EXPR) STMT
-              ```
-  
+        ```
+        
               - Replace all other `STMT` rules with `LSTMT`
+        ```
     - Avoiding ambiguity clutters your grammar, and may people don't want to bother
       - Concrete - the unambiguous grammar
       - Abstract - ambiguous grammar
@@ -1571,7 +1587,7 @@
       - Example `msg-id`: `Message-ID: <11232143.fsf@cs.ucla.edu>`
       - This set of rules is an extended version of the rules we've seen so far, in that `*X` in the RHS is shorthand for 0+ occurrences of `X`
 
-## **1/14: Functional Programming**
+## **Lecture 4: Functional Programming**
 
 - We can turn our grammars into regular expressions
   - Can you do this with any BNF grammar? No
@@ -1669,7 +1685,7 @@
     - `'a` is a type variable, makes a generic type for type inference
     - Everything is immutable in our subset of OCaml
 
-## 1/19: **OCaml**
+## **Lecture 5: OCaml**
 
 - Idea is to see how to explain OCaml in a basic core + add-ons
   - You see this all the time - C++ core language + libraries
@@ -1755,7 +1771,7 @@
         | _::l -> f l
       ```
 
-## **1/21: OCaml and Types**
+## **Lecture 6: OCaml and Types**
 
 - Simple OCaml function to reverse a list
 
@@ -1795,6 +1811,7 @@
             ```
 
 - You can debug your OCaml program by looking at types
+
 - Translation environments
   - Compiler: translate from source code to machine code
     - Walks through parse tree and generates an intermediate representation
@@ -1822,7 +1839,7 @@
     - Often converts to byte code for efficiency, a software-defined instruction set
     - Worse runtime performance than compiling, easier to debug
 
-## **1/26: Types**
+## **Lecture 7: Types**
 
 - Types in OCaml, Java, C++, etc.
   
@@ -1870,29 +1887,30 @@
         - `1.f` stands for the base-2 number
         - Only true if `0 < e < 255`
       - `e = 0 → 2**(-126) * 0.f` → denormalized value
+        
         - The number `0` is in this category
         - All bits `0` represents `+0`, there is a `-0`, both are equal numerically
         - 2 distinct representations of `0` → issue
       - `e = 255` and `f = 0` → `+`/`-` `infinity`
         - `f` / `g` returns `infinity`, protects against overflow
         - `(f / g - f / g)` → no answer is mathematically valid, returns `NaN`
-      - `+- NaN` if `e = 255`, `f != 0`
-
+- `+- NaN` if `e = 255`, `f != 0`
+      
         - ```c
           float f = 0;
           f / f = NaN
-          ```
-
-        - How do you compare `NaN`s to numbers?
-
+    ```
+      
+  - How do you compare `NaN`s to numbers?
+      
           - ```c
             float f = 0;
             float nan = f / f;
             if (nan < 5) // by convention, NaNs are never <, =, or > than anything
             float f = 0.0/0.0, g = f;
             f != g && memcmp(&f, &g, sizeof f) == 0;
-            ```
-
+      ```
+      
             - `NaN` can't be equal to anything, but `f` and `g` have the same bits
       - An axiom we'd like to be true:
         - `f != g` implies that `f - g != 0`
@@ -2045,7 +2063,339 @@
       - This works because all types smell the same in the language
         - Every object is represented via a 64-bit pointer
 
-## **3/2: Storage Management**
+## **Lecture 8: More About Types**
+
+- More about types
+
+  - Generics vs. templates
+
+- Non-generic example (list of objects)
+
+  - Aside - Java has primitives and objects -> primitives for efficiency, but the language provides wrappers that relate them to objects
+
+  - ```java
+    List l = new LinkedList();
+    l.add(new Integer(0));
+    Integer n = l.iterator().next();
+    ```
+
+  - `Integer` is an object that contains an `int`
+
+  - Code is wrong -> `l.iterator().next()` is of type `Object`, we're trying to assign it to a variable of type `Integer`
+
+    - Fix by replacing with `(Integer) l.iterator().next();`
+
+      - Cast involves a runtime check that the `Object` is actually of type `Integer` -> not efficient
+
+    - Fix with new code:
+
+      - ```java
+        List<Integer> l - new LinkedList();
+        l.add(new Integer(0));
+        Integer n = l.iterator().next();
+        ```
+
+- Subtypes and generics
+
+  - ```
+    List<String> ls = // Some value
+    List<Object> lo = ls; // This is wrong
+    lo.add(new Thread());
+    String s = ls.get(); // Assigns a Thread value to s
+    ```
+
+    - Aside - all assignments in Java copy a reference
+    - `List<String>` is not a subtype of `List<Object>`, even though `String` is a subtype of `Object`
+      - There are some operations you can do on a `List<Object>` that you cannot do on a `List<String>` (`add()`)
+
+  - Print every member of a collection
+
+    - ```java
+      void printAll(Collection<Object> c) {
+      	for (Object i : c)
+      		System.out.println(i);
+      }
+      ```
+
+      - Won't work -> conversion to `Object` not allowed
+
+      - Fix using a wildcard - type variable with no name
+
+        - ```java
+          void printAll(Collection<?> c) {
+          	for (Object i : c)
+          		System.out.println(i);
+          }
+          ```
+
+        - Can also name type variables
+
+          - ```java
+            static <T> void convert(T[] a, Collection<T> b) {
+            	// Some code
+            }
+            ```
+
+            - Doesn't type check on mismatched types that should still work (`String[] a, Collection<Object> b`)
+
+        - Bounded wildcards - type checks even for above example - more flexible
+
+          - ```java
+            static <T> void convert(T[] a, Collection<? super T> b) {
+            	// Some code
+            }
+            ```
+
+            - `<? super T>` - unknown type must be a supertype of`T`
+            - `<? extends T>` - unknown type must be a subtype of `T`
+
+- How are generics implemented?
+
+  - Compile the code just once, generate bytecodes that'll work on any value of any type that the type variables can be instantiated to
+    - This is called erasure - the runtime has less type information than the compile-time, it doesn't need all the details
+    - Only compiles once and all type-checking is done
+    - Creates extra runtime checks as execution continues
+
+- Skeptical camp that says static type-checking has gone too far, is more trouble than it's worth
+
+  - Rules too complicated, users don't understand them
+
+- Dynamic type-checking - let the runtime worry about it
+
+  - "Duck typing" - if the object waddles like a duck and quacks like a duck, it's a duck
+    - Don't worry about an object's type, as long as it does what you want it to do, it's fine
+    - Behavior > types
+    - More flexibility, less reliability, more performance issues
+
+- Java overview
+
+  - Where Java came from
+    - Engineers in Sun Microsystems
+    - Looking forward to Internet of things - toaster on the Internet
+    - Problems:
+      - SPARC/x86/ARM not universal - manufacturers wanted to choose their own CPUs
+      - C/C++ too unreliable
+      - C/C++ executables are too big, take too long to download over the Internet
+      - Reliability issues include memory bloating
+    - First approach they took: C++ -> C+- (C++ cleaned up)
+    - Stole ideas from Xerox PARC
+      - Bitmapped display, machines on a network, mouse pointer, etc.
+      - Stole Smalltalk
+        - OOP environment
+        - Bytecode interpreter
+          - Different versions of interpreter on different machines, bytecode was the same
+          - Bytecode was small - oriented towards language, not machine
+        - Garbage collector
+        - Runtime checking for null pointers, subscript errors, etc.
+        - Downside:
+          - Smalltalk has a weird syntax
+          - Smalltalk uses dynamic type-checking, fought against reliability issues
+      - Sun took good parts of Smalltalk and came up with Oak (renamed to Java)
+        - Smalltalk core with C syntax added static type-checking
+
+- Java basics
+
+  - Statically checked for reliability
+  - Uses a C++-like syntax
+  - Types have 2 major categories
+    - Primitive (small set)
+      - `byte`, `short`, `int`, `long`, `char`, `boolean`, `float`, `double`
+      - Types are all the same size on all platforms, makes doe more portable at cost of performance
+    - Reference (larger set, can be user-defined)
+      - Internally implemented via pointers to the actual values
+      - No direct access to the pointers - not pointers in the C/C++ sense
+        - No `&x` operation
+  - Variables and object slots are always initialized (to 0)
+    - No uninitialized variables
+    - Reliability for performance
+  - Arrays are objects
+    - 0 origin
+    - Contents for an array are always in the heap, no arrays on the stack
+      - For reliability
+    - Size of an array is fixed upon allocation
+      - Can get the size of arrays
+  - Classes are like C++ classes
+    - No multiple inheritance
+
+## **Lecture 9: Interfaces and Threads**
+
+- Java is single inheritance
+
+  - If we had only single inheritance, each class would have to live in its own subtree, even if its behavior were compatible with a subtree somewhere else
+
+- Java has a substitute for multiple inheritance - interfaces
+
+  - Declared like a class, except using the `interface` keyword
+
+    - Provides no implementations
+
+    - ```java
+      public interface Stack {
+      	void push(int);
+      	int pop();
+      }
+      ```
+
+      - Any object is of type `Stack` if its class implements the `Stack` interface
+
+        - ```java
+          public class ArrayStack implements Stack extends Array {
+          	void push(int) { /* Implementation */ }
+          	void pop() { /* Implementation */ }
+          }
+          ```
+
+  - Java compiler can check that you implement interfaces properly
+
+  - There is an interface hierarchy, but this hierarchy operates in a different way from the class hierarchy
+
+    - If class `C` extends class `P` (inherits from `P`), then it inherits `P`'s code (that's wealth)
+    - If class `C` implements interface `I`, then it inherits an obligation to implement the interface
+
+- This idea of using interfaces is very common
+
+  - ```java
+    interface Runnable {
+    	void run();
+    }
+    ```
+
+  - It's so common that we often would have a class and a tightly-associated interface, except we use an abstract class
+
+    - Supplies both wealth and obligations on its child classes
+
+    - ```java
+      abstract class A {
+      	void push(int i) { /* Implementation */ }
+      	abstract int pop(); // This is an obligation
+      }
+      ```
+
+  - Actual implementation is straightforward - look up the parent chain
+
+  - You cannot construct an object that is directly of an abstract class or interface
+
+- The `Object` class in Java
+
+  - `Object` is the root of the Java class hierarchy - even a class with no declared parent has `Object` as its parent
+
+    - Hierarchy is a tree
+
+  - It's an important class - concepts that are so important that every object has to support them
+
+  - `public class Object`
+
+    - `public Object();` - constructs an `Object`
+    - `public boolean equals(Object obj);`
+    - `public int hashCode();`
+      - Needs to be compatible with `equals` -> if `equals` is `true`, the hash codes should be equal
+    - `public String toString();`
+      - Yields a `String` representation of the object
+    - `public final Class getClass;`
+      - Returns an object that represents the class
+      - `final` - implementation is here, cannot be overridden
+        - Prevents objects from lying about their class, increases efficiency of class access (Java objects have type fields -> `final` = directly across the type field)
+        - `final` allows performance gain through inlining -> makes you stuck with the implementation, flexibility traded for optimization
+    - `protected void finalize() throws Throwable;`
+      - Called by the garbage collector before the object is reclaimed
+      - Default implementation is empty
+      - `protected` - only called by the garbage collector
+      - `throws` - calling this method might not result in return, could result in an exception
+    - `protected Object clone() throws CloneNotSupportedException`
+      - Makes a copy of an object and returns the copy
+    - Several more methods
+
+  - ```java
+    public class Class { // A description of a Java class
+    	// Implementation
+    }
+    ```
+
+  - Can be used in test cases to test for generality
+
+- Threads
+
+  - Processors - CPUs (or CPU cores) each with its own instruction pointer
+    - Can run programs simultaneously, one per processor
+  - Threads - a program being run by a processor, but it's sharing memory with all the other threads in the same prcoess
+    - Race conditions are possible
+    - Very fast to communicate from 1 thread to another via shared memory
+  - Processes - a program being run by a processor, each with its own separate memory so they can't affect each other
+
+- Java is thread-oriented
+
+  - Thread's life cycle in Java
+    - Creation via `new` - resulting thread state: `NEW`
+      - `Thread t = new Thread();`
+      - More commonly: `Runnable r = ...;`
+    - `t.start();` - allocates OS resources, giving the thread virtual/real processor, so it has an IP and calls `t.run()` using that IP
+      - Resulting thread state: `RUNNABLE`
+    - If a thread is `RUNNABLE`, it can
+      - Keep running (execute ordinary code) - `RUNNABLE`
+      - `yield()` - `RUNNABLE`
+        - Signal to the OS that some other thread can run if it needs to
+        - Advice to the thread scheduler, which decides which threads get processors
+      - `sleep(10)` - `TIMED_WAITING` - waiting for internal clock to expire before running again
+      - `o.wait()` - `WAITING` - waiting for software to run
+      - Do I/O - `BLOCKED`
+      - Terminate the thread - `TERMINATED`
+        - Simplest way: `run` returns
+  - Bad part about threads
+    - Race conditions that occur when 2 threads compete for the same location: one writes, the other reads/writes
+      - Resulting behavior depends on who wins
+    - Synchronization simple solution: the `synchronized` method
+      - Implemented by internal locks, one lock per object
+      - If you're in a `synchronized` method, you have exclusive access to that object
+      - Can be done via spin locks (you keep the CPU busy while the object's locked), so the body of a `synchronized` method should be simple and fast so that other threads don't spin (waste CPU resources doing nothing useful)
+    - We don't like this inefficiency
+      - We have more sophisticated synchronization techniques
+        - `o.wait()` - remove all spin locks held by this thread, wait until `o` becomes "available" (thread goes into `WAITING` state)
+          - `o.wait(100)` - like `o.wait()`, but `TIMEDWAITING` for 100ms
+        - `o.notify()` - marks `o` as available
+          - Wakes up one of the waiting threads on `o` if there are any (at random/depending on the scheduler)
+        - `o.notifyAll()` - wakes up all the threads waiting on `o`
+          - Lets all the threads negotiate which one gets the object
+          - Lets you control scheduling better than the scheduler
+
+- Synchronization approaches built atop `wait`/`notify`
+
+  - `Exchanger` - represents a rendezvous point
+    - Thread that gets to the rendezvous point first waits for the second
+  - `CountDownLatch`
+    - Threads gather until all `N` threads are present
+    - Threads are frozen until ready to start
+  - `CyclicBarrier`
+    - Repeated `CountDownLatch`
+  - All these approaches still too slow - bottleneck introduced by needing to synchronize
+    - We want to avoid these bottlenecks - no `synchronize`, no `o.wait()`, etc.
+
+## **Lecture 10: JMM and Scope**
+
+## **Lecture 11: Logic Programming**
+
+## **Lecture 12: Prolog**
+
+## **Reading 7: A First Look at Prolog**
+
+## **Reading 8: A Second Look at Prolog**
+
+## **Reading 9: A Third Look at Prolog**
+
+## **Lecture 13: Propositional Logic**
+
+## **Reading 10: Introduction to Scheme**
+
+## **Reading 11: Getting Started with Scheme**
+
+## **Reading 12: Going Further with Scheme**
+
+## **Lecture 14: Scheme**
+
+## **Lecture 15: More Scheme and Storage Management**
+
+
+
+## **Lecture 16: Storage Management**
 
 - Storage management
   - Memory management of activation records last time
@@ -2251,17 +2601,19 @@
 
       - Whenever a reference count decreases to 0, the memory manager frees the object
         - This slows down pointer assignment
+          
           - Python is slow anyways, so who cares?
         - You don't need a garbage collector's `MARK`+`SWEEP`
-          - The memory manager can reclaim objects exactly when they become garbage
+    
+  - The memory manager can reclaim objects exactly when they become garbage
         - Problem: circular data structures
-
+        
           - ```python
             p = { "a": 1, "b": 2 } # reference count of the dict is 1
             p["c"] = p # reference count of the dict is 2
-            p = "def" # reference count of the dict is 1, not 0 --> dict not freed
+    p = "def" # reference count of the dict is 1, not 0 --> dict not freed
             ```
-
+        
             - Python traditional answer to this:
               - Don't write programs like that
                 - Avoid circular data structures if you can
@@ -2277,6 +2629,7 @@
         ```
 
       - We want the memory manager to figure out how to free things, without my advice
+        
         - This is done in Emacs (C), GCC (C++), Chrome (C++), etc.
       - Conservative Garbage Collection
         - C++/C compilers don't tell the memory manager where the roots are
@@ -2302,7 +2655,7 @@
     - We can speed this up by using a common trick: specialized allocators for certain common sizes
       - This works well in C/C++, but it's terrible for Java --> next time
 
-## **3/4: Parameter Passing**
+## **Lecture 17: Parameter Passing**
 
 - Finishing up on storage management
 - Generation-based copying garbage collection
@@ -2443,10 +2796,11 @@
     - Call by name
       - Call by name : call by reference :: function : pointers
       - Basic idea is that caller doesn't evaluate its argument; instead, it passes to the callee a think representing its argument
+        
         - A thunk is a parameterless procedure that, when you call it, will return the value you're interested in
       - Whenever the callee needs to know the value of a parameter, it calls the thunk
-      - This avoids unnecessary work if the callee doesn't use the parameter
-
+- This avoids unnecessary work if the callee doesn't use the parameter
+      
         - ```c
           void printSummary(int nitems, int avg) {
             if (nitems == 0) // Protects the procedure from being called in call by name
@@ -2458,8 +2812,8 @@
           int sum = 0;
           int n = 0;
           printSummary(n, sum / n) // This will crash in call by value: division by 0
-          ```
-
+    ```
+      
           - Downside: performance
             - Overhead to building thunks
             - Bigger deal is that you need a function call on every access to a parameter
@@ -2471,3 +2825,4 @@
           - Your code forces it to do something by having it do an action whose result you can see
           - The system does the minimal amount of work to satisfy your demand
       - For many functional applications, this can be a win, due to optimization
+    ```
