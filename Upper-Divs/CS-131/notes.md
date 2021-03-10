@@ -14,13 +14,13 @@
     - Write a book formatter, so he could format the way he liked
       - Beautiful math, beautiful code, images, text → designed his own font
     - TeX - classic high-quality formatter
-      - He used this to produce the book’s second edition + future versions
-    - Side project: The TeXbook - book about TeX’s design and algorithms, detailed internal doc. about TeX
+      - He used this to produce the book's second edition + future versions
+    - Side project: The TeXbook - book about TeX's design and algorithms, detailed internal doc. about TeX
       - `tex.pas` - the TeX source code, written in Pascal
       - `texbook.tex` - the TeXbook source code, written in TeX
       - Keeping these 2 files in sync is a pain
         - Side side project: Literate Programming
-          - Basic idea: don’t separate documentation and source code, put the documentation in source code → easy to keep in sync
+          - Basic idea: don't separate documentation and source code, put the documentation in source code → easy to keep in sync
           - One file: `tex.tangled` → contains source code and documentation
             - `p1 <tex.tangled >tex.pas` → throws away documentation
             - `p2 <tex.tangled >texbook.tex` → throws away source code
@@ -31,20 +31,20 @@
               - Solve the word problem in tangled Pascal using a new data structure called a “hash trie” + included the CACM paper
               - Succeeded → Literate Programming is now common (JDK documentation, etc.)
           - But, it was a set-up job → paper included an afterword by CACM editor which was a suggestion for a better solution using the - Unix shell
-            - Find the words in the input: `tr -cs ‘A-Za-z’ ‘[\n*]’`
+            - Find the words in the input: `tr -cs 'A-Za-z' '[\n*]'`
               - Takes the complement (`-c`) of the words and transliterates them into newlines
               - Squeezes out duplicates (`-s`)
-            - Sort the resulting list: `tr -cs ‘A-Za-z’ ‘[\n*]’ | sort`
-            - Find the duplicates and remove them: `tr -cs ‘A-Za-z’ ‘[\n*]’ | sort | uniq -c`
+            - Sort the resulting list: `tr -cs 'A-Za-z' '[\n*]' | sort`
+            - Find the duplicates and remove them: `tr -cs 'A-Za-z' '[\n*]' | sort | uniq -c`
               - Count the duplicates (`-c`)
-            - Sort the list in desired order: `tr -cs ‘A-Za-z’ ‘[\n*]’ | sort | uniq -c | sort -rn`
+            - Sort the list in desired order: `tr -cs 'A-Za-z' '[\n*]' | sort | uniq -c | sort -rn`
               - Sort in reverse order (`-r`)
               - Sort in numeric order (`-n`)
-            - Eliminate the extra newline: `tr -cs ‘A-Za-z’ ‘[\n*]’ | sed 1d | sort | uniq -c | sort -rn`
+            - Eliminate the extra newline: `tr -cs 'A-Za-z' '[\n*]' | sed 1d | sort | uniq -c | sort -rn`
               - `sed 1d` removes the first line, which is where the newline is located
             - One-line solution → do you really need Literate Programming?
               - Solution when the problem is so large that the language is scaling improperly
-              - Keep stuff small → you don’t need Literate Programming anymore
+              - Keep stuff small → you don't need Literate Programming anymore
 - Choice of notation matters
 - Related notion in north campus courses
   - Sapir-Whorf Hypothesis of natural languages
@@ -59,44 +59,45 @@
     - In a language, you have multiple features, each of which requires a selection, and you can make any single selection without - worrying about the others
       - A design that is not orthogonal - in C/C++, functions cannot return arrays (arrays decay into pointers, array != pointer)
 
-        ```c++
-        int *f(...) { // ok - pointer to 0th element
-            ...
-        }
-        ```
+        - ```c++
+          int *f(...) { // ok - pointer to 0th element
+              ...
+          }
+          ```
 
-        ```c++
-        struct s { 
-            int a[10]; 
-        };
+        - ```c++
+          struct s { 
+              int a[10]; 
+          };
 
-        struct s g(...) { // ok - struct containing an array
-            ...
-        } 
-        ```
+          struct s g(...) { // ok - struct containing an array
+              ...
+          } 
+          ```
 
-        ```c++
-        typedef int[10] trouble;
-        trouble h(...) { // problem - you can't return the array
-            ...
-        }
-        ```
+        - ```c++
+          typedef int[10] trouble;
+          trouble h(...) { // problem - you can't return the array
+              ...
+          }
+          ```
 
-        ```c++
-        #include <x.h>
-        
-        x arr;
-        x f(int x) { // will break if x is an array type, non-flexible implementation
-            ...
-        }
-        ```
+        - ```c++
+          #include <x.h>
+          
+          x arr;
+          x f(int x) { // will break if x is an array type, non-flexible implementation
+              ...
+          }
+          ```
 
   - Runtime Efficiency (how long to run the program)
+
     - Could imply wall clock time, CPU time, RAM, I/O, network access latency, energy/power consumption, etc.
   - Compile-time Efficiency (how long to build the software)
   - Development-time Efficiency (how long to write the code)
     - More verbose code takes longer to write and read
-    - Code that’s too concise can be unreadable
+    - Code that's too concise can be unreadable
   - Safety
     - What happens if you violate the rules of the language? How much damage is caused?
       - Ex) Undefined behavior
@@ -119,7 +120,7 @@
   - Functional (ML, Lisp) - marked by recursion and single-value variables
   - Logic Programming (Prolog) - marked by rules of logical inference
   - Object-Oriented (Java) - Builds upon the hallmarks of imperative languages with objects, bundles of data that can perform - operations on itself
-  - There are more types, and some languages are so unique they don’t fit into any given type (Forth, APL, etc.), while others - combine attributes of multiple other types (Python, Ruby, etc.)
+  - There are more types, and some languages are so unique they don't fit into any given type (Forth, APL, etc.), while others - combine attributes of multiple other types (Python, Ruby, etc.)
 - Language controversies
   - Debates over virtues of given languages
   - Language development usually governed by international committees, who work slow and endure a lot of conflict
@@ -160,7 +161,7 @@
     - Leads to an infinite parse tree
   - Language systems must parse every program they run
   - Sometimes multiple parse trees may represent the same string
-  - As long as a string can be generated by at least one parse tree using the language’s rules, that string is in the language
+  - As long as a string can be generated by at least one parse tree using the language's rules, that string is in the language
 - Grammar has 4 parts:
   - Set of tokens
     - These are the smallest units of syntax
@@ -184,17 +185,18 @@
   - The form was developed in 1960, called Backus-Naur Form (BNF)
 - Writing grammar
   - A grammar is a finite, structured, mechanical thing that specifies a potentially infinite language
+
     - You must be able to imagine how the productions you are crafting will unfold when parse trees are built
   - Most important method is divide and conquer
   - Very important to break problems down into simpler subproblems
-    - Take Java variable declaration as an example:
-
-    ```java
-    float a;
-    boolean a, b, c;
-    int a = 1, b, c = 1 + 2;
-    ```
-
+  - Take Java variable declaration as an example:
+  
+    - ```java
+      float a;
+      boolean a, b, c;
+      int a = 1, b, c = 1 + 2;
+      ```
+  
     - Statements consist of a type name followed by 1+ variable names being declared
     - Start simple: `<var-dec> ::= <type-name> <declarator-list> ;`
     - Type names → just use the primitive types for now
@@ -209,7 +211,7 @@
   - Test grammar as you would test a program
 - Lexical structure
   - Currently, we have a structure to use tokens to generate a grammar
-  - This structure is incomplete, a we’ve only defined the phrase structure of a language, that is, how to construct parse trees with tokens at the leaves
+  - This structure is incomplete, a we've only defined the phrase structure of a language, that is, how to construct parse trees with tokens at the leaves
     - We have no methodology for constructing the tokens themselves, using a lexical structure to divide program text into tokens
     - Could be overcome by writing a single grammar that has individual characters as token → almost never done due to readability
     - Most modern languages specify the phrase structure and lexical structure independently → makes languages easier to write/ implement
@@ -223,7 +225,7 @@
     - Old languages that give special meanings to column numbers → fixed-format
     - This distinction is trivial today since the vast majority of modern languages are free-format
       - Good style still dictates that newlines are needed to indicate the structure of the program
-      - This styling is sometimes incorporated into the formal part of a language’s definition (Python)
+      - This styling is sometimes incorporated into the formal part of a language's definition (Python)
 - Other grammar forms
   - EBNF - extended BNF
     - Can add metasymbols to BNF to address common patterns of language definition
@@ -254,79 +256,82 @@
 ## **1/6: First Look at ML**
 
 - ML operates in interactive mode - prompts an expression, type an expression, evaluates the expression, prints the value, repeat
-- ML attempts to infer the type of an expression’s result
-- ML maintains a variable called it, which contains the value of the last expression’s result
+- ML attempts to infer the type of an expression's result
+- ML maintains a variable called `it`, which contains the value of the last expression's result
 
-    ```ml
+  - ```ocaml
     - 1 + 2 * 3;
     val it = 7 : int
     ```
 
 - `-` : prompt for next expression
 - `=` : prompt to finish current expression
+  
   - Happens if the semicolon is not included
 - Types
   - 2 numeric types: `int` and `real`
   - ML uses `~` for negation rather than `-`
   - ML maintains a `bool` type with `true` and `false` values
+
     - ML is case-sensitive
   - Other basic types are `string` and `char`
-  - Strings are enclosed in double quotes
-
-    ```ml
+- Strings are enclosed in double quotes
+  
+  - ```ocaml
     - “fred”;
-    val it = “fred” : string
+      val it = “fred” : string
     ```
-
+  
   - Can use escape sequences for special characters
-    - `\t` = tab, `\n` = newline, `\”` for quotes, etc.
+
+  - `\t` = tab, `\n` = newline, `\”` for quotes, etc.
   - Use `#”X”` to get a character constant rather than a string
-
-    ```ml
-    - #”H”;
-    val it = #”H” : char
-    ````
-
+  
+    - ```ocaml
+      - #”H”;
+      val it = #”H” : char
+      ```
+  
 - Operators
   - Operators for addition, subtraction, and multiplication are standard
   - Division is divided into the `div` and `mod` operators
     - `div` calculates the integer quotient
     - `mod` returns the remainder of the integer division
 
-        ```ml
+      - ```ocaml
         - ~ 1 + 2 - 3 * 4 div 5 mod 6;
         val it = ~1 : int
         ```
 
     - `/` exists as an operator for real-division
 
-        ```ml
+      - ```ocaml
         - ~1.0 + 2.0 - 3.0 * 4.0 / 5.0;
         val it = ~1.4 : real
         ```
 
   - `^` is used as a string concatenation operator
 
-    ```ml
-    - “Hello “ ^ “World”;
-    val it = “Hello World” : string
-    ```
+    - ```ocaml
+      - “Hello “ ^ “World”;
+      val it = “Hello World” : string
+      ```
 
   - Comparison operators remain standard and can be used on `string`s, `char`s, `int`s, or `real`s
 
-    ```ml
-    - 2 < 3;
-    val it = true : bool
-    - 1.0 <= 1.0;
-    val it = true : bool
-    - #”d” > #”c”;
-    val it = true : bool
-    - “abce” >= “abd”
-    val it = false : bool
-    ```
+    - ```ocaml
+      - 2 < 3;
+      val it = true : bool
+      - 1.0 <= 1.0;
+      val it = true : bool
+      - #”d” > #”c”;
+      val it = true : bool
+      - “abce” >= “abd”
+      val it = false : bool
+      ```
 
     - Test alphabetical order in strings
-  - Equality test (`=`) and inequality test (`<>`) can only be used by ML’s equality types
+  - Equality test (`=`) and inequality test (`<>`) can only be used by ML's equality types
     - `String`, `char`, and `int` are equality types
     - `real` is not an equality type due to the nature of computations on computer hardware
   - Logical values
@@ -334,16 +339,16 @@
     - Logical and is `andalso`
     - Logical complement is `not`
 
-        ```ml
+      - ```ocaml
         - 1 < 2 orelse 3 > 4;
         val it = true : bool
         - 1 < 2 andalso not (3 < 4);
         val it = false : bool
         ```
 
-    - `orelse` and `andalso` don’t evaluate the second operand if the result is already decided by the first operand
+    - `orelse` and `andalso` don't evaluate the second operand if the result is already decided by the first operand
 
-        ```ml
+      - ```ocaml
         - true orelse 1 div 0 = 0;
         val it = true : bool
         ```
@@ -356,7 +361,7 @@
     - `<expression>` in the if part must be a `bool` and the `<expression>`s in the `then` and `else` parts must have matching types
     - Also short-circuiting
 
-        ```ml
+      - ```ocaml
         - if 1 < 2 then #”x” else #”y”;
         val it = #”x” : char
         - if 1 > 2 then 34 else 56;
@@ -371,7 +376,7 @@
     - This means this operator is overloaded
     - Operators do not have a defined way to operate on a pair of different types
       - `- 1.0 * 2;` will cause a type error
-      - Other languages will transform the operands automatically if possible, ML doesn’t
+      - Other languages will transform the operands automatically if possible, ML doesn't
   - ML has functions that can be called to transform types
     - `real` - `int` → `real`
     - `floor` - `real` → `int` (rounding down)
@@ -382,7 +387,7 @@
     - `chr` - `int` → `char` (uses ASCII code)
     - `str` - `char` → `string`
 
-        ```ml
+      - ```ocaml
         - real(123);
         val it = 123.0 : real
         - floor(3.6);
@@ -396,41 +401,42 @@
     - Preferred style is to avoid using parentheses in function call
       - `f(1)`, `(f)1`, `(f)(1)`, `(f 1)`, and `f 1` all call function `f` with the parameter `1`
       - Only use when modifying precedence or associativity
-    - Function precedence is highest that we’ve seen so far
+    - Function precedence is highest that we've seen so far
 - Variable Definition
   - `val` is used to define a new variable and bind it to a keyword
 
-    ```ml
-    - val x = 1 + 2 * 3;
-    val x = 7 : int
-    - x;
-    val it = 7 : int
-    - val y = if x = 7 then 1.0 else 2.0;
-    val y = 1.0 : real
-    ```
+    - ```ocaml
+      - val x = 1 + 2 * 3;
+      val x = 7 : int
+      - x;
+      val it = 7 : int
+      - val y = if x = 7 then 1.0 else 2.0;
+      val y = 1.0 : real
+      ```
 
   - Can be used to redefine an existing variable to a new value or type
 
-    ```ml
-    - val fred = 23;
-    val fred = 23 : int
-    - fred
-    val it = 23 : int
-    - val fred = true;
-    val fred = true : bool
-    - fred
-    val it = true : bool
-    ```
+    - ```ocaml
+      - val fred = 23;
+      val fred = 23 : int
+      - fred
+      val it = 23 : int
+      - val fred = true;
+      val fred = true : bool
+      - fred
+      val it = true : bool
+      ```
 
-    - New definition of a variable doesn’t overwrite the old one, it just adds a new definition on top of the previous one
+    - New definition of a variable doesn't overwrite the old one, it just adds a new definition on top of the previous one
       - Any part of the program that used the old definition will still use the old definition afterwards → new definitions have no side - effects on older parts of the program
-- Garbage collection - ML’s way of reclaiming pieces of memory that are no longer being used
+- Garbage collection - ML's way of reclaiming pieces of memory that are no longer being used
+  
   - `GC #0.0.0.0.1.3: (0 ms)`
 - Tuples and Lists
   - Tuple - an ordered collection of values of different types
     - ML supports tuples as expressions anywhere
 
-        ```ml
+      - ```ocaml
         - val barney = (1 + 2, 3.0 * 4.0, “brown");
         val barney = (3, 12.0, “brown”) : int * real * string
         - val point1 = (“red”, (300, 200));
@@ -442,19 +448,19 @@
     - The `i`th element of a tuple can be extracted using `#i v`
       - Positions start counting from 1
 
-        ```ml
-        - #2 barney
-        val it = 12.0 : real
-        - #1 (#2 point1);
-        val it = 300 : int
-        ```
+        - ```ocaml
+          - #2 barney
+          val it = 12.0 : real
+          - #1 (#2 point1);
+          val it = 300 : int
+          ```
 
-    - Tuples can have any length >1
+    - Tuples can have any length `> 1`
   - List - ordered collection of values of the same type
     - Lists can contain any number of elements
     - Formed using `[ ]` instead of parens
 
-        ```ml
+      - ```ocaml
         - [1, 2, 3];
         val it = [1, 2, 3] : int list
         - [1.0, 2.0];
@@ -469,11 +475,11 @@
 
     - Empty list written as `nil` or `[]`
 
-        ```ml
+      - ```ocaml
         - [];
-        val it = [] : ‘a list
+        val it = [] : 'a list
         - nil;
-        val it = [] : ‘a list
+        val it = [] : 'a list
         ```
 
       - ML cannot determine the type of the empty list
@@ -481,7 +487,7 @@
         - Type variables stand for types that are unknown
       - ML has predefined function `null` to determine if a list is empty
 
-          ```ml
+        - ```ocaml
           - null [];
           val it = true : bool
           - null [1, 2, 3];
@@ -491,14 +497,14 @@
         - Can also use an equality comparison, but null is preferred
     - `@` operator can concatenate 2 lists of the same type
 
-        ```ml
+      - ```ocaml
         - [1, 2, 3] @ [4, 5, 6];
         val it = [1, 2, 3, 4, 5, 6] : int list
         ```
 
     - Construct/cons operator (`::`) glues an element to the front of a list
 
-        ```ml
+      - ```ocaml
         - val x = #”c” :: [];
         val x = [#”c”] : char list
         - val y = #”b” :: x;
@@ -507,11 +513,11 @@
         val; z = [#”a”, #”b”, #”c”] : char list
         ```
 
-      - More efficient than @
+      - More efficient than `@`
       - Right-associative
     - `hd` and `tl` extract the first element and rest of a list, respectively
 
-        ```ml
+      - ```ocaml
         - val z = 1 :: 2 :: 3 :: [];
         val z = [1, 2, 3] : int list
         - hd z;
@@ -527,7 +533,7 @@
       - Error to try and use `hd` or `tl` on an empty list
     - `explode` converts a `string` into a `char` list and `implode` reverses it
 
-        ```ml
+      - ```ocaml
         - explode “hello”
         val it = [#”h”, #”e”, #”l”, #”l”, #”o”] : char list
         - implode [#”h”, #”i”];
@@ -537,18 +543,18 @@
 - Function definitions
   - Use `fun` to define a new function
 
-    ```ml
-    - fun firstChar s = hd (explode s);
-    val firstChat = fn : string -> char
-    - firstChar “abc”;
-    val it = #”a” : char
-    ```
+    - ```ocaml
+      - fun firstChar s = hd (explode s);
+      val firstChat = fn : string -> char
+      - firstChar “abc”;
+      val it = #”a” : char
+      ```
 
     - `<fun-def> ::= fun <function-name> <parameter> = <expression> ;`
     - `a -> b` is the type for functions that take a parameter of type `a` and return a value of type `b`
     - Tuple parameters can be used for functions that take in more than 1 input value
 
-        ```ml
+      - ```ocaml
         - fun quot(a, b) = a div b;
         val it = fn : int * int -> int
         - quot(6, 2);
@@ -559,57 +565,57 @@
         val it = 3 : int
         ```
 
-      - Every ML function is really just taking 1 parameter, but that parameter can be a tuple
+        - Every ML function is really just taking 1 parameter, but that parameter can be a tuple
   - Example of a factorial computing function
   
-    ```ml
-    - fun fact n =
-    =   if n = 1 then 1
-    =   else n * fact(n - 1);
-    val fact = fn : int -> int
-    - fact 5;
-    val it = 120 : int
-    ```
+    - ```ocaml
+      - fun fact n =
+      =   if n = 1 then 1
+      =   else n * fact(n - 1);
+      val fact = fn : int -> int
+      - fact 5;
+      val it = 120 : int
+      ```
 
-    - Can spread over 1+ lines, ML doesn’t care about line breaks → readability
-    - Reflects ML’s heavy use of recursion
+      - Can spread over 1+ lines, ML doesn't care about line breaks → readability
+      - Reflects ML's heavy use of recursion
   - Example of a function that adds up all the elements of a list
 
-    ```ml
-    - fun listsum x =
-    =   if null x then 0
-    =   else hd x + listsum(tl x);
-    val listsum = fn : int list -> int
-    - listsum [1, 2, 3, 4, 5];
-    val it = 12 : int
-    ```
+    - ```ocaml
+      - fun listsum x =
+      =   if null x then 0
+      =   else hd x + listsum(tl x);
+      val listsum = fn : int list -> int
+      - listsum [1, 2, 3, 4, 5];
+      val it = 12 : int
+      ```
 
   - Example of an implementation of the predefined `length` function
 
-    ```ml
-    - fun length x =
-    =   if null x then 0
-    =   else 1 + length(tl x);
-    val length = fn : ‘a list -> int
-    - length [true, false, true];
-    val it = 3 : int
-    - length [4.0, 3.0, 2.0, 1.0];
-    val it = 4 : int
-    ```
+    - ```ocaml
+      - fun length x =
+      =   if null x then 0
+      =   else 1 + length(tl x);
+      val length = fn : 'a list -> int
+      - length [true, false, true];
+      val it = 3 : int
+      - length [4.0, 3.0, 2.0, 1.0];
+      val it = 4 : int
+      ```
 
-    - Function can be called with parameters of different types → polymorphic function
-      - No special trick was used, ML just determined this could be generalized as such
-  - Types represented by `‘'a` reflect a need for equality types → use `null x` instead of `x = []`
+      - Function can be called with parameters of different types → polymorphic function
+        - No special trick was used, ML just determined this could be generalized as such
+  - Types represented by `''a` reflect a need for equality types → use `null x` instead of `x = []`
   - Example of a function that reverses a list
 
-    ```ml
-    - fun reverse L =
-    =   if null L then nil
-    =else reverse(tl L) @ [hd L];
-    val reverse = fn : ‘a list -> ‘a list
-    - reverse [1, 2, 3]
-    val it = [3, 2, 1] : int list
-    ```
+    - ```ocaml
+      - fun reverse L =
+      =   if null L then nil
+      =else reverse(tl L) @ [hd L];
+      val reverse = fn : 'a list -> 'a list
+      - reverse [1, 2, 3]
+      val it = [3, 2, 1] : int list
+      ```
 
 - Type Annotations
   - So far we have `int`, `real`, `bool`, `char`, and `string` as types and `*` (tuple), `list` (list), and `->` (function) as type constructors
@@ -618,15 +624,15 @@
   - ML defaults types to the default of the operators used (`+`, `-`, `*` all default to `int`)
     - Sometimes type annotations are needed
 
-        ```ml
+      - ```ocaml
         - fun prod(a, b) = a * b;
         val prod = fn : int * int -> int
         - fun prod(a:real, b:real) : real = a * b;
         val prod = fn : real * real -> real
         ```
 
-      - Establishes the types of `a`, `b`, and the return value
-      - One hint is usually enough to satisfy the need for a type annotation, but opt for the most readable option
+        - Establishes the types of `a`, `b`, and the return value
+        - One hint is usually enough to satisfy the need for a type annotation, but opt for the most readable option
   - More important for larger projects
 
 ## **1/6: Second Look at ML**
@@ -638,57 +644,57 @@
   - Can also introduce new variable
     - Pattern that matches `n` also introduced the variable `n` that is bound to the value of the parameter
 - Simple Patterns
-  - Simplest pattern is `_`, which matches any pattern and doesn’t introduce a new variable
+  - Simplest pattern is `_`, which matches any pattern and doesn't introduce a new variable
 
-    ```ml
-    - fun f _ = “yes”;
-    val f = fn : ‘a -> string
-    - f 34.5;
-    val it = “yes” : string
-    - f [];
-    val it = “yes” : string
-    ```
+    - ```ocaml
+      - fun f _ = “yes”;
+      val f = fn : 'a -> string
+      - f 34.5;
+      val it = “yes” : string
+      - f [];
+      val it = “yes” : string
+      ```
 
   - Can make a pattern that only matches a single constant
 
-    ```ml
-    - fun f 0 = “yes”;
-    Warning: match nonexhaustive
-        0 => ...
-    val f = fn : int -> string
-    - f 0;
-    val it = “yes” : string
-    - f 1;
-    uncaught exception Match [nonexhaustive match failure]
-    ```
+    - ```ocaml
+      - fun f 0 = “yes”;
+      Warning: match nonexhaustive
+          0 => ...
+      val f = fn : int -> string
+      - f 0;
+      val it = “yes” : string
+      - f 1;
+      uncaught exception Match [nonexhaustive match failure]
+      ```
 
-    - `f` is undefined if passed anything other than `0`
-    - Only equality-types can be used as constant patterns
+      - `f` is undefined if passed anything other than `0`
+      - Only equality-types can be used as constant patterns
 - Complex Patterns
   - Any list of patterns is legal
 
-    ```ml
-    - fun f [a, _] = a;
-    Warning: match nonexhaustive
-    a :: _ :: nil => ...
-    val f = fn : ‘a list -> ‘a
-    - f [#”f”, #”g”];
-    val it = #”f” : char
-    ```
+    - ```ocaml
+      - fun f [a, _] = a;
+      Warning: match nonexhaustive
+      a :: _ :: nil => ...
+      val f = fn : 'a list -> 'a
+      - f [#”f”, #”g”];
+      val it = #”f” : char
+      ```
 
-    - Nonexhaustive function definition - definition of a function that doesn’t cover the whole domain type
+    - Nonexhaustive function definition - definition of a function that doesn't cover the whole domain type
       - This function is only defined for lists with exactly 2 elements
-  - Any cons of patterns is a legal pattern
-
-    ```ml
+- Any cons of patterns is a legal pattern
+  
+  - ```ocaml
     - fun f (x :: xs) = x;
     Warning: match nonexhaustive
         x :: xs => ...
-    val f = fn : ‘a list -> ‘a
+    val f = fn : 'a list -> 'a
     - f [1, 2, 3];
     val it = 1 : int
     ```
-
+  
     - Nonexhaustive because it fails on the empty list
 - Pattern Summary
   - A variable is a pattern that matches anything and binds to it
@@ -700,23 +706,23 @@
 - Multiple Patterns for Functions
   - ML allows for the specification of multiple patterns for the parameter of a function, each with an alternative function body
 
-    ```ml
-    - fun f 0 = “zero” | f 1 = “one”
-    ```
+    - ```ocaml
+      - fun f 0 = “zero” | f 1 = “one”
+      ```
 
     - `<fun-def> ::= fun <fun-bodies> ;`
-    - `<fun-bodies> ::=- <fun-body> | <fun-body> ‘|’ <fun-bodies>`
+    - `<fun-bodies> ::=- <fun-body> | <fun-body> '|' <fun-bodies>`
     - `<fun-body> ::= <fun-name> <pattern> = <expression>`
       - `<fun-name>` must be the same in each alternative
-    - Can overlap patterns → ML tries the patterns in order they’re listed and uses the first one that matches
+- Can overlap patterns → ML tries the patterns in order they're listed and uses the first one that matches
 
-        ```ml
-        - fun f 0 = “zero” | f _ = “non-zero”
-        ```
-
+  - ```ocaml
+    - fun f 0 = “zero” | f _ = “non-zero”
+    ```
+  
 - Pattern-Matching Style
 
-    ```ml
+  - ```ocaml
     fun f 0 = “zero”
     |   f 1 = “non-zero”;
 
@@ -725,68 +731,68 @@
         else “non-zero”;
     ```
 
-  - Above functions are equivalent, first uses pattern-matching style
-  - Pattern-matching generally preferred for readability
+    - Above functions are equivalent, first uses pattern-matching style
+    - Pattern-matching generally preferred for readability
   - Rewrite the factorial program:
 
-    ```ml
-    fun fact 0 = 1
-    |   fact n = n * fact(n - 1);
-    ```
+    - ```ocaml
+      fun fact 0 = 1
+      |   fact n = n * fact(n - 1);
+      ```
 
-    - Clearly separates base case from recursive case
+      - Clearly separates base case from recursive case
   - Rewrite the reverse program
 
-    ```ml
-    fun reverse nil = nil
-    |   reverse (first :: rest) = reverse rest @ [first];
-    ```
+    - ```ocaml
+      fun reverse nil = nil
+      |   reverse (first :: rest) = reverse rest @ [first];
+      ```
 
-    - Here, we can implicitly extract the head and tail using pattern-matching
-      - More readable, same efficiency
+      - Here, we can implicitly extract the head and tail using pattern-matching
+        - More readable, same efficiency
   - Sum all the elements of a list
 
-    ```ml
-    fun f nil = 0
-    |   f (first :: rest)  = first + f rest;
-    ```
+    - ```ocaml
+      fun f nil = 0
+      |   f (first :: rest)  = first + f rest;
+      ```
 
-    - Very common structure for functions that visit all elements of a list
+      - Very common structure for functions that visit all elements of a list
   - Count how many true values are in a `bool list`
 
-    ```ml
-    fun f nil = 0
-    |   f (true :: rest) = 1 + f rest
-    |   f (false :: rest) = f rest;
-    ```
+    - ```ocaml
+      fun f nil = 0
+      |   f (true :: rest) = 1 + f rest
+      |   f (false :: rest) = f rest;
+      ```
 
   - Make a new `int list` where each `int` is 1 greater than it was in the original list
 
-    ```ml
-    fun f nil = nil
-    |   f(first :: rest) = first + 1 :: f rest;
-    ```
+    - ```ocaml
+      fun f nil = nil
+      |   f(first :: rest) = first + 1 :: f rest;
+      ```
 
   - Cannot use the same variable name more than once in a pattern
     - `fun f(a, a)` as a way to find pairs of equal elements is illegal
     - Only implementation is to abandon pattern-matching style
 
-        ```ml
+      - ```ocaml
         fun f (a, b) =
-            if (a = b) then ... 
+            if (a = b) then ...
             else ...
         ```
 
   - Can also use patterns in `val` definitions
 
-    ```ml
-    - val (a, b) = (1, 2.3);
-    val a = 1 : int
-    val b = 2.3 : real
-    - val a :: b = [1, 2, 3, 4, 5];
-    val a = 1 : int
-    val b = [2, 3, 4, 5] : int list
-    ```
+    - ```ocaml
+      - val (a, b) = (1, 2.3);
+      val a = 1 : int
+      val b = 2.3 : real
+      - val a :: b = [1, 2, 3, 4, 5];
+      val a = 1 : int
+      val b = [2, 3, 4, 5] : int list
+      ```
 
 - Local Variables
   - We can make local variable definitions in ML using the `let` expression
@@ -794,16 +800,16 @@
     - `<definitions>` is a sequence of any number of definitions that hold within the `<let-exp>`
     - `<expression>` is evaluated in an environment in which the given definitions hold
 
-    ```ml
-    - let val x = 1 val y = 2 in x + y end;
-    val it = 3 : int;
-    - x;
-    Error: unbound variable or constructor: x
-    ```
+    - ```ocaml
+      - let val x = 1 val y = 2 in x + y end;
+      val it = 3 : int;
+      - x;
+      Error: unbound variable or constructor: x
+      ```
 
   - Helps break up long expressions and give meaningful names to intermediary pieces
 
-      ```ml
+    - ```ocaml
       fun days2ms days = 
           let
               val hours = days * 24.0
@@ -816,20 +822,20 @@
 
   - Function that halves a list
 
-    ```ml
-    fun halve nil = (nil, nil)
-    |   halve [a] = ([a], nil)
-    |   halve (a :: b :: cs) =
-            let
-                val (x, y) = halve cs
-            in
-                (a :: x, b :: y)
-            end;
-    ```
+    - ```ocaml
+      fun halve nil = (nil, nil)
+      |   halve [a] = ([a], nil)
+      |   halve (a :: b :: cs) =
+              let
+                  val (x, y) = halve cs
+              in
+                  (a :: x, b :: y)
+              end;
+      ```
 
     - Expand function into merge-sort implementation
 
-        ```ml
+      - ```ocaml
         fun merge (nil, ys) = ys
         |   merge (xs, nil) = xs
         |   merge (x :: xs, y :: ys) =
@@ -846,87 +852,87 @@
         ```
 
 - Nested Function Definitions
-  - `halve` and `merge` from above aren’t useful on their own
+  - `halve` and `merge` from above aren't useful on their own
   - In our interest to make it clear that they are only relevant in the context of `mergeSort`
 
-    ```ml
-      fun mergeSort nil = nil
-      |   mergeSort [a] = [a]
-      |   mergeSort theList =
-              let
-                  fun halve nil = (nil, nil)
-                  |   halve [a] = ([a], nil)
-                  |   halve (a :: b :: cs) =
-                          let
-                              val (x, y) = halve cs
-                          in
-                              (a :: x, b :: y)
-                          end;
-                  fun merge (nil, ys) = ys
-                  |   merge (xs, nil) = xs
-                  |   merge (x :: xs, y :: ys) =
-                          if (x < y) then x :: merge (xs, y :: ys)
-                          else y :: merge (x :: xs, ys);
-                  val (x, y) = halve theList
-              in
-                  merge(mergeSort x, mergeSort y)
-              end;
-    ```
+    - ```ocaml
+        fun mergeSort nil = nil
+        |   mergeSort [a] = [a]
+        |   mergeSort theList =
+                let
+                    fun halve nil = (nil, nil)
+                    |   halve [a] = ([a], nil)
+                    |   halve (a :: b :: cs) =
+                            let
+                                val (x, y) = halve cs
+                            in
+                                (a :: x, b :: y)
+                            end;
+                    fun merge (nil, ys) = ys
+                    |   merge (xs, nil) = xs
+                    |   merge (x :: xs, y :: ys) =
+                            if (x < y) then x :: merge (xs, y :: ys)
+                            else y :: merge (x :: xs, ys);
+                    val (x, y) = halve theList
+                in
+                    merge(mergeSort x, mergeSort y)
+                end;
+      ```
 
 ## **1/6: Third Look at ML**
 
 - Pattern Matching
   - A rule is a part of ML syntax that takes the form `<rule> ::= <pattern> => <expression>`
-  - A match consists of 1+ rules separated by the `|` token: `<match> ::= <rule> | <rule> ‘|’ <match>`
+  - A match consists of 1+ rules separated by the `|` token: `<match> ::= <rule> | <rule> '|' <match>`
     - Each rule in a match must have the same type of expression on the RHS
   - Case-expressions use matches
-    - `<case-exp> ::= case <expression> of <match>`
-
-    ```ml
-    - case 1 + 1 of
-    =   3 => “three” |
-    =   2 => “two” |
-    =   _ => “hmm”;
-    val it = “two” : string
-    ```
-
+  - `<case-exp> ::= case <expression> of <match>`
+  
+    - ```ocaml
+      - case 1 + 1 of
+      =   3 => “three” |
+      =   2 => “two” |
+      =   _ => “hmm”;
+      val it = “two” : string
+      ```
+  
     - Value of a case expression is the value of the expression in the first rule of the match whose pattern matches the value of expression
-    - ML allows case expressions with general pattern matching, unlike `switch` statements in C++
-
-        ```ml
-        case x of
-        _ :: _ :: c :: _ => c |
-        _ :: b :: _ => b |
-        a :: _ => a |
-        nil => 0
-        ```
-
+  - ML allows case expressions with general pattern matching, unlike `switch` statements in C++
+  
+    - ```ocaml
+      case x of
+      _ :: _ :: c :: _ => c |
+      _ :: b :: _ => b |
+      a :: _ => a |
+      nil => 0
+      ```
+  
       - Returns the 3rd element if it exists, or the 2nd element if it exists, or the 1st element if it exists, or `0` if the list is empty
-    - `If-else`'s can be rewritten using case expressions
-
-        ```ml
-        case exp1 of
-            true => exp2 |
-            false => exp3
-        ```
-
+  - `If-else`'s can be rewritten using case expressions
+  
+    - ```ocaml
+      case exp1 of
+          true => exp2 |
+          false => exp3
+      ```
+  
       - Should only use when you need the extra flexibility of the case expression → conditional more readable
 - Function Values and Anonymous Functions
   - Function names and operators are variables bound to functions
 
-    ```ml
-    - ~
-    val it = fn : int -> int
-    - val x = ~;
-    val x = fn : int -> int
-    - x 3
-    val it = ~3 : int
-    ```
+    - ```ocaml
+      - ~
+      val it = fn : int -> int
+      - val x = ~;
+      val x = fn : int -> int
+      - x 3
+      val it = ~3 : int
+      ```
 
   - The function `f` (imperative) → the function currently bound to the name `f` (ML)
   - Functions can be declared without a name using the `fn` keyword and a match → anonymous function
 
-      ```ml
+    - ```ocaml
       - fun f x = x + 2;
       val f = fn : int -> int
       - f 1;
@@ -937,9 +943,9 @@
       val it = 3 : int
       ```
 
-    - Useful for when the function is only needed in one place and you don’t want to clutter your program with an extra variable
+    - Useful for when the function is only needed in one place and you don't want to clutter your program with an extra variable
 
-        ```ml
+      - ```ocaml
         - fun intBefore (a, b) = a < b;
         val intBefore = fn : int * int -> bool
         - quicksort ([1, 4, 3, 2, 5], intBefore);
@@ -952,92 +958,92 @@
 
   - We can extract the function denoted by an operator using the `op` keyword
 
-    ```ml
-    - quicksort ([1, 4, 3, 2, 5], op <);
-    val it = [1, 2, 3, 4, 5] : int list
-    - quicksort ([1, 4, 3, 2, 5], op >);
-    val it = [5, 4, 3, 2, 1] : int list
-    ```
+    - ```ocaml
+      - quicksort ([1, 4, 3, 2, 5], op <);
+      val it = [1, 2, 3, 4, 5] : int list
+      - quicksort ([1, 4, 3, 2, 5], op >);
+      val it = [5, 4, 3, 2, 1] : int list
+      ```
 
 - Higher-Order Functions and Currying
   - Every function has an order
     - A function that takes a function as a parameter or returns a function value has order `n + 1`, where `n` is the order of its - highest-order parameter or return value
     - A function of order `n` is called an `n`th order function
-    - Any function with order `>1` is called a higher-order function
-  - We’ve seen that functions only take 1 parameter
+    - Any function with order `> 1` is called a higher-order function
+  - We've seen that functions only take 1 parameter
     - We get around this by passing a tuple as this parameter
     - We can also use currying - have 1 function take 1 parameter and return a function that will use a second parameter to get the - final result
 
-        ```ml
+      - ```ocaml
         - fun f (a, b) = a + b;
         val f = fn : int * int -> int
         - fun g a = fn b => a + b
         val g = fn : int -> int -> int
         ```
 
-      - `g` takes the first parameter and returns an anonymous function that takes the second parameter and returns the sum
-      - We would call `f` with a tuple like normal, but `g` would be called with integer parameters due to ML’s left associativity of - functions
-      - Biggest advantage of currying is we can call curried functions while only passing some of their parameters and leave the rest for later
+        - `g` takes the first parameter and returns an anonymous function that takes the second parameter and returns the sum
+        - We would call `f` with a tuple like normal, but `g` would be called with integer parameters due to ML's left associativity of - functions
+        - Biggest advantage of currying is we can call curried functions while only passing some of their parameters and leave the rest for later
 
-        ```ml
-        - val add2 = g 2;
-        val add2 = fn : int -> int
-        - add2 3;
-        val it = 5 : int
-        - add2 10;
-        val it =  12 : int
-        - val sortBackward = quicksort (op >);
-        val sortBackward = fn : int list -> int list
-        - sortBackward [1, 4, 3, 2, 5];
-        val it = [5, 4, 3, 2, 1] : int list
-        Currying creates more specialized versions of functions
-        Can be generalized to any number of parameters
-        Can be abbreviated
-        fun g a = fn b = fn c => a + b +c;
-        fun g a b c = a + b + c
-        ```
+          - ```ocaml
+            - val add2 = g 2;
+            val add2 = fn : int -> int
+            - add2 3;
+            val it = 5 : int
+            - add2 10;
+            val it =  12 : int
+            - val sortBackward = quicksort (op >);
+            val sortBackward = fn : int list -> int list
+            - sortBackward [1, 4, 3, 2, 5];
+            val it = [5, 4, 3, 2, 1] : int list
+            Currying creates more specialized versions of functions
+            Can be generalized to any number of parameters
+            Can be abbreviated
+            fun g a = fn b = fn c => a + b +c;
+            fun g a b c = a + b + c
+            ```
 
 - Predefined Higher-Order Functions
   - `map` function
     - Used to apply some function to every element of a list, collecting a list of the results
 
-    ```ml
-    - map ~ [1, 2, 3, 4];
-    val it = [~1, ~2, ~3, ~4] : int list
-    ```
+    - ```ocaml
+      - map ~ [1, 2, 3, 4];
+      val it = [~1, ~2, ~3, ~4] : int list
+      ```
 
-    - Type is `(‘a -> ‘b) -> ‘a list -> ‘b list`
+    - Type is `('a -> 'b) -> 'a list -> 'b list`
     - Result will always be a list of the same length as the input list
   - `foldr` function
     - Used to combine all the elements of a list into one value
     - Takes 3 parameters: function `f`, starting value `c`, and a list of values
       - Starts with the rightmost element, computes the result of `f` called on that element and `c`, and then folds in the next element - until all elements have been processed
 
-      ```ml
-      - foldr (op ^) “” [“abc”, “def”, “ghi”];
-      val it = “abcdefghi” : string
-      ```
+      - ```ocaml
+        - foldr (op ^) “” [“abc”, “def”, “ghi”];
+        val it = “abcdefghi” : string
+        ```
 
-    - Type is `(‘a * ‘b -> ‘b) -> ‘b -> ‘a list -> ‘b`
+    - Type is `('a * 'b -> 'b) -> 'b -> 'a list -> 'b`
     - Commonly used by giving the first 2 parameters and not the third
       - Results in a function that takes a list and folds it with a fixes function and an initial value
 
-        ```ml
-        - val addup = foldr (op +) 0;
-        val addup = fn : int list -> int
-        - addup [1, 2, 3, 4, 5];
-        val it = 15 : int
+        - ```ocaml
+          - val addup = foldr (op +) 0;
+          val addup = fn : int list -> int
+          - addup [1, 2, 3, 4, 5];
+          val it = 15 : int
+          ```
+
+      - ```ocaml
+        foldr (fn (a, b) => FUNCTION_BODY) c x
         ```
 
-      ```ml
-      foldr (fn (a, b) => function body) c x
-      ```
-
-      - `b`, `c`, the value returned by the anonymous function, and the value returned by `foldr` are all the same type
-      - `a` is the same type as the elements of list `x`
+        - `b`, `c`, the value returned by the anonymous function, and the value returned by `foldr` are all the same type
+        - `a` is the same type as the elements of list `x`
     - Function that removes all negatives from a list
 
-        ```ml
+      - ```ocaml
         fun thin L = foldr (fn (a, b) => if a < 0 then b else a::b) [] L;
         ```
 
@@ -1045,17 +1051,17 @@
     - Used to combine all the elements of a list into one value
     - Starts from the leftmost element instead of the rightmost
 
-    ```ml
-    - foldl (op ^) “” [“abc”, “def”, “ghi”];
-    val it = “ghidefabc” : string
-    ```
+    - ```ocaml
+      - foldl (op ^) “” [“abc”, “def”, “ghi”];
+      val it = “ghidefabc” : string
+      ```
 
 ## **1/6: Fourth Look at ML**
 
-- `bool` is not a primitive in ML - it’s a defined type using the keyword `datatype`
+- `bool` is not a primitive in ML - it's a defined type using the keyword `datatype`
 - Enumerations
 
-    ```ml
+  - ```ocaml
     - datatype day = Mon | Tue | Wed | Thu | Fri | Sat | Sun;
     datatype day = Fri | Mon | Sat | Sun | Thu | Tue | Wed
     - fun isWeekDay x = not (x = Sat orselse x = Sun)
@@ -1065,111 +1071,111 @@
   - Type inference of ML applies to new types
   - `day` in the example is called a type constructor and the member names are called data constructors
     - Data constructor names are capitalized by convention
-  - ML doesn’t expose the underlying representation of values within an enumeration
+  - ML doesn't expose the underlying representation of values within an enumeration
     - Only operations that are permitted are comparisons for equality
   - Can use data constructors in patterns
 
-    ```ml
-    fun isWeekDay Sat = false |
-        isWeekDay Sun = false |
-        isWeekDay _ = true;
-    ```
+    - ```ocaml
+      fun isWeekDay Sat = false |
+          isWeekDay Sun = false |
+          isWeekDay _ = true;
+      ```
 
 - Data Constructors with Parameters
   - Can add a parameter to a data constructor by adding the keyword `of` followed by the type of parameter
 
-    ```ml
-    datatype exint = Value of int | PlusInf | MinusInf
-    ```
+    - ```ocaml
+      datatype exint = Value of int | PlusInf | MinusInf
+      ```
 
-    - Each `Value` will contain an `int` → cannot treat `Value`s as `int`s
+      - Each `Value` will contain an `int` → cannot treat `Value`s as `int`s
 
-    ```ml
-    - PlusInf;
-    val it = PlusInf : exint
-    - MinusInf;
-    val it = MinusInf : exint
-    - Value;
-    val it = fn : int -> exint
-    - Value 3;
-    val it = Value 3 : exint
-    ```
+        - ```ocaml
+          - PlusInf;
+          val it = PlusInf : exint
+          - MinusInf;
+          val it = MinusInf : exint
+          - Value;
+          val it = fn : int -> exint
+          - Value 3;
+          val it = Value 3 : exint
+          ```
 
   - Can extract the parameter through pattern matching
 
-      ```ml
+    - ```ocaml
       - val (Value y) = x;
       val y = 5 : int
       ```
 
   - This pattern is nonexhaustive
 
-    ```ml
-    - val s = case x of
-    =   PlusInf => “infinity” |
-    =   MinusInf => “-infinity” |
-    =   Value y => Int.toString y;
-    val s = “5” : string
-    ```
+    - ```ocaml
+      - val s = case x of
+      =   PlusInf => “infinity” |
+      =   MinusInf => “-infinity” |
+      =   Val ue y => Int.toString y;
+      val s = “5” : string
+      ```
 
 - Type Constructors with Parameters
   - The parameters for a type constructor are type parameters and the result is a polymorphic type constructor
   - `option` type constructor is pre-defined in ML
 
-    ```ml
-    datatype ‘a option = NONE | SOME of ‘a;
-    - SOME 4;
-    val it = SOME 4 : int option
-    - SOME 1.2;
-    val it = SOME 1.2 : real option
-    ```
+    - ```ocaml
+      datatype 'a option = NONE | SOME of 'a;
+      - SOME 4;
+      val it = SOME 4 : int option
+      - SOME 1.2;
+      val it = SOME 1.2 : real option
+      ```
 
     - Useful for functions with undefined results
     - Function to handle division by 0
 
-        ```ml
+      - ```ocaml
         - fun optdiv a b =
         =   if b = 0 then NONE else SOME (a div b);
         val optdiv = fn : int -> int -> int option
         ```
 
-    ```ml
-    datatype ‘x bunch = One of ‘x | Group of ‘x list;
-    - One 1.0
-    val it = One 1.0 : real bunch
-    - Group [true, false];
-    val it = Group[true, false] : bool bunch
-    ```
+    - ```ocaml
+      datatype 'x bunch = One of 'x | Group of 'x list;
+      - One 1.0
+      val it = One 1.0 : real bunch
+      - Group [true, false];
+      val it = Group[true, false] : bool bunch
+      ```
 
-  - ML doesn’t always have to resolve the type of a `datatype`, it depends on the operators being applied to it
+      - ML doesn't always have to resolve the type of a `datatype`, it depends on the operators being applied to it
 - Recursively Defined Type Constructors
   - In data constructors of a `datatype` definition, you can use the type constructor being defined
 
-    ```ml
-    datatype intlist = INTNIL | INTCONS of int * intlist
-    fun intlistLength INTNIL = 0
-    |   intlistLength (INTCONS(_, tail)) = 1 + (intlistLength tail);
-    ```
+    - ```ocaml
+      datatype intlist = INTNIL | INTCONS of int * intlist
+      fun intlistLength INTNIL = 0
+      |   intlistLength (INTCONS(_, tail)) = 1 + (intlistLength tail);
+      ```
 
-    - This type is restricted to the type `list int` → not parametric
+      - This type is restricted to the type `list int` → not parametric
 
-        ```ml
-        datatype ‘element mylist = 
-        NIL | 
-        CONS of ‘element * ‘element mylist;
-        ```
+        - ```ocaml
+          datatype 'element mylist = 
+          NIL | 
+          CONS of 'element * 'element mylist;
+          ```
 
   - Polymorphic binary tree definition
 
-    ```ml
-    datatype ‘data tree =
-        Empty |
-        Node of ‘data tree * ‘data * ‘data tree;
-    ```
+    - ```ocaml
+      datatype 'data tree =
+          Empty |
+          Node of 'data tree * 'data * 'data tree;
+      ```
 
     - Produce a list of all elements in a tree
 
-        ```ml
+      - ```ocaml
         fun listall Empty = nil
         |   listall (Node(x, y, z)) = listall x @ y :: listall z;
         ```
@@ -1206,91 +1212,91 @@
       - In POSIX/Linux/Unix, close function called with an invalid file descriptor should return `-1` and set `errno` to `EBADF`
       - In MSVC, `close` function called with an invalid file descriptor throws an exception
       - Suppose you have a pile of code that assumes POSIX, but is run under MSVC
-        - You don’t want to have to change all your code
-        - Here’s what we did in GNUlib
+        - You don't want to have to change all your code
+        - Here's what we did in GNUlib
           - Ordinary code:
 
-            ```c++
-            #include <unistd.h>
-            int f (void) {
-              if (close (fd) != 0 && errno == EBADF) return 1;
-              else return 0;
-            }
-            ```
+            - ```c
+              #include <unistd.h>
+              int f (void) {
+                if (close (fd) != 0 && errno == EBADF) return 1;
+                else return 0;
+              }
+              ```
 
           - Our own `unistd.h`:
 
-            ```c++
-            #include next <unistd.h>
-            #define close rpl_close
-            ```
+            - ```c
+              #include next <unistd.h>
+              #define close rpl_close
+              ```
 
           - `workaround.h`:
 
-            ```c++
-            #ifdef MSVC
-            #define TRY try {
-            #define CATCH } catch {
-            #define DONE }
-            #else
-            …
-            #endif
-            ```
+            - ```c
+              #ifdef MSVC
+              #define TRY try {
+              #define CATCH } catch {
+              #define DONE }
+              #else
+              // Other code
+              #endif
+              ```
 
           - Our own library
 
-            ```c++
-            #include <unistd.h>
-            #include <workaround.h>
-            int rpl_close (int fd) {
-                TRY
-                  int r = close (fd);
-                CATCH
-                  r = -1;
-                  errno = EBADF;
-                DONE
-                  return r;
-            }
-            ```
+            - ```c
+              #include <unistd.h>
+              #include <workaround.h>
+              int rpl_close (int fd) {
+                  TRY
+                    int r = close (fd);
+                  CATCH
+                    r = -1;
+                    errno = EBADF;
+                  DONE
+                    return r;
+              }
+              ```
 
       - Make C more portable
     - Another example of syntax mutability: Prolog
       - Lets you define your own operators
 
-        ```prolog
-        :-op(500, yfx, [+,-]).
-        ```
+        - ```prolog
+          :-op(500, yfx, [+,-]).
+          ```
 
-        - `+` and `-` are operators with precedence 500, are binary operators, and are left associative
+          - `+` and `-` are operators with precedence 500, are binary operators, and are left associative
 
-        ```prolog
-        :-op(400, yfx. [*,/]).
-        ```
+        - ```prolog
+          :-op(400, yfx. [*,/]).
+          ```
 
-        - `*` and `/` are operators with precedence 400, are binary operators, and are left associative
-        - Lower number for precedence represents a higher priority
-        - `f` = function symbol
-        - `y` = operand of equal or lower-numbered precedence
-        - `x` = operand of lower-number precedence
+          - `*` and `/` are operators with precedence 400, are binary operators, and are left associative
+          - Lower number for precedence represents a higher priority
+          - `f` = function symbol
+          - `y` = operand of equal or lower-numbered precedence
+          - `x` = operand of lower-number precedence
 
-        ```prolog
-        :-op(200, fy, [+,-]).
-        ```
+        - ```prolog
+          :-op(200, fy, [+,-]).
+          ```
 
-        - Can declare same operator to have a different meaning
+          - Can declare same operator to have a different meaning
 
-        ```prolog
-        :-op(200, xfy, [**])
-        ```
+        - ```prolog
+          :-op(200, xfy, [**])
+          ```
 
-        - Right-associative
+          - Right-associative
 
-        ```prolog
-        :-op(700, xfx, [=, \=, ==, =<, >=, …]).
-        ```
+        - ```prolog
+          :-op(700, xfx, [=, \=, ==, =<, >=, …]).
+          ```
 
-        - These are non-associative operators
-        - `a >= b >= c` is a syntax error
+          - These are non-associative operators
+            - `a >= b >= c` is a syntax error
         - Makes Prolog more useful/extensible
         - Typically present in languages catering to specialties with their own notation
           - Prolog → NLP
@@ -1301,13 +1307,13 @@
     - Worried about what the programming language looks like without worrying about what it means
     - Ambiguity is sometime desirable in English, but not in programming languages
   - Why you should prefer one syntax to another
-    - It’s what people are already used to (why Java looks like C++)
-    - It’s simple and regular (Lisp)
-    - It’s readable
-      - Leibniz’s criterion: a proposition’s form should mirror its meaning
-    - It’s writable/concise
-    - It’s redundant - prefer redundancy to catch mistakes
-    - It’s unambiguous
+    - It's what people are already used to (why Java looks like C++)
+    - It's simple and regular (Lisp)
+    - It's readable
+      - Leibniz's criterion: a proposition's form should mirror its meaning
+    - It's writable/concise
+    - It's redundant - prefer redundancy to catch mistakes
+    - It's unambiguous
 - Syntax technical issues
   - 2 levels of syntax is very common
     - Lower level: tokenization - easy - still matters + performance
@@ -1324,11 +1330,11 @@
     - Issue: keywords vs. identifiers
       - C and C++ have reserved words - look like identifiers, but are not
         - There are certain strings like `“if”` that cannot be used as identifiers
-      - Makes extending the language harder
+        - Makes extending the language harder
 
-          ```c++
-          int class = 29; // ok in C, not in C++
-          ```
+          - ```c
+            int class = 29; // ok in C, not in C++
+            ```
 
       - Some languages avoid this problem by not having reserved words (PL/I)
         - Easier to extend the language
@@ -1337,11 +1343,11 @@
         - Reserves all identifiers beginning with `_` and then a capital letter or `_`
         - New keywords in C all begin with `_` and a capital letter
 
-          ```c++
-          _Noreturn void f(void) {
-            ...
-          } // f never returns
-          ```
+          - ```c
+            _Noreturn void f(void) { // f never returns
+              ...
+            }
+            ```
 
   - Parsing
     - Assumption is input is a finite sequence of tokens
@@ -1357,14 +1363,14 @@
         - Language - set of strings
         - CFG - set of terminal symbols + set of nonterminal symbols each representing a phrase + set of grammar rules + start symbol - (one of your nonterminal symbols)
         - Rules - LHS (nonterminal symbol) and a RHS (finite sequence of symbols)
-        - Example:
-
-          ```json
+      - Example:
+  
+        - ```html
           S => Sa
           S => Sb
           S => c
           ```
-
+  
       - Sentence - member of a language
 
 ## 1/12: **Ambiguity**
@@ -1375,11 +1381,11 @@
     - How to automatically process languages
   - Take a simple grammar
 
-    ```json
-    S -> S a
-    S -> b
-    S -> ( S )
-    ```
+    - ```html
+      S -> S a
+      S -> b
+      S -> ( S )
+      ```
 
     - This allows us to define a language
     - Also allows us to parse sentences in the language
@@ -1389,16 +1395,16 @@
           - Step: replace the leftmost nonterminal with a right-hand side of a rule which has that nonterminal as its left-hand side
           - Keep repeating this step as long as there is any nonterminal left in the string
 
-            ```json
-            S 3
-            ( S ) 1
-            ( S a ) 1
-            ( S a a ) 2
-            ( b a a )
-            ```
+            - ```html
+              S 3
+              ( S ) 1
+              ( S a ) 1
+              ( S a a ) 2
+              ( b a a )
+              ```
 
-            - Can express as 3 1 1 2 in shorthand
-          - Don’t necessarily know which rule to use, just need to run it and check
+              - Can express as `3 1 1 2` in shorthand
+          - Don't necessarily know which rule to use, just need to run it and check
       - Parse tree representation
         - Same power as derivations
         - Easier to read for more complex grammars
@@ -1408,120 +1414,120 @@
 - Problems that you can run into with grammars
   - Nonterminals that are used but not defined
 
-    ```json
-    S -> T b
-    S -> S a
-    S -> c
-    ```
+    - ```html
+      S -> T b
+      S -> S a
+      S -> c
+      ```
 
-    - No definition for T despite use in rule 1
+      - No definition for `T` despite use in rule 1
   - Nonterminals that are defined but never used
 
-    ```json
-    S -> S a
-    S -> c
-    T -> S b
-    ```
+    - ```html
+      S -> S a
+      S -> c
+      T -> S b
+      ```
 
-    - No use of T despite definition in rule 3
+      - No use of `T` despite definition in rule 3
   - Nonterminals that can never be reached from the start symbol
 
-    ```json
-    S -> S a
-    S -> c
-    T -> U d
-    U -> T e
-    ```
+    - ```html
+      S -> S a
+      S -> c
+      T -> U d
+      U -> T e
+      ```
 
-    - T and U are both useless despite being used and defined
+      - `T` and `U` are both useless despite being used and defined
   - Useless loops
 
-    ```json
-    S-> S a
-    S -> c
-    S -> S
-    ```
+    - ```html
+      S-> S a
+      S -> c
+      S -> S
+      ```
 
-    - Last rule is useless/counterproductive by introducing ambiguity for no reason
+      - Last rule is useless/counterproductive by introducing ambiguity for no reason
   - Problems are similar to what you find in your ordinary programs
   - Bugs like these in your grammar is likely to cause a similar bug in the corresponding parser
-  - Syntactic constraints that your grammar doesn’t capture
+  - Syntactic constraints that your grammar doesn't capture
     - Example from natural languages - small subset of English
 
-      ```json
-      N { dog, cats }
-      V { barks, meow }
-      Adj { brown, black }
-      Adv { loudly, quietly }
-      S -> NP VP .
-      NP -> N
-      NP -> Adj NP
-      VP -> V
-      VP -> VP Adv
-      ```
+      - ```html
+        N { dog, cats }
+        V { barks, meow }
+        Adj { brown, black }
+        Adv { loudly, quietly }
+        S -> NP VP .
+        NP -> N
+        NP -> Adj NP
+        VP -> V
+        VP -> VP Adv
+        ```
 
-      ```json
-      dog barks loudly
-      brown cats meow
-      dog meow softly
-      ```
+      - ```html
+        dog barks loudly
+        brown cats meow
+        dog meow softly
+        ```
 
-      - Should be bad → need to distinguish between singular and plural
+        - Should be bad → need to distinguish between singular and plural
     - Grammar size grows exponentially with the number of attributes
       - Typically not done
   - Your grammar tries to capture too much detail
     - Typically people lean towards leaving stuff out
-  - Ambiguity
-    - Can come up in seemingly reasonable grammars
-
-        ```json
-        E -> E + E
-        E -> E * E
-        E -> ID
-        E -> NUM
-        E -> ( E )
-        ```
-
+- Ambiguity
+  - Can come up in seemingly reasonable grammars
+  
+    - ```html
+      E -> E + E
+      E -> E * E
+      E -> ID
+      E -> NUM
+      E -> ( E )
+      ```
+  
       - Ambiguous for `a + b * c` → will result in 2 different interpretations
         - `(a + b) * c`
         - `a + (b * c)`
-        - Doesn’t capture precedence/associativity
+      - Doesn't capture precedence/associativity
       - Fix this ambiguity
-
-        ```json
-        E -> E + T
-        E -> T
-        T -> T * F
-        T -> F
-        F -> ID
-        F -> NUM
-        F -> ( E )
-        ```
+  
+        - ```html
+          E -> E + T
+          E -> T
+          T -> T * F
+          T -> F
+          F -> ID
+          F -> NUM
+          F -> ( E )
+          ```
 
     - Ex) Subset of C programming language
-
-      ```json
-      STMT -> ;
-      STMT -> EXPR ;
-      STMT -> return ;
-      STMT -> return EXPR ;
-      STMT -> break ;
-      STMT -> continue ;
-      STMT -> while (EXPR) STMT
-      STMT -> do STMT while (EXPR) ;
-      STMT -> if (EXPR) STMT
-      STMT -> if (EXPR) STMT else STMT
-      STMT -> for (EXPROPT ; EXPROPT ; EXPROPT) STMT
-      STMT -> switch (EXPR) STMT
-      STMT -> {STMTS}
-      EXPROPT -> EXPR
-      EXPROPT ->
-      STMTS ->
-      STMTS -> STMTS STMT
-      ```
-
+  
+      - ```html
+        STMT -> ;
+        STMT -> EXPR ;
+        STMT -> return ;
+        STMT -> return EXPR ;
+        STMT -> break ;
+        STMT -> continue ;
+        STMT -> while (EXPR) STMT
+        STMT -> do STMT while (EXPR) ;
+        STMT -> if (EXPR) STMT
+        STMT -> if (EXPR) STMT else STMT
+        STMT -> for (EXPROPT ; EXPROPT ; EXPROPT) STMT
+        STMT -> switch (EXPR) STMT
+        STMT -> {STMTS}
+        EXPROPT -> EXPR
+        EXPROPT ->
+        STMTS ->
+        STMTS -> STMTS STMT
+        ```
+  
       - Why do `STMT -> return EXPR ;` and not `STMT -> return (EXPR) ;`
-        - C designers didn’t want to clutter code with unnecessary parentheses
+        - C designers didn't want to clutter code with unnecessary parentheses
           - Not going to be ambiguous without them, semicolon is good enough
         - `STMT while (EXPR) STMT` instead of `STMT -> while EXPR STMT`
           - C would be ambiguous otherwise → `while x < y ++x;`
@@ -1530,19 +1536,19 @@
       - `If-then-else` ambiguity
         - `if (EXPR) if (EXPR) STMT else STMT`
           - Entire `if-else` nested, or just the `if` nested?
-          - `else` matches closest `if` that it can
+        - `else` matches closest `if` that it can
           - Fix:
-
-            ```json
-            STMT -> if (EXPR) STMT
-            STMT -> if (EXPR) LSTMT else STMT
-            LSTMT can be anything except an else-less if → doubles the grammar size
-            STMT -> LSTMT
-            STMT -> if (EXPR) STMT
-            ```
-
-            - Replace all other `STMT` rules with `LSTMT`
-    - Avoiding ambiguity clutters your grammar, and may people don’t want to bother
+  
+            - ```html
+              STMT -> if (EXPR) STMT
+              STMT -> if (EXPR) LSTMT else STMT
+              LSTMT can be anything except an else-less if → doubles the grammar size
+              STMT -> LSTMT
+              STMT -> if (EXPR) STMT
+              ```
+  
+              - Replace all other `STMT` rules with `LSTMT`
+    - Avoiding ambiguity clutters your grammar, and may people don't want to bother
       - Concrete - the unambiguous grammar
       - Abstract - ambiguous grammar
         - Parsers prefer this due to simplicity and speed
@@ -1552,39 +1558,39 @@
   - `expr: expr + expr`
   - Internet RFCs (Request for Comments)
 
-    ```json
-    msg-id = “<” id-left “@” id-right “>”
-    id-left = dot-atom-text / obs-id-left
-    id-right = dot-atom-text / no-fold-literal / obs-id-right
-    no-fold-literal = “[“ *dtext “]”
-    ```
+    - ```html
+      msg-id = “<” id-left “@” id-right “>”
+      id-left = dot-atom-text / obs-id-left
+      id-right = dot-atom-text / no-fold-literal / obs-id-right
+      no-fold-literal = “[“ *dtext “]”
+      ```
 
-    - Rule: LHS = RHS
-    - Nonterminals are `id-left`, `id-right`
-    - Terminals are quoted
-    - Example `msg-id`: `Message-ID: <11232143.fsf@cs.ucla.edu>`
-    - This set of rules is an extended version of the rules we’ve seen so far, in that `*X` in the RHS is shorthand for 0+ occurrences of `X`
+      - Rule: LHS = RHS
+      - Nonterminals are `id-left`, `id-right`
+      - Terminals are quoted
+      - Example `msg-id`: `Message-ID: <11232143.fsf@cs.ucla.edu>`
+      - This set of rules is an extended version of the rules we've seen so far, in that `*X` in the RHS is shorthand for 0+ occurrences of `X`
 
 ## **1/14: Functional Programming**
 
 - We can turn our grammars into regular expressions
   - Can you do this with any BNF grammar? No
-  - Regular expressions can’t count, they can’t deal with nesting
+  - Regular expressions can't count, they can't deal with nesting
     - Impossible:
 
-      ```json
-      Expr -> “(“ Expr “)”
-      Expr -> ...
-      ```
+      - ```html
+        Expr -> “(“ Expr “)”
+        Expr -> ...
+        ```
 
     - Possible:
 
-      ```json
-      Seq -> Unit
-      Seq -> Unit Seq
-      ```
+      - ```html
+        Seq -> Unit
+        Seq -> Unit Seq
+        ```
 
-      - Doable because it only performs tail recursion
+        - Doable because it only performs tail recursion
 - ISO standard for EBNF
   - International Standardization Organization
   - CS applications tend to use different EBNF notations → hard to read
@@ -1599,21 +1605,21 @@
   - `A, B` - `A` concatenated with `B`
   - `A | B` - `A` or `B`
   - `id = A` - rules
-  - Used a grammar to formally specify the syntax of ISO EBNF, used ISO EBNF
-
-      ```json
-      syntax = syntax rule, {syntax rule}
-      syntax rule = meta id, ‘=’, defns list, ‘;’;
-      defns list = defn, {‘|’, defn};
-      defn = term, {‘,’, term};
-      term = factor, [‘-’, exception];
-      exception = factor;
-      factor = [integer, ‘*’], primary
-      ...
-      ```
-
-  - Philosophically in trouble:
-    - We’ve defined ISO EBNF by using ISO EBNF
+- Used a grammar to formally specify the syntax of ISO EBNF, used ISO EBNF
+  
+  - ```html
+    syntax = syntax rule, {syntax rule}
+    syntax rule = meta id, '=', defns list, ';';
+    defns list = defn, {'|', defn};
+    defn = term, {',', term};
+    term = factor, ['-', exception];
+    exception = factor;
+    factor = [integer, '*'], primary
+    ...
+    ```
+  
+    - Philosophically in trouble:
+      - We've defined ISO EBNF by using ISO EBNF
 - Syntax graphs/syntax diagrams
   - Used in manuals/documentation for big languages
     - SQL - used for database queries
@@ -1625,11 +1631,11 @@
 - Functional programming
   - Motivations
     - Clarity - traditional programming languages use non-mathematical notation
-      - Build on top of mathematicians’ work instead of reinventing it
+      - Build on top of mathematicians' work instead of reinventing it
       - Also a problem of performance
     - Performance - parallelizability
       - C++, Python, etc. force you to think/write code sequentially
-      - Compilers often can’t optimize code through parallelization
+      - Compilers often can't optimize code through parallelization
   - Key idea: avoid side effects
     - A side effect is a change to the machine state because a statement was executed
       - Changing contents of visible storage
@@ -1660,7 +1666,7 @@
     - `If-then-else` branches must be the same type
     - Tuples can be heterogeneous, lists cannot
       - Lists can be flexible in length, tuples cannot
-    - `‘a` is a type variable, makes a generic type for type inference
+    - `'a` is a type variable, makes a generic type for type inference
     - Everything is immutable in our subset of OCaml
 
 ## 1/19: **OCaml**
@@ -1668,8 +1674,8 @@
 - Idea is to see how to explain OCaml in a basic core + add-ons
   - You see this all the time - C++ core language + libraries
   - OCaml also has core language + libraries/modules
-- What’s the core of the OCaml language (add-ons will still be part of the language)
-  - Our add-ons will be syntactic sugar - a nice way of writing something that’s an extra feature of the language that you could’ve - done without
+- What's the core of the OCaml language (add-ons will still be part of the language)
+  - Our add-ons will be syntactic sugar - a nice way of writing something that's an extra feature of the language that you could've - done without
     - C++: `i++` and `i += 1` and `i = i + 1`
   - In `val f : int -> int = <fun>` in OCaml REPL, the `<fun>` stands for the machine code to implement a function
   - Traditionally, every function needs a name
@@ -1680,10 +1686,10 @@
     - OCaml handles multi-parameter functions through currying → function takes 1 argument, then returns a function to take in the - next argument, and so on
     - Nowadays, this is not simply a notational convenience
     - Can also pass as a tuple
-    - Currying more powerful → don’t need all of the parameters when the function is called
-  - If you just write `x y z`, it’s parsed as 2 function calls
+    - Currying more powerful → don't need all of the parameters when the function is called
+  - If you just write `x y z`, it's parsed as 2 function calls
     - First is a call to `x`, then a call to whatever `x y` returns
-    - OCaml’s optimizer optimizes away the excess `call` and `ret` instructions or uses cheaper versions of the instructions
+    - OCaml's optimizer optimizes away the excess `call` and `ret` instructions or uses cheaper versions of the instructions
     - When these execute, the code knows about the first parameter, how?
       - OCaml interpreter could clone the machine code and mentally substitutes the first parameter for all of its occurrences → now has a new machine code sequence for next function
       - Typically, OCaml interpreter creates a pointer that implements the next function
@@ -1697,11 +1703,11 @@
     - Operators are functions
 - OCaml patterns are used in match expressions
 
-  ```ocaml
-  match l with
-  | h::t -> 3::h::t
-  | [] -> [4]
-  ```
+  - ```ocaml
+    match l with
+    | h:: t -> 3::h::t
+    | [] -> [4]
+    ```
 
 - Some OCaml patterns
   - `a` - matches anything, binds `a` to that value
@@ -1716,83 +1722,83 @@
 - Higher order function that does pattern matching
   - Goal: find the maximum element in an `int list`
 
-    ```ocaml
+    - ```ocaml
       let rec maxlist l = 
         match l with
         | h::t -> let mt = maxlist t in
             if mt < h then h else mt
         | _ -> -999999999
-    ```
+      ```
 
-  - Let’s generalize it to list of anything
+  - Let's generalize it to list of anything
 
-    ```ocaml
-    let rec maxlist lt identity = function
-      | h::t -> let mt = maxlist lt identity t in
-          if lt mt h then h else mt
-      | [] -> identity
-    ```
+    - ```ocaml
+      let rec maxlist lt identity = function
+        | h::t -> let mt = maxlist lt identity t in
+            if lt mt h then h else mt
+        | [] -> identity
+      ```
 
 - 2 keywords: `fun` and `function`
   - They operate differently (syntactic sugar in different ways)
   - `fun` is for currying
 
-    ```ocaml
-    fun x y -> x + y
-    ```
+    - ```ocaml
+      fun x y -> x + y
+      ```
 
   - `function` is for pattern matching
 
-    ```ocaml
-    function 
-      | [] -> 0 
-      | _::l -> f l
-    ```
+    - ```ocaml
+      function 
+        | [] -> 0 
+        | _::l -> f l
+      ```
 
 ## **1/21: OCaml and Types**
 
 - Simple OCaml function to reverse a list
 
-  ```ocaml
-  let rec reverse = function
-    | [] -> []
-    | h::t -> (reverse t) @ h
-  ```
-
-  - This is wrong, because the type is wrong
-
-  ```ocaml
-  let rec reverse = function
-    | [] -> []
-    | h::t -> (reverse t) @ [h]
-  ```
-
-  - Bad performance, `O(N^2)` due to repeated work with the `@` operator
-  - Add an accumulator - an extra argument that accumulates the work you’ve already done
-
-    ```ocaml
-    let rec revall a l =
-      match l with
-      | [] -> a
-      | h::t -> reverse h::a t
-    let reverse l = revapp [] l
+  - ```ocaml
+    let rec reverse = function
+      | [] -> []
+      | h::t -> (reverse t) @ h
     ```
 
-    - Can simplify further
+    - This is wrong, because the type is wrong
 
-      ```ocaml
-      let reverse =
-        let rec revapp a =
-          match l with
-          | [] -> a
-          | h::t -> reverse h::a t
+    - ```ocaml
+      let rec reverse = function
+        | [] -> []
+        | h::t -> (reverse t) @ [h]
       ```
+
+      - Bad performance, `O(N^2)` due to repeated work with the `@` operator
+      - Add an accumulator - an extra argument that accumulates the work you've already done
+
+        - ```ocaml
+          let rec revall a l =
+            match l with
+            | [] -> a
+            | h::t -> reverse h::a t
+          let reverse l = revapp [] l
+          ```
+
+        - Can simplify further
+
+          - ```ocaml
+            let reverse =
+              let rec revapp a =
+                match l with
+                | [] -> a
+                | h::t -> reverse h::a t
+            ```
 
 - You can debug your OCaml program by looking at types
 - Translation environments
   - Compiler: translate from source code to machine code
     - Walks through parse tree and generates an intermediate representation
-      - Set of instructions for a machine that doesn’t exist
+      - Set of instructions for a machine that doesn't exist
       - Designed for compiler convenience
     - The intermediate representation is optimized
     - Then translated to assembly, `.o`, linking, executable, RAM, etc.
@@ -1812,16 +1818,18 @@
         - As the program is running, the working memory keeps track of how often each method is executed
           - Commonly executed code is translated from byte code to machine code to improve runtime at the cost of added complexity
   - Interpreter: keep source code analog in RAM, an interpreter executes the text of the program
-    - Code is never translated to machine code, uses the interpreter’s machine code
+    - Code is never translated to machine code, uses the interpreter's machine code
     - Often converts to byte code for efficiency, a software-defined instruction set
     - Worse runtime performance than compiling, easier to debug
 
 ## **1/26: Types**
 
 - Types in OCaml, Java, C++, etc.
-  - We’ll start by looking at static type checking
+  
+  - We'll start by looking at static type checking
 - Why do we have types?
-  - “Types are more trouble than they’re worth” - is that so?
+  
+  - “Types are more trouble than they're worth” - is that so?
 - What is a type?
   - A type is a set of values
     - `int = { INT_MIN, …, -1, 0, 1, …, INT_MAX }`
@@ -1829,19 +1837,19 @@
       - Allows for countably and uncountably infinite sets through predicates
   - A type describes how objects are represented in memory
 
-    ```c++
-    struct s { 
-      int a;
-      char b[7];
-      double c;
-    } x;
+    - ```c
+      struct s { 
+        int a;
+        char b[7];
+        double c;
+      } x;
 
-    &x.b[0] - (char *) &x.a == sizeof (int)
-    ```
+      &x.b[0] - (char *) &x.a == sizeof (int)
+      ```
 
-    - Not exactly the same
-      - `char *` and `int *` have the same representation on x86-64 → not guaranteed on non-byte-addressable platforms
-    - Some details, but not all
+      - Not exactly the same
+        - `char *` and `int *` have the same representation on x86-64 → not guaranteed on non-byte-addressable platforms
+      - Some details, but not all
   - A type is a set of objects and operations defined on those objects
     - Like C++ in which a `class` has everything private except for some constructors and methods
     - Probably the one gaining in popularity
@@ -1851,9 +1859,9 @@
   - Constructed types are defined by the programmer (`char b[7]`, `struct s {...};`, `char *const *p`, etc.)
 - Primitive types have plenty of problems all by themselves
   - Portability issues
-    - What are the set of integer values? It’s machine-dependent
-      - 32-bit 2’s complement integers is most common
-      - 16-bit or 36-bit, ones’ complement, signed magnitude, etc. still exist
+    - What are the set of integer values? It's machine-dependent
+      - 32-bit 2's complement integers is most common
+      - 16-bit or 36-bit, ones' complement, signed magnitude, etc. still exist
     - `char` goes from `-128` to `127` if using `GCC`, other compilers may disagree
     - IEEE-754 floating point arithmetic
       - Set of objects for `float`s: 32-bit representation split into 1 bit sign, 8-bit exponent, and the 23-bit fraction
@@ -1870,23 +1878,23 @@
         - `(f / g - f / g)` → no answer is mathematically valid, returns `NaN`
       - `+- NaN` if `e = 255`, `f != 0`
 
-        ```c++
-        float f = 0;
-        f / f = NaN
-        ```
+        - ```c
+          float f = 0;
+          f / f = NaN
+          ```
 
         - How do you compare `NaN`s to numbers?
 
-          ```c++
-          float f = 0;
-          float nan = f / f;
-          if (nan < 5) // by convention, NaNs are never <, =, or > than anything
-          float f = 0.0/0.0, g = f;
-          f != g && memcmp (&f, &g, sizeof f) == 0;
-          ```
+          - ```c
+            float f = 0;
+            float nan = f / f;
+            if (nan < 5) // by convention, NaNs are never <, =, or > than anything
+            float f = 0.0/0.0, g = f;
+            f != g && memcmp(&f, &g, sizeof f) == 0;
+            ```
 
-          - `NaN` can’t be equal to anything, but `f` and `g` have the same bits
-      - An axiom we’d like to be true:
+            - `NaN` can't be equal to anything, but `f` and `g` have the same bits
+      - An axiom we'd like to be true:
         - `f != g` implies that `f - g != 0`
           - True of real numbers, is it true with floats? Yes because of tiny numbers
       - Common fallacy - never compare floating point values for equality
@@ -1898,7 +1906,7 @@
         - Should you use exceptions or special values?
           - Partial functions vs. total functions
           - x86-64 hardware supports both models → hardly anybody does this
-            - Due to inertia and the fact that lot’s of useful computations do better without it
+            - Due to inertia and the fact that lot's of useful computations do better without it
 - Some uses of types
   - Annotations (`int x` tells the programmer that `x` is an `int`)
     - Also tells the compiler useful information that allows it to generate better code
@@ -1921,39 +1929,39 @@
   - Two types `T` and `U` → does `T = U`?
   - 2 standard answers
     - Name equivalence - 2 types are the same if they have the same name
-    - Structural equivalence - 2 types are the same if they’re laid out in memory the same
+    - Structural equivalence - 2 types are the same if they're laid out in memory the same
       - If they behave the same, as far as the ABI goes
         - ABI = Application Binary Interface
     - Example of name equivalence in C/C++
 
-      ```c++
-      struct s { int a; struct s*  next; };
-      struct t { int a; struct t*  next; };
-      ```
+      - ```c++
+        struct s { int a; struct s*  next; };
+        struct t { int a; struct t*  next; };
+        ```
 
-      - Different names = different types
+        - Different names = different types
     - Example of structural equivalence in C/C++
 
-      ```c++
-      typedef int s;
-      typedef int t
-      s x;
-      t y = x; // this is OK
-      ```
+      - ```c++
+        typedef int s;
+        typedef int t
+        s x;
+        t y = x; // this is OK
+        ```
 
-    - Suppose we wanted structural equivalence in C/C++
+      - Suppose we wanted structural equivalence in C/C++
 
-      ```c++
-      struct s {
-        int a;
-        struct t* next; 
-      };
+        - ```c++
+          struct s {
+            int a;
+            struct t* next; 
+          };
 
-      struct t {
-        int a;
-        struct s* next;
-      };
-      ```
+          struct t {
+            int a;
+            struct s* next;
+          };
+          ```
 
 - Subtypes
   - 2 types `T` and `U`, is `T` a subtype of `U`?
@@ -1963,7 +1971,7 @@
     - Should work regardless of equivalence type
   - Examples
     - Pascal:
-      - `type lower_case_alpha = ‘a’...’z’;` is a subtype of the type `char`
+      - `type lower_case_alpha = 'a'...'z';` is a subtype of the type `char`
     - Common Lisp:
       - `(declare (type (and integer (satisfies evenp)) x))` is a subtype of `integer` → set of all integers for which `(evenp i)` returns `true`
     - In class-based systems, a subclass is a subtype
@@ -2001,39 +2009,39 @@
   - We want something better and cleaner than this if we can get it
 - Parametric polymorphism
   - Want the polymorphism to be more structured than ad hoc
-  - When a function’s type contains one or more type variables
+  - When a function's type contains one or more type variables
   - Walk through a collection of strings and remove all the strings of length 1
     - Without:
 
-      ```java
-      static void remove1 (Collection C) {
-        for (Iterator i = c.iterator(); i.hasNext(); )
-          if (i.next().length() == 1)
-            i.remove();
-      }
-      ```
+      - ```java
+        static void remove1 (Collection C) {
+          for (Iterator i = c.iterator(); i.hasNext(); )
+            if (i.next().length() == 1)
+              i.remove();
+        }
+        ```
 
-      - Won’t compile without a case because `i.next()` returns `Object` and `Object` doesn’t have a `length()` method → cast result of `i.next()` to `String`
-      - Slow and ugly → extra runtime check due to strong-typing of Java
-      - Risk of crashing
+        - Won't compile without a case because `i.next()` returns `Object` and `Object` doesn't have a `length()` method → cast result of `i.next()` to `String`
+        - Slow and ugly → extra runtime check due to strong-typing of Java
+        - Risk of crashing
     - With:
 
-      ```java
-      static void remove1 (Collection<String> c) {
-        for (Iterator<String> i = c.iterator(); i.hasNext(); )
-          if (i.next().length() == 1)
-            i.remove();
-      }
-      ```
+      - ```java
+        static void remove1 (Collection<String> c) {
+          for (Iterator<String> i = c.iterator(); i.hasNext(); )
+            if (i.next().length() == 1)
+              i.remove();
+        }
+        ```
 
-      - No cast needed, no runtime check
-      - Code is safer → no runtime exception possible
+        - No cast needed, no runtime check
+        - Code is safer → no runtime exception possible
   - 2 typical ways to do parametric polymorphism
-    - Templates (C++, Ada) represent code that doesn’t exist yet, but it will exist once you instantiate it
+    - Templates (C++, Ada) represent code that doesn't exist yet, but it will exist once you instantiate it
       - Compiler can finish the job of compiling the code when say what the types actually are in a caller or user of the template
       - May require multiple copies of the machine code, one for each type of instantiation
     - Generics (OCaml, Java) - code is compiled and type-checked just once
-      - Only one copy of the machine code needs to exist, it’ll work on any types of arguments
+      - Only one copy of the machine code needs to exist, it'll work on any types of arguments
       - This works because all types smell the same in the language
         - Every object is represented via a 64-bit pointer
 
@@ -2074,19 +2082,19 @@
           - More popular nowadays
             - Fewer dumb errors that can crash your program
 
-              ```c++
-              p = malloc(100);
-              free(p);
-              p->next = NULL; // ERROR
-              free(p); // ERROR
-              ```
+              - ```c
+                p = malloc(100);
+                free(p);
+                p->next = NULL; // ERROR
+                free(p); // ERROR
+                ```
 
             - Fewer dumb errors that can bloat your program
 
-              ```c++
-              p = malloc(100);
-              p = malloc(200); // not an error, but 100 bytes wasted
-              ```
+              - ```c
+                p = malloc(100);
+                p = malloc(200); // not an error, but 100 bytes wasted
+                ```
 
       - The find the roots question is crucial for garbage collector-based systems
       - One way (very simple, but can be slow):
@@ -2104,54 +2112,20 @@
     - The heap manager needs this to implement `malloc(N)`
     - A simple solution: maintain a free list
 
-      ```c++
-      struct free {
-        void *freeblock;
-        size_t blocksize;
-        struct free *next;
-      };
-      struct free *freelist
-      ```
+      - ```c++
+        struct free {
+          void *freeblock;
+          size_t blocksize;
+          struct free *next;
+        };
+        struct free *freelist
+        ```
 
       - Create a linked list to represent the free areas
         - Here's how to allocate:
 
-          ```c++
-          void *malloc(size_t n) {
-            for (struct free **p = &freelist; *p; p=&p->next)
-              if ((*p)->blocksize >= n) {
-                void *result = p;
-                *p = (*p)->next;
-                return result;
-              }
-            return NULL;
-          }
-          ```
-
-        - Here's how to free:
-
-          ```c++
-          void free(void *p) {
-            struct free *f = p;
-            p->m ...
-          }
-          ```
-
-        - Problem: where do we store the free list? In a separate heap somewhere?
-          - No, there's a better place to store the free list
-          - Store the free list objects into the free areas themselves:
-
-            ```c++
-            struct free {
-              size_t blocksize;
-              struct free *next;
-            };
-            struct free *freelist
-            ```
-
-            ```c++
+          - ```c++
             void *malloc(size_t n) {
-              // This might take a while if N is large
               for (struct free **p = &freelist; *p; p=&p->next)
                 if ((*p)->blocksize >= n) {
                   void *result = p;
@@ -2162,13 +2136,47 @@
             }
             ```
 
-            ```c++
+        - Here's how to free:
+
+          - ```c++
             void free(void *p) {
               struct free *f = p;
-              f->next = freelist;
-              freelist = f;
+              p->m ...
             }
             ```
+
+        - Problem: where do we store the free list? In a separate heap somewhere?
+          - No, there's a better place to store the free list
+          - Store the free list objects into the free areas themselves:
+
+            - ```c++
+              struct free {
+                size_t blocksize;
+                struct free *next;
+              };
+              struct free *freelist
+              ```
+
+            - ```c++
+              void *malloc(size_t n) {
+                // This might take a while if N is large
+                for (struct free **p = &freelist; *p; p=&p->next)
+                  if ((*p)->blocksize >= n) {
+                    void *result = p;
+                    *p = (*p)->next;
+                    return result;
+                  }
+                return NULL;
+              }
+              ```
+
+            - ```c++
+              void free(void *p) {
+                struct free *f = p;
+                f->next = freelist;
+                freelist = f;
+              }
+              ```
 
           - This sample code is too simple - its performance will be lacking
             - It wastes storage by allocating a big block even if the user wanted a small one
@@ -2178,34 +2186,34 @@
               - How can we coalesce adjacent free blocks efficiently?
                 - The obvious algorithm is `O(length of the free list)`, too slow for large systems
                 - The usual approach here, is for the memory manager to keep extra words before and/or after each block, that record the block's size
-                  - These words are not visible to the user
+      - These words are not visible to the user
 
-                    ```c++
-                    void free(void *p) {
-                      size_t sp = p;
-                      size_t object_size = sp[-1];
-                      size_t previous_object_size = sp[-2];
-                      ...
-                    }
-                    ```
+        - ```c++
+          void free(void *p) {
+            size_t sp = p;
+            size_t object_size = sp[-1];
+            size_t previous_object_size = sp[-2];
+            ...
+          }
+          ```
 
-                  - These extra words are invisible to the programmer, but are crucial for performance
-                  - Has safety downsides for languages that don't support subscript checking
-            - Now, `free` is fast - `O(1)`, but `malloc` is slow - `O(|free list|)`
-              - There's a common problem here: small blocks at the start of the free list
-                - If you start off with large blocks at the start of the free list, and the caller does a lot of `malloc(16)`s, you'll carve out 16 bytes from the first block, until it shrinks to 15 bytes or fewer
-                  - You then do this to the 2nd block and 3rd block and etc.
-                  - You end up with a bunch of small blocks at the start of the free list, so every call to `malloc(16)` will take a long time
-                - One possible solution: make the free list a circular list and use a roving pointer for tour free list pointer
-                  - Each time you call `malloc`, you start with `freelist` being where it was after the most recent `malloc`
-                  - This avoids some of the problem, but not all
-                - Fancier solutions:
-                  - Walk away from the first-fit approach, but use a best-fit approach instead
-                    - This complicates the data structure, need a way to find the best block
-                - The basic issue here is fragmentation
-                  - External fragmentation: you have 1MB of free space all in tiny separated blocks, so `malloc(1000000)` fails even though you have enough space
-                  - Internal fragmentation: user does `malloc(3)`, but you require all allocations to be a multiple of 16 for your data structures
-                  - Want to avoid fragmentation and we also want a good CPU efficiency
+        - These extra words are invisible to the programmer, but are crucial for performance
+        - Has safety downsides for languages that don't support subscript checking
+  - Now, `free` is fast - `O(1)`, but `malloc` is slow - `O(|free list|)`
+    - There's a common problem here: small blocks at the start of the free list
+      - If you start off with large blocks at the start of the free list, and the caller does a lot of `malloc(16)`s, you'll carve out 16 bytes from the first block, until it shrinks to 15 bytes or fewer
+        - You then do this to the 2nd block and 3rd block and etc.
+        - You end up with a bunch of small blocks at the start of the free list, so every call to `malloc(16)` will take a long time
+      - One possible solution: make the free list a circular list and use a roving pointer for tour free list pointer
+        - Each time you call `malloc`, you start with `freelist` being where it was after the most recent `malloc`
+        - This avoids some of the problem, but not all
+      - Fancier solutions:
+        - Walk away from the first-fit approach, but use a best-fit approach instead
+          - This complicates the data structure, need a way to find the best block
+      - The basic issue here is fragmentation
+        - External fragmentation: you have 1MB of free space all in tiny separated blocks, so `malloc(1000000)` fails even though you have enough space
+        - Internal fragmentation: user does `malloc(3)`, but you require all allocations to be a multiple of 16 for your data structures
+        - Want to avoid fragmentation and we also want a good CPU efficiency
 - Traditional garbage collection
   - Mark and sweep algorithm, 2 phases:
     - `MARK` - start at the roots and mark every object that the roots point at
@@ -2232,27 +2240,27 @@
         - Just live with the problem
           - Can often be the best if the unstable performance can be tolerated
         - Use reference counts
-          - Basic idea: the memory manager keeps an extra word with each object
-            - This word counts the number of pointers to that object
+  - Basic idea: the memory manager keeps an extra word with each object
+    - This word counts the number of pointers to that object
 
-              ```python
-              q = "def"
-              p = "abc" # "abc"'s reference count is 1
-              q = p # "abc"'s reference count is increased, "def"'s reference count is decreased
-              ```
+      - ```python
+        q = "def"
+        p = "abc" # "abc"'s reference count is 1
+        q = p # "abc"'s reference count is increased, "def"'s reference count is decreased
+        ```
 
-            - Whenever a reference count decreases to 0, the memory manager frees the object
-          - This slows down pointer assignment
-            - Python is slow anyways, so who cares?
-          - You don't need a garbage collector's `MARK`+`SWEEP`
+      - Whenever a reference count decreases to 0, the memory manager frees the object
+        - This slows down pointer assignment
+          - Python is slow anyways, so who cares?
+        - You don't need a garbage collector's `MARK`+`SWEEP`
           - The memory manager can reclaim objects exactly when they become garbage
-          - Problem: circular data structures
+        - Problem: circular data structures
 
-              ```python
-              p = { "a": 1, "b": 2 } # reference count of the dict is 1
-              p["c"] = p # reference count of the dict is 2
-              p = "def" # reference count of the dict is 1, not 0 --> dict not freed
-              ```
+          - ```python
+            p = { "a": 1, "b": 2 } # reference count of the dict is 1
+            p["c"] = p # reference count of the dict is 2
+            p = "def" # reference count of the dict is 1, not 0 --> dict not freed
+            ```
 
             - Python traditional answer to this:
               - Don't write programs like that
@@ -2260,13 +2268,13 @@
                 - If you create a circular data structure, code should explicitly break the cycle before it stops using the data structure
             - C Python has fixed this by adding a garbage collector as a backup when reference counting leaks
             - Other Python implementations use garbage collection only
-    - Can you do garbage collection in an application written in C++ or C for reliability's sake?
-      - `free` and `del` induce dangling pointer bugs
-        - We want something like:
+- Can you do garbage collection in an application written in C++ or C for reliability's sake?
+  - `free` and `del` induce dangling pointer bugs
+    - We want something like:
 
-          ```c++
-          #define free(p) ((void) 0) // This turns free into a no-op
-          ```
+      - ```c
+        #define free(p) ((void) 0) // This turns free into a no-op
+        ```
 
       - We want the memory manager to figure out how to free things, without my advice
         - This is done in Emacs (C), GCC (C++), Chrome (C++), etc.
@@ -2334,19 +2342,19 @@
       - `MARK`+`SWEEP` for the objects that have `finalize`, use a copying collector for everyone else
 - Another problem with allocation (true of `MARK`+`SWEEP` or nursery-based): multithreaded applications
 
-  ```c++
-  static lock_t lock;
-  static char *hp, *lp // global variables, subject to races
-  void *malloc(size_t n) {
-    lock(&lock) // terrible performance, critical section is a bottleneck
-    if (n <= lp - hp) {
-      void *r = hp;
-      hp += n;
-      unlock(&lock);
-      return r;
-    } else expensive(); // this must unlock too
-  }
-  ```
+  - ```c
+    static lock_t lock;
+    static char *hp, *lp // global variables, subject to races
+    void *malloc(size_t n) {
+      lock(&lock) // terrible performance, critical section is a bottleneck
+      if (n <= lp - hp) {
+        void *r = hp;
+        hp += n;
+        unlock(&lock);
+        return r;
+      } else expensive(); // this must unlock too
+    }
+    ```
 
   - Better solution: give each thread its own free list/nursery --> no locks needed
     - This complicates the garbage collector
@@ -2371,17 +2379,17 @@
           - Arguments passed as a tuple
       - Keyword correspondence
 
-        ```python
-        def arctan(y, x):
-          ...
-        return arctan(x=27, y=15)
-        ```
+        - ```python
+          def arctan(y, x):
+            # Other code
+          return arctan(x=27, y=15)
+          ```
 
-        ```python
-        def foo(a, *b, **c): # positional correspondence for a, varargs go into b, keyword args go into c (a dictionary)
-          ...
-        foo(27, 19, "xy", a=19, b="zw") # a = 27, b = 19, c = { "a": 19, "b": "zw" }
-        ```
+        - ```python
+          def foo(a, *b, **c): # Positional correspondence for a, varargs go into b, keyword args go into c (a dict)
+            # Other code
+          foo(27, 19, "xy", a=19, b="zw") # a = 27, b = 19, c = { "a": 19, "b": "zw" }
+          ```
 
   - Semantic issues (what does it mean/how does it work?) harder
     - We want 2 incompatible things here:
@@ -2401,28 +2409,28 @@
       - Less isolation between caller and callee
       - Aliasing can be a big problem --> hurts optimization, forces compilers to be cautious
 
-        ```c++
-        int f (int &a, int &b) {
-          a = 1;
-          b = 2;
-          return a + b;     
-        }
+        - ```c++
+          int f (int &a, int &b) {
+            a = 1;
+            b = 2;
+            return a + b;     
+          }
 
-        int m;
-        int n = f(m, m); // value overwritten, common optimizations not possible
-        ```
+          int m;
+          int n = f(m, m); // Value overwritten, common optimizations not possible
+          ```
 
-        - Hurts human readers (misunderstanding code or spend a lot of time reading it)
-        - Because of these aliasing problems, there are alternatives that have less aliasing
+          - Hurts human readers (misunderstanding code or spend a lot of time reading it)
+          - Because of these aliasing problems, there are alternatives that have less aliasing
     - Call by result (Ada)
       - Caller doesn't evaluate its argument; just says where it is
       - Callee must initialize the corresponding parameter
       - When the callee returns, it copies the parameter's value back to the caller
       - Classic example: `read` system call of C (C does this by call by value):
 
-        ```c++
-        read(0, buf, sizeof buf); // 2nd argument is call by result --> callee must set buf accordingly
-        ```
+        - ```c++
+          read(0, buf, sizeof buf); // 2nd argument is call by result --> callee must set buf accordingly
+          ```
 
         - Difference between C and Ada is the aliasing rules
           - In C, if 2 variables alias, the compiler must generate slow code that respects the aliasing
@@ -2437,24 +2445,24 @@
       - Basic idea is that caller doesn't evaluate its argument; instead, it passes to the callee a think representing its argument
         - A thunk is a parameterless procedure that, when you call it, will return the value you're interested in
       - Whenever the callee needs to know the value of a parameter, it calls the thunk
-      - This avoid unnecessary work if the callee doesn't use the parameter
+      - This avoids unnecessary work if the callee doesn't use the parameter
 
-        ```c++
-        void printSummary(int nitems, int avg) {
-          if (nitems == 0) // Protects the procedure from being called in call by name
-            printf("no items");
-          else
-            printf("%d items, avg is %d\n", nitems, avg);
-        }
+        - ```c
+          void printSummary(int nitems, int avg) {
+            if (nitems == 0) // Protects the procedure from being called in call by name
+              printf("no items");
+            else
+              printf("%d items, avg is %d\n", nitems, avg);
+          }
+        
+          int sum = 0;
+          int n = 0;
+          printSummary(n, sum / n) // This will crash in call by value: division by 0
+          ```
 
-        int sum = 0;
-        int n = 0;
-        printSummary(n, sum / n) // This will crash in call by value: division by 0
-        ```
-
-      - Downside: performance
-        - Overhead to building thunks
-        - Bigger deal is that you need a function call on every access to a parameter
+          - Downside: performance
+            - Overhead to building thunks
+            - Bigger deal is that you need a function call on every access to a parameter
     - Call by need (Haskell)
       - Like call by name, but you call a thunk at most once and cache its return value
       - "Lazy evaluation" vs. "Eager evaluation"
