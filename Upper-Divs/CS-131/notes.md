@@ -64,8 +64,8 @@
       - A design that is not orthogonal - in C/C++, functions cannot return arrays (arrays decay into pointers, array != pointer)
 
         - ```c++
-          int *f(...) { // ok - pointer to 0th element
-              ...
+          int *f(...) { // Ok - pointer to 0th element
+              // Other code
           }
           ```
 
@@ -74,15 +74,15 @@
               int a[10]; 
           };
 
-          struct s g(...) { // ok - struct containing an array
-              ...
+          struct s g(...) { // Ok - struct containing an array
+              // Other code
           } 
           ```
 
         - ```c++
           typedef int[10] trouble;
-          trouble h(...) { // problem - you can't return the array
-              ...
+          trouble h(...) { // Problem - you can't return the array
+              // Other code
           }
           ```
 
@@ -90,8 +90,8 @@
           #include <x.h>
           
           x arr;
-          x f(int x) { // will break if x is an array type, non-flexible implementation
-              ...
+          x f(int x) { // Will break if x is an array type, non-flexible implementation
+              // Other code
           }
           ```
 
@@ -665,7 +665,7 @@
     - ```ocaml
       - fun f 0 = “yes”;
       Warning: match nonexhaustive
-          0 => ...
+          0 -> ...
       val f = fn : int -> string
       - f 0;
       val it = “yes” : string
@@ -681,7 +681,7 @@
     - ```ocaml
       - fun f [a, _] = a;
       Warning: match nonexhaustive
-      a :: _ :: nil => ...
+      a :: _ :: nil -> ...
       val f = fn : 'a list -> 'a
       - f [#”f”, #”g”];
       val it = #”f” : char
@@ -695,7 +695,7 @@
   - ```ocaml
     - fun f (x :: xs) = x;
     Warning: match nonexhaustive
-        x :: xs => ...
+        x :: xs -> ...
     val f = fn : 'a list -> 'a
     - f [1, 2, 3];
     val it = 1 : int
@@ -889,7 +889,7 @@
 ## **Reading 5: Third Look at ML**
 
 - Pattern Matching
-  - A rule is a part of ML syntax that takes the form `<rule> ::= <pattern> => <expression>`
+  - A rule is a part of ML syntax that takes the form `<rule> ::= <pattern> -> <expression>`
   - A match consists of 1+ rules separated by the `|` token: `<match> ::= <rule> | <rule> '|' <match>`
     
     - Each rule in a match must have the same type of expression on the RHS
@@ -898,9 +898,9 @@
   
     - ```ocaml
       - case 1 + 1 of
-      =   3 => “three” |
-      =   2 => “two” |
-      =   _ => “hmm”;
+      =   3 -> “three” |
+      =   2 -> “two” |
+      =   _ -> “hmm”;
       val it = “two” : string
       ```
   
@@ -909,10 +909,10 @@
   
     - ```ocaml
       case x of
-      _ :: _ :: c :: _ => c |
-      _ :: b :: _ => b |
-      a :: _ => a |
-      nil => 0
+      _ :: _ :: c :: _ -> c |
+      _ :: b :: _ -> b |
+      a :: _ -> a |
+      nil -> 0
       ```
   
       - Returns the 3rd element if it exists, or the 2nd element if it exists, or the 1st element if it exists, or `0` if the list is empty
@@ -920,8 +920,8 @@
   
     - ```ocaml
       case exp1 of
-          true => exp2 |
-          false => exp3
+          true -> exp2 |
+          false -> exp3
       ```
   
       - Should only use when you need the extra flexibility of the case expression → conditional more readable
@@ -945,9 +945,9 @@
       val f = fn : int -> int
       - f 1;
       val it = 3 : int
-      - fn x => x + 2;
+      - fn x -> x + 2;
       val it = fn : int -> int
-      - (fn x => x + 2) 1;
+      - (fn x -> x + 2) 1;
       val it = 3 : int
       ```
 
@@ -958,9 +958,9 @@
         val intBefore = fn : int * int -> bool
         - quicksort ([1, 4, 3, 2, 5], intBefore);
         val it = [1, 2, 3, 4, 5] : int list
-        - quicksort ([1, 4, 3, 2, 5], fn (a, b) => a < b);
+        - quicksort ([1, 4, 3, 2, 5], fn (a, b) -> a < b);
         val it = [1, 2, 3, 4, 5] : int list
-        - quicksort ([1, 4, 3, 2, 5], fn (a, b) => a < b);
+        - quicksort ([1, 4, 3, 2, 5], fn (a, b) -> a < b);
         val it = [5, 4, 3, 2, 1] : int list
         ```
 
@@ -985,7 +985,7 @@
       - ```ocaml
         - fun f (a, b) = a + b;
         val f = fn : int * int -> int
-        - fun g a = fn b => a + b
+        - fun g a = fn b -> a + b
         val g = fn : int -> int -> int
         ```
 
@@ -995,21 +995,27 @@
 
           - ```ocaml
             - val add2 = g 2;
-            val add2 = fn : int -> int
+            	val add2 = fn : int -> int
             - add2 3;
-            val it = 5 : int
+              val it = 5 : int
             - add2 10;
-            val it =  12 : int
+              val it =  12 : int
             - val sortBackward = quicksort (op >);
-            val sortBackward = fn : int list -> int list
+              val sortBackward = fn : int list -> int list
             - sortBackward [1, 4, 3, 2, 5];
-            val it = [5, 4, 3, 2, 1] : int list
-            Currying creates more specialized versions of functions
-            Can be generalized to any number of parameters
-            Can be abbreviated
-            fun g a = fn b = fn c => a + b +c;
-            fun g a b c = a + b + c
+              val it = [5, 4, 3, 2, 1] : int list
             ```
+
+            - Currying creates more specialized versions of functions
+
+            - Can be generalized to any number of parameters
+
+            - Can be abbreviated
+
+            - ```ocaml
+              fun g a = fn b = fn c -> a + b +c;
+              fun g a b c = a + b + c
+              ```
 
 - Predefined Higher-Order Functions
   - `map` function
@@ -1044,7 +1050,7 @@
           ```
 
       - ```ocaml
-        foldr (fn (a, b) => FUNCTION_BODY) c x
+        foldr (fn (a, b) -> FUNCTION_BODY) c x
         ```
 
         - `b`, `c`, the value returned by the anonymous function, and the value returned by `foldr` are all the same type
@@ -1052,7 +1058,7 @@
     - Function that removes all negatives from a list
 
       - ```ocaml
-        fun thin L = foldr (fn (a, b) => if a < 0 then b else a::b) [] L;
+        fun thin L = foldr (fn (a, b) -> if a < 0 then b else a::b) [] L;
         ```
 
   - `foldl` function
@@ -1122,9 +1128,9 @@
 
     - ```ocaml
       - val s = case x of
-      =   PlusInf => “infinity” |
-      =   MinusInf => “-infinity” |
-      =   Val ue y => Int.toString y;
+      =   PlusInf -> “infinity” |
+      =   MinusInf -> “-infinity” |
+      =   Val ue y -> Int.toString y;
       val s = “5” : string
       ```
 
@@ -1345,7 +1351,7 @@
         - Makes extending the language harder
 
           - ```c
-            int class = 29; // ok in C, not in C++
+            int class = 29; // Ok in C, not in C++
             ```
 
       - Some languages avoid this problem by not having reserved words (PL/I)
@@ -1357,7 +1363,7 @@
 
           - ```c
             _Noreturn void f(void) { // f never returns
-              ...
+            	// Other code
             }
             ```
 
@@ -1378,9 +1384,9 @@
       - Example:
   
         - ```html
-          S => Sa
-          S => Sb
-          S => c
+          S -> Sa
+          S -> Sb
+          S -> c
           ```
   
       - Sentence - member of a language
@@ -1455,7 +1461,7 @@
   - Useless loops
 
     - ```html
-      S-> S a
+      S -> S a
       S -> c
       S -> S
       ```
@@ -1548,22 +1554,21 @@
           - Hard to figure out where expression stops and where statement starts
           - Trickled down to `do-while` due to consistency, despite not being necessary for ambiguity
       - `If-then-else` ambiguity
+        
         - `if (EXPR) if (EXPR) STMT else STMT`
           
           - Entire `if-else` nested, or just the `if` nested?
         - `else` matches closest `if` that it can
     - Fix:
       
-            - ```html
-              STMT -> if (EXPR) STMT
-              STMT -> if (EXPR) LSTMT else STMT
-              LSTMT can be anything except an else-less if → doubles the grammar size
-              STMT -> LSTMT
-              STMT -> if (EXPR) STMT
-        ```
-        
-              - Replace all other `STMT` rules with `LSTMT`
-        ```
+        - ```html
+          STMT -> if (EXPR) STMT
+          STMT -> if (EXPR) LSTMT else STMT
+          LSTMT can be anything except an else-less if → doubles the grammar size
+          STMT -> LSTMT
+          STMT -> if (EXPR) STMT
+          ```
+             - Replace all other `STMT` rules with `LSTMT`
     - Avoiding ambiguity clutters your grammar, and may people don't want to bother
       - Concrete - the unambiguous grammar
       - Abstract - ambiguous grammar
@@ -1896,35 +1901,36 @@
         - `(f / g - f / g)` → no answer is mathematically valid, returns `NaN`
 - `+- NaN` if `e = 255`, `f != 0`
       
-        - ```c
-          float f = 0;
-          f / f = NaN
-    ```
-      
+    - ```c
+      float f = 0;
+      f / f = NaN
+      ```
+    
+  
   - How do you compare `NaN`s to numbers?
-      
+    
           - ```c
             float f = 0;
             float nan = f / f;
             if (nan < 5) // by convention, NaNs are never <, =, or > than anything
             float f = 0.0/0.0, g = f;
             f != g && memcmp(&f, &g, sizeof f) == 0;
-  ```
+            ```
   
-            - `NaN` can't be equal to anything, but `f` and `g` have the same bits
-      - An axiom we'd like to be true:
-        - `f != g` implies that `f - g != 0`
-          - True of real numbers, is it true with floats? Yes because of tiny numbers
-      - Common fallacy - never compare floating point values for equality
-        - Not `if (f == g)`, should be `if (fabs(f - g) < 0.000001 * f)`
-        - Not necessarily true
-        - Perfectly valid to compare for equality with caution/knowledge of how type works
-      - Note that there are no exceptions in conventional floating point arithmetic, special values used instead
-        - An alternative approach would be to throw an exception if you over/underflow → no `NaN`s, just exceptions
-        - Should you use exceptions or special values?
-          - Partial functions vs. total functions
-          - x86-64 hardware supports both models → hardly anybody does this
-            - Due to inertia and the fact that lot's of useful computations do better without it
+        - `NaN` can't be equal to anything, but `f` and `g` have the same bits
+  - An axiom we'd like to be true:
+    - `f != g` implies that `f - g != 0`
+      - True of real numbers, is it true with floats? Yes because of tiny numbers
+  - Common fallacy - never compare floating point values for equality
+    - Not `if (f == g)`, should be `if (fabs(f - g) < 0.000001 * f)`
+    - Not necessarily true
+    - Perfectly valid to compare for equality with caution/knowledge of how type works
+  - Note that there are no exceptions in conventional floating point arithmetic, special values used instead
+    - An alternative approach would be to throw an exception if you over/underflow → no `NaN`s, just exceptions
+    - Should you use exceptions or special values?
+      - Partial functions vs. total functions
+      - x86-64 hardware supports both models → hardly anybody does this
+        - Due to inertia and the fact that lot's of useful computations do better without it
 - Some uses of types
   - Annotations (`int x` tells the programmer that `x` is an `int`)
     - Also tells the compiler useful information that allows it to generate better code
@@ -2097,7 +2103,7 @@
 
 - Subtypes and generics
 
-  - ```
+  - ```java
     List<String> ls = // Some value
     List<Object> lo = ls; // This is wrong
     lo.add(new Thread());
@@ -4117,7 +4123,7 @@
       	// Other code
       	if (bad
       		longjmp(lab, 1); // Restore the ip/ep from lab, cause setjmp 
-      				  		 // to return 1
+      				  		       // to return 1
       	// Other code
       }
       ```
@@ -4290,16 +4296,20 @@
     - Usually on the stack
   - Stack management is easy: LIFO so you can put it into an array
     - `sp` tells you how much you're using
+  
 - Heap storage management
   - Not LIFO - objects can be deallocated "at random"
   - You can't easily use an array with just an `sp`
   - There will be gaps in your storage
+  
 - Think of the heap as being in an arena - a big array of memory
   - We're trying to manage storage within that arena
   - Sometimes we'll have multiple arenas, but just 1 for now
+  
 - Primitives to manipulate this heap:
   - `P = malloc(N)` - allocate a new `N`-byte piece of storage
   - `free(P)` - free the block of storage addressed by `P`
+  
 - Issues that come up when doing heap management
   - How to keep track of roots - outside-the-heap pointer that points into the heap
     - Where do roots reside?
@@ -4452,6 +4462,7 @@
         - External fragmentation: you have 1MB of free space all in tiny separated blocks, so `malloc(1000000)` fails even though you have enough space
         - Internal fragmentation: user does `malloc(3)`, but you require all allocations to be a multiple of 16 for your data structures
         - Want to avoid fragmentation and we also want a good CPU efficiency
+  
 - Traditional garbage collection
   - Mark and sweep algorithm, 2 phases:
     - `MARK` - start at the roots and mark every object that the roots point at
@@ -4508,35 +4519,37 @@
             - If you create a circular data structure, code should explicitly break the cycle before it stops using the data structure
         - C Python has fixed this by adding a garbage collector as a backup when reference counting leaks
         - Other Python implementations use garbage collection only
+  
 - Can you do garbage collection in an application written in C++ or C for reliability's sake?
+  
   - `free` and `del` induce dangling pointer bugs
-    
+  
 - We want something like:
-    
-      - ```c
-        #define free(p) ((void) 0) // This turns free into a no-op
+  
+  - ```c
+    #define free(p) ((void) 0) // This turns free into a no-op
     ```
-    
-      - We want the memory manager to figure out how to free things, without my advice
-        
-        - This is done in Emacs (C), GCC (C++), Chrome (C++), etc.
-      - Conservative Garbage Collection
-        - C++/C compilers don't tell the memory manager where the roots are
-        - So a memory manager cannot do `MARK`, because root locations are unknown
-        - The basic idea: memory manager knows only where roots might be
-          - Static variables (containing pointers)
-            - This is in a single area, typically not that large, containing both pointers and other data
-          - Stack
-            - This is in a single area, typically not that large, containing both pointers and other data
-          - Machine registers
-            - This is tiny, containing both pointers and other data
-          - The memory manager looks at all words in these 3 areas
-            - If it looks like it could be a pointer into the heap, treat it as if it were a pointer into the heap
-            - Heap addresses tend to be large and unusual integers
-            - Occasionally, this will make an error, but the error is merely a memory leak; it won't crash the program
-            - This finds all pointers, as well as some values that aren't really pointers
-        - This also works on object contents
-        - So you can have a conservative `MARK` algorithm, your `SWEEP` algorithm will run as normal
+  
+       - We want the memory manager to figure out how to free things, without my advice
+  
+          - This is done in Emacs (C), GCC (C++), Chrome (C++), etc.
+              - Conservative Garbage Collection
+          - C++/C compilers don't tell the memory manager where the roots are
+          - So a memory manager cannot do `MARK`, because root locations are unknown
+          - The basic idea: memory manager knows only where roots might be
+            - Static variables (containing pointers)
+              - This is in a single area, typically not that large, containing both pointers and other data
+            - Stack
+              - This is in a single area, typically not that large, containing both pointers and other data
+            - Machine registers
+              - This is tiny, containing both pointers and other data
+            - The memory manager looks at all words in these 3 areas
+              - If it looks like it could be a pointer into the heap, treat it as if it were a pointer into the heap
+              - Heap addresses tend to be large and unusual integers
+              - Occasionally, this will make an error, but the error is merely a memory leak; it won't crash the program
+              - This finds all pointers, as well as some values that aren't really pointers
+          - This also works on object contents
+          - So you can have a conservative `MARK` algorithm, your `SWEEP` algorithm will run as normal
 - These approaches are popular, but they still have a performance problem
   - Allocation is still too slow for some users that like to allocate lots of small objects
     - Classic example is a Scheme program that calls `cons` a lot
@@ -4597,9 +4610,8 @@
             return r;
       	} else expensive(); // This must unlock too
     }
-```
-    
-  - Better solution: give each thread its own free list/nursery --> no locks needed
+    ```
+- Better solution: give each thread its own free list/nursery --> no locks needed
     - This complicates the garbage collector
       - Suppose an object in one nursery references an object in another nursery (rare)
 - Object pooling or quick lists - your app maintains its own private free list for objects that it allocates and frees a lot
@@ -4613,7 +4625,7 @@
     - How argument values are matched to function parameters
       - Positional (caller and callee agree about number/order of arguments)
       - Variable number of arguments?
-        - In Scheme, `(list 3 4 #f)` => `(3 4 #f)`
+        - In Scheme, `(list 3 4 #f)` -> `(3 4 #f)`
           - Defined by `(define list (lambda x x))`
             - `x` is bound to a list of caller arguments
         - In C, `#include <stdarg.h>`
@@ -4628,11 +4640,11 @@
           return arctan(x=27, y=15)
           ```
 
-        - ```python
-          def foo(a, *b, **c): # Positional correspondence for a, varargs go into b, keyword args go into c (a dict)
-            	# Other code
-          foo(27, 19, "xy", a=19, b="zw") # a = 27, b = 19, c = { "a": 19, "b": "zw" }
-          ```
+- ```python
+  def foo(a, *b, **c): # Positional correspondence for a, varargs go into b, keyword args go into c (a dict)
+  	# Other code
+  foo(27, 19, "xy", a=19, b="zw") # a = 27, b = 19, c = { "a": 19, "b": "zw" }
+  ```
 
   - Semantic issues (what does it mean/how does it work?) harder
     - We want 2 incompatible things here:
@@ -4718,3 +4730,147 @@
 
 ## **Lecture 18: **
 
+- Parameter passing
+
+  - Call by ___
+  - Other calling conventions
+    - Prolog's call by unification
+      - Caller and callee can both instantiate variables
+        - Caller: `p(X, a)`
+        - Callee: `p(b, Y) :- ...`
+          - Binds both `X` in caller and `Y` in callee
+    - Macro calls (done at compile-time)
+      - Binding names to expressions (or other parts of your program)
+      - Scheme, C, C__, etc.
+      - Can go to far - controversial
+      - Templates and generics replace a lot of the need for them
+
+- Object-oreiented languages
+
+  - C++, Java, etc.
+
+  - OOP is not the same as programming in an object-oriented language
+
+    - You can write an object-oriented program in C
+
+      - Ex) Linux kernel (in C) uses an object-oriented style for file systems
+
+        - ```c
+          struct s {
+            int i, j; // Instance variables
+            int (*open) (struct s*, int, char); // Method
+            int (*close) (void); // Method
+          }
+          ```
+
+    - You can write a non-object-oriented program in OCaml
+
+      - Ex) Homework 1
+
+    - Object-oriented languages fimplify the job of using an object-oriented style
+
+  - There's no single style of object-oriented langauges (or OOP)
+
+    - i.e. there isn't a complete consense on the definition of object-oriented
+
+      - Ex) static checking vs. dynamic checking
+
+    - Class-based (Java, OCaml, etc.) vs. prototype-based languages (Self, JavaScript, etc.)
+
+      - Classes: 
+        - Bundle together fields and methods
+        - Namespace control
+        - Instantiable (you can call a constructor)
+        - Inheritable (you can have subclasses)
+        - Classes are types
+      - Prototypes (typically use dynamic checking):
+        - No classes per se
+        - A "prototype" is an object that has been initialized to be the way you like
+          - You've given it instance variables and methods
+        - If you want more objects like the prototype `p`, use `p.clone()`
+          - Like calling a constructor, but isn't a constructor
+      - Class-based approach more common due to:
+        - Inertia: class-based approach started first
+        - Performance: dynamic checking of prototype-based languages slow you down
+        - Reliability: static checking guarantees freedom from certain bug classes
+
+    - Single (Java, etc.) vs. multiple (C++, Python, etc.) inheritance
+
+    - Can a subclass omit a parent method?
+
+      - Ordinarily, no
+      - But even in Java, a subclass can override with a method that always fails at runtime; wouldn't it be better to say this at compile-time
+        - Argument for allowing this behavior
+
+    - What can a class inherit?
+
+      - Instance variables
+      - Methods
+      - Invariants (Eiffel) - a logical constraint on what a method can do
+
+    - Delegation
+
+      - Can a class delegate the implementation of a method to some other method of some other object
+
+      - ```c++
+        class C { // Delegation by hand
+          D o;
+          int m(int i) {
+            return o.m(i);
+            // Other code
+          }
+        }
+        ```
+
+  - Object-oriented programming - automate common programming patterns
+
+    - Inheritance is a common pattern, there are others
+
+- Exception handling - ways to address faults in your programs
+
+  - Terminology:
+
+    - Error - problem in the programmer's head
+    - Fault - latent bug in the program (read the source code to find it)
+    - Failure - program behavior is busted, and this is visible to the user
+
+  - Focus on faults and failures here
+
+    - Some techniques:
+
+      - Static checking - checking at compile-time
+
+        - Most reliable, program cannot have the failures you're worried about
+
+        - E.g., OCaml's `option` types
+
+          - `list option` is either `None` or `Some of list`
+          - You must use a match expression to look inside a `list option` and get at the underlying list
+          - This is checked at compile time
+
+        - Vs. Java's `null` references
+
+          - ```java
+            List l = null;
+            l.get(); // Runtime error
+            ```
+
+        - Not as flexible - when in doubt, static checkers will complain, can give false alarms
+
+          - ```java
+            List l = null;
+            if (l != null)
+            	l.get(); // No runtime error
+            ```
+
+        - Sometimes impractical
+
+          
+
+          
+
+          
+
+  
+
+  
