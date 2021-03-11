@@ -263,3 +263,46 @@
   - Translates from minterm to binary
   - Priority Binary Encoder
     - Ignores bits past the leading `1`
+
+## **Lecture 12: **
+
+- Control of 2s complement arithmetic operations
+
+  - $$
+    K_x = f_2f_1\\
+    K_y = f_1\\K_{MX} = f_0
+    $$
+
+- ALU Modules and Networks
+
+  - Arithmetic Logic Unit - module realizing set of arithmetic and logic functions
+
+- Comparator Modules
+
+  - Inputs:
+
+    - $$
+      x = (x_{n-1}, ..., x_0), x_j\in \{0, 1\}\\
+      y = (y_{n-1},...,y_0), y_j\in \{0, 1\}\\
+      c_{in} \in \{G, E, S\}
+      $$
+
+  - Outputs:
+
+    - $$
+      z\in \{G, E, S\}
+      $$
+
+  - Function:
+
+    - $$
+      z = \begin{cases}
+      G\quad if\ (x > y) \ or\ (x=y\ and\ c_{in} = G)\\
+      E\quad if\ (x = y) \ and\ (c_{in} = E)\\
+      S\quad if\ (x < y) \ or\ (x=y\ and\ c_{in} = S)\\
+      \end{cases}
+      $$
+
+  - 
+
+  

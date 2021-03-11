@@ -4728,7 +4728,7 @@
           - The system does the minimal amount of work to satisfy your demand
       - For many functional applications, this can be a win, due to optimization
 
-## **Lecture 18: **
+## **Lecture 18: OOP, Exceptions, and Cost Models**
 
 - Parameter passing
 
@@ -4741,11 +4741,11 @@
           - Binds both `X` in caller and `Y` in callee
     - Macro calls (done at compile-time)
       - Binding names to expressions (or other parts of your program)
-      - Scheme, C, C__, etc.
+      - Scheme, C, C++, etc.
       - Can go to far - controversial
       - Templates and generics replace a lot of the need for them
 
-- Object-oreiented languages
+- Object-oriented languages
 
   - C++, Java, etc.
 
@@ -4865,12 +4865,175 @@
 
         - Sometimes impractical
 
+          - Often hard to prove subscript checking
+
+      - Preconditions
+
+        - Associated with each method or function is a logical expression (side-effect free, may be complex) that it's the caller's responsibility to make true, and the callee can assume hold
+
+          - ```c
+            double sqrt(double x) precondition(0 <= x);
+            
+            int close(int fd) precondition(isopen(fd));
+            ```
+
+        - How to enforce preconditions?
+
+          - Simple model: when debugging, compiler generates code checking that each precondition holds
+            - In production: this code is not generated
+          - More complicated: check it statically, put in runtime checks only if static checking cannot determine
+
+      - Total definition - everything normally considered to be a failure is instead turned into a non-failure, by defining the  behavior in this case
+
+        - C/C++: using a variable that's not initialized is a failure
+        - Java: every variable is initialized to 0-ish
+          - Eliminated a class of failure
+          - A bit less efficiency
+          - Can mask programming errors
+        - C/C++ have total definitions for `sqrt(x)` - you get a `NaN` 
+          - Relies on the special values of IEEE floating point
+
+      - Fatal handling of failures
+
+        - A failure causes your program to reliably crash
+        - C/C++: `abort();`
+
+      - Exception handling
+
+        - ```java
+          try {
+          	// Do stuff that might cause failures
+          } catch (IOException e) {
+            // Deal with IOException failures
+          } finally {
+            // This code is always executed, no matter how we exited
+          }
+          ```
+
+        - How is this implemented?
+
+          - When an exception is hit, you walk through the dynamic chain, looking for an appopriate `catch` clause
+            - Along the way, you pop stack frames and execute  any `finally` blocks
+
+        - Argument for exception handling
+
+          - Write ordinary code in the `try` section and exceptional code in the `catch` case
+            - Makes it easy to see the common case
+
+        - Argument against exception handling
+
+          - Human reader has to constantly be aware of control flow
+
+          - Stops certain optimizations by the compiler
+
+          - Java lets you reason about exception handling code by using checked exceptions
+
+            - ```java
+              Object
+              	Throwable
+              		Exception
+              		Error
+              ```
+
+              - `Throwable` is simple: all it has is a string for debugging and another associated `Throwable`, representing the cause of the exception
+              - `Error` is used for serious problems that typically aren't recoverable
+                - Out of memory
+              - `Exception` is for recoverable conditions
+                - `EOF` on input
+
+            - With checked exceptions, each method that can throw any kind of exception must state in its API, that it can throw that exception type
+
+              - ```java
+                int m(int) throws IOException
+                ```
+
+                - This puts the caller on notice, and the Java compiler checks your code
+                - If your method uses `throw new IOException ()` or call some other method whose API says `throws IOException`, this must be part of the API unless the method itself catches `IOException`
+                - This let `javac` check that every `Exception` is caught by somebody
+
+              - This checking is not done for `Error`s
+
+- Cost models
+
+  - Mental model of the resources required to develop or execute a program
+
+    - Distinguish between `O(...)` and absolute cost
+      - `O(N^2)` algorithm will be worse than `O(N log N)` algorithm no matter what language you use
+      - Absolute costs are still a significant deal
+    - Important for choosing a language
+    - Important for writing your code, assuming a particular language
+    - What costs?
+      - Time (wall-clock time vs. CPU time, latency vs. throughput)
+      - Space (RAM, cache, flash/disk, etc.)
+      - Power or energy (IoT/server farms)
+      - Communications overhead (DNS accesses)
+      - Etc.
+
+  - To develop a cost model, draw pictures
+
+    - e.g., Lisp lists vs. Python lists
+
+    - Python-> Scheme is bad performance - they don't have compatible cost models
+
+    - Prolog unification
+
+      - `O(min(|X|, |Y|))`
+      - `unify_with_occurs_check`: `O(max(|X|, |Y|))`
+
+    - Low-level cost models
+
+      - C/C++ have a `register` keyword
+
+        - ```c
+          int abs(int n) {
+            register int r = n; // Advises the compiler to store r in a machine register
+            return r < 0 ? -r : r;
+          }
+          ```
+
+          - This is put in in the 1970s to help the compiler optimize better
+          - Nowadays, many compilers either ignore `register` or pay not that much attention to it, because they know better
+
+      - C/C++ have an `inline` keyword
+
+        - ```c
+          inline int abs(int n) { return n < 0 ? -n : n }
           
+          int f(int x) {
+          	printf("%d\n", abs(n))
+          }
+          ```
 
-          
+          - Compiles as if the subroutine were inside the function already
+          - Optimizes the callee's code in the context of the caller
+          - Omits the `call` and `ret` instructions
+          - Modern compilers automatically do this - `inline` sort of obsolete
 
-          
+  - Our cost models are changing with time
 
-  
+## **Lecture 19: Semantics and History**
 
-  
+- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
