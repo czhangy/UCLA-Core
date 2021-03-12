@@ -77,11 +77,11 @@
   - [X] Perform testing
 - Report in file named `report.pdf`
   - [X] Create template
-  - [ ] Address pros and cons
-  - [ ] Problems run into
-  - [ ] Address Python vs. Java
-  - [ ] Address `asyncio` vs. Node.js
-  - [ ] Address dependence on Python 3.9+ features
+  - [x] Address pros and cons
+  - [x] Problems run into
+  - [x] Address Python vs. Java
+  - [x] Address `asyncio` vs. Node.js
+  - [x] Address dependence on Python 3.9+ features
 
 ## Relevant Links
 

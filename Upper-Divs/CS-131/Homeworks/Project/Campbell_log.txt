@@ -1,3 +1,0 @@
-INFO:root: 2021-03-04 17:27:42.458587: Campbell constructed
-INFO:root: 2021-03-04 17:27:42.459333: Campbell initialized
-INFO:root: 2021-03-04 17:38:05.782750: Campbell failed to start
