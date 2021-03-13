@@ -264,7 +264,7 @@
   - Priority Binary Encoder
     - Ignores bits past the leading `1`
 
-## **Lecture 12: **
+## **Lecture 12: More Modules**
 
 - Control of 2s complement arithmetic operations
 
@@ -303,6 +303,67 @@
       \end{cases}
       $$
 
-  - 
+  - Iterative or Tree Comparators to combine comparators
 
-  
+- Standard Sequential Modules
+
+  - Shift register
+
+    - $$
+      s(t + 1) = \begin{cases}
+      s(t)\quad\quad\quad\quad\quad\quad\ \ \ if\ CTRL=NONE\\
+      x(t)\quad\quad\quad\quad\quad\quad\ \ if\ CTRL=LOAD\\
+      (s_{n-2}, ..., s_0, x_l)\quad if\ CTRL = LEFT\\
+      (x_r, s_{n-1},...,s_1)\quad if\ CTRL = RIGHT
+      \end{cases}\\
+      z = s
+      $$
+
+    - Essentially in parallel
+
+  - Serial-in/serial-out unidirectional shift register
+
+    - $$
+      z(t) = x(t-n)
+      $$
+
+    - Essentially in series
+
+    - 1 input, 1 output
+
+    - Shifts right, pushes last value as output, input into register
+
+  - Parallel-in/serial-out unidirectional shift register
+
+    - Parallel inputs, 1 output
+
+  - Serial-in/parallel-out unidirectional shift register
+
+    - 1 input, parallel outputs
+
+## **Lecture 13: Shift Registers** and Counters
+
+- Use a shift register to make a serial adder
+
+- Use a shift register to make a pattern detector
+
+- Counters
+
+  - Modulo-`p` counter
+
+    - $$
+      s(t+1) = (s(t) + x) \mod{p}
+      $$
+
+    - Binary, ring, twisted tail
+
+  - Modulo-16 counter
+
+    - Can use a modulo-16 counter to build a modulo-`k` counter where:
+
+      - $$
+        1\leq k\leq 16
+        $$
+
+  - Can cascade counters to build larger counters
+
