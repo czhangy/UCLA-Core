@@ -1906,7 +1906,6 @@
       f / f = NaN
       ```
     
-  
   - How do you compare `NaN`s to numbers?
     
           - ```c
@@ -5013,27 +5012,210 @@
 
 ## **Lecture 19: Semantics and History**
 
-- 
+- What does a program mean?
 
+  - Semantics - everything but the syntax (which is just the form)
+    - The hard part of defining a computer language (syntax is easy)
+  - For syntax, we have EBNF, BNF, syntax graphs, etc.
+  - For semantics, we can divide it into 2 parts
+    - Static semantics: what can be determined "easily" before a program runs
+      - Scope checking (every identifier is defined properly)
+      - Type checking (all the types match up properly)
+      - Attribute grammars do this
+    - Dynamic semantics: you need to run the program to "know" what it means
+      - A corollary of Turing's result is you can't determine the full meaning of a hard-enough program without running it
+      - Operational semantics - you say what a program does in terms of its operations
+        - Like imperative programming
+      - Axiomatic semantics - give axioms and rules of inference to let you reason about what a program will do
+        - Like logic programming
+      - Denotational semantics - a function from a program to its meaning which is another function from inputs to outputs
+        - Like functional programming
 
+- Attribute grammars
 
+  - Basic idea (due to Knuth)
 
+    - Grammars keep track of static semantics as well as syntax
 
+      - ```html
+        E1 -> E2 + T (syntax part)
+        ```
 
+      - ```bash
+        type(E1) = if type(E2) = int & type(T) = int
+        		   then int
+        		   else float
+        ```
 
+      - ```bash
+        symtab(E2) = symtab(E1)
+        symtab(T) = symtab(E1)
+        ```
 
+      - Can get more complicated
 
+        - ```html
+          Stmtlist1 -> Decl; Stmtlist2
+          ```
 
+        - ```bash
+          symtab(Stmtlist2) = symtab(Stmtlist1) union symtab(Decl)
+          ```
 
+          - We have the symbol table, which is an inherited attribute going down the parse tree
+            - Every attribute that isn't synthesized
+          - We have the types, which are synthesized attributes going up the parse tree
+            - The direction of information flow is from child to parent
+          - We may have attributes that flow in both direction -> we need the symbol table to get the types
+            - We need to capture how these rules flow through the parse tree and avoid infinite loops
 
+  - The idea of adding information to each grammar rule to help explain a language is powerful
 
+    - Seen in Yacc/Bison: compiler-compilers
+      - You specify a grammar, along with code for each grammar rule, and it generates a compiler for you
 
+- Operational semantics
 
+  - Define an interpreter for a new language `L`
+    - To determine what a program `P` means, run the interpreter with the text of `P` as part of its input, and `P`' input as being the rest of the input
+    - Use a known programming language `K` to write the interpreter
+      - `K` could be a programming language, but it could be mathematics
+        - Definition of PL/I of the Vienna Definition Language (VDL) - constructive set theory
+        - Definition of Prolog in terms of mathematical logic
+  - Webber defines a small subset of ML in pure Prolog
 
+- Axiomatic semantics
 
+  - Use logic to formally express the relationship between a program and its spec
 
+  - Assume an imperative language
 
+    - Notation:
 
+      - `{P} S {Q}` - if the logical expression `P` is true before you execute the statement `S`, and if `S` terminates, then the logical expression `Q` will be true afterwards
+      - By logical expression, we mean a side-effect-free expression involving the varaibles of your program
+        - These expressions are not actually executed; they are only part of the spec for your program
 
+    - Example in Java (assuming `int` variables):
+
+      - ```java
+        { x + 1 < 0 } x = x + 1; { x < 1 }
+        ```
+
+      - How to verify a `{P} S {Q}` statement
+
+        - Define rules for your language that capture its semantics well enough so that you can verify specs
+
+        - Here's the rule for the assignment statement in Java (simple variables only):
+
+          - ```java
+            {Q[x/E]} x = E; {Q}
+            ```
+
+            - `Q[x/E]` means `Q`, replacing each occurrence of `x` with `E`
+
+    - Loop invariants are a good way to informally verify to yourself that a loop is good
+
+      - This is often used among highly-reliable programs
+
+- Denotational semantics
+
+  - Most popular among research community
+  - Like attribute grammars, but the attributes of each syntactic notion are functions that express the meaning of the program as a function from inputs to outputs
+  - The Scheme report uses denotational semantics to express what Scheme means
+
+- A brief history of programming languages
+
+  - Learn from history and avoid some of the mistakes
+
+  - First language: Fortran
+
+    - Arrays, loops, procedures
+    - Proved people wrong -> can specify a concrete algorithm to generate machine code
+      - Originally considered an AI problem
+    - Done at IBM, used to sell computers
+      - Wreaked havoc on compatibility
+    - Syntax not well defined
+    - Used mathematical notations
+
+  - First important successor - Algol60
+
+    - Vendor independent - big win over IBM-controlled Fortran
+    - Syntax expressed in BNF, unlike informal syntax of Fortran
+      - Set precedent of nailing down syntax for future languages
+    - Also had only arrays for data structures
+
+  - Cobol
+
+    - Added records (data structures that are built out of components)
+      - Essentially structs
+    - Wanted to add readability
+    - Took over in the business world - success
+    - Write programs in English - failure
+
+  - PL/I
+
+    - Took the best ideas from Fortran, Algol60, and Cobol and combined them to take over
+    - Didn't actually take over
+
+  - Lisp
+
+    - Contributed recursion and s-expressions
+
+  - BASIC
+
+    - Strongly influenced by Fortran
+    - Keep it simple - Fortran with a lot of the bad ideas removed
+
+  - Simula67
+
+    - Introduced the idea of classes
+
+  - Pascal
+
+    - Cleaned-up version of Algol60
+    - Structured programming
+
+  - Algol68
+
+    - Attempt to clean up Algol60
+    - Too academic
+    - Birthed C
+
+  - C
+
+    - Primary contributor to Unix
+
+  - Smalltalk
+
+    - Introduced OOP in a big way
+
+  - C++
+
+  - Java
+
+    - Took ideas from C++ and Smalltalk
+
+  - Python
+
+    - Negatively influenced by Perl
+      - Perl came from Unix/etc.
+
+  - C#
+
+    - Strongly influenced by Java, etc.
+    - Attempt by Microsoft to kill off competitors
+
+    
+
+  
+
+  
+
+  
+
+  
+
+  
 
 
