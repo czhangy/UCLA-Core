@@ -2,7 +2,7 @@
 
 
 
-## Question 1
+## Question 1 (12 points)
 
 Consider the following part of the grammar for C, which was discussed in class:
 
@@ -32,7 +32,7 @@ In class I mentioned that we could remove the ')' token from the `LSMT -> do STM
 
 
 
-## Question 2
+## Question 2 (6 points)
 
 In lecture, we discussed the following Prolog predicate:
 
@@ -65,7 +65,7 @@ Are `sorted/1` and `sortie/1` logically equivalent? If so, briefly explain why; 
 
 
 
-## Question 3
+## Question 3 (8 points)
 
 Simplify `sortie/1` and `allge/2` as best you can, by using only the following simplification methods:
 
@@ -81,7 +81,7 @@ Your simplified `sortie/1` should be logically equivalent to the original `sorti
 
 
 
-## Question 4
+## Question 4 (3 points)
 
 Russell's paradox centers on the set of all sets that are not members of themselves. Suppose we attempt to investigate the paradox in GNU Prolog, by asking the question "Is there a list `L` that is a member of itself?"
 
@@ -91,37 +91,37 @@ Construct a Prolog query that is a natural translation of this English-language 
 
 
 
-## Question 5
+## Question 5 (12 points)
 
 Try the query out in GNU Prolog, and explain the resulting misbehavior.
 
 
 
-## Question 6
+## Question 6 (10 points)
 
 Can you fix the misbehavior by defining and using your own predicate instead of the standard one? If so, show how; if not, briefly explain why not.
 
 
 
-## Question 7
+## Question 7 (8 points)
 
 If `!` makes Prolog code run faster and helps it avoid infinite or near-infinite loops, why not use `!` all the time? Briefly explain by giving an example where `!` breaks things.
 
 
 
-## Question 8
+## Question 8 (10 points)
 
 Define a Scheme function `c2` such that `(c2 f)` returns a curried version of the two-argument function `f`. For example, `(((c2 cons) 'a) 'b)` should return the pair `(a . b)` just as `(cons 'a 'b)` does.
 
 
 
-## Question 9
+## Question 9 (10 points)
 
 Assuming you've defined `c2`, what does `(c2 apply)` return? Illustrate with an example of using the returned value. Hint: `apply` is a builtin function that applies a function to a list of arguments; for example, `(apply + '(3 2 9))` is equivalent to `(+ 3 2 9)` and returns `14`
 
 
 
-## Question 10
+## Question 10 (12 points)
 
 ```scheme
 (define (g x)
@@ -135,13 +135,13 @@ Show what the function `g` does, by giving example calls to `g` and explaining t
 
 
 
-## Question 11
+## Question 11 (12 points)
 
 Translate the definition of `g` to OCaml as best you can, or, if such a translation is impossible, explain why not.
 
 
 
-## Question 12
+## Question 12 (18 points)
 
 Dybvig gives the following example of the continuation-passing style:
 
@@ -168,7 +168,7 @@ Translate this function definition and example call into OCaml as clearly and co
 
 
 
-## Question 13
+## Question 13 (9 points)
 
 The Homework 2 hint code uses something like CPS, but it isn't curried CPS because the continuations (which are called "acceptors") are passed *after* the actual arguments, whereas curried CPS wants them passed *before*.
 
@@ -196,13 +196,13 @@ let make_appended_matchers make_a_matcher ls =
 
 
 
-## Question 14
+## Question 14 (10 points)
 
 Give a Java code example of synchronization that uses only `volatile` (not `synchronized` or any atomic data type). In your example, show how `volatile` prevents a race condition that could occur if some or all of the `volatile` keywords in your example were removed.
 
 
 
-## Question 15
+## Question 15 (12 points)
 
 The formal definition of the Java Memory Model contains this statement in section 17.4.4 "Synchronization Order":
 
@@ -216,13 +216,13 @@ Suppose we relax the Java Memory Model by removing this statement. Show that thi
 
 
 
-## Question 16
+## Question 16 (10 points)
 
 Explain why copying garbage collectors typically can make more effective use of hardware caches than conservative garbage collectors can.
 
 
 
-## Question 17
+## Question 17 (18 points)
 
 The basic idea of the Python `asyncio` library can be used in other programming languages as well. Evaluate the following three languages as potential candidates for supporting applications that are built much like these apps are build in Python with `asyncio`:
 

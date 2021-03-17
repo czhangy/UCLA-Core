@@ -2,7 +2,7 @@
 
 
 
-## Question 1
+## Question 1 (12 points)
 
 Consider the following part of the grammar for C, which was discussed in class:
 
@@ -61,7 +61,7 @@ In addition, either the 'for' or the '(' may be removed from the rule 'LSTMT -> 
 
 The semicolons following "break" and "continue" can be removed, as both of these tokens are unique and don't need the semicolon to denote the end of their respective rules. All other semicolons must be preserved, otherwise structures like "return ; EXPR ;" may become ambiguous, as there would be no token describing where a rule ends.
 
-Keywords such as "return", "break", "continue", "while", "else", and "switch" are required to remain in their repsective rules in order to identify the type of statement being represented, as they all become ambiguous without them.
+Keywords such as "return", "break", "continue", "while", "else", and "switch" are required to remain in their respective rules in order to identify the type of statement being represented, as they all become ambiguous without them.
 
 The keyword "do" must remain in the rule since "STMT while ( EXPR )" is ambiguous otherwise.
 
@@ -70,7 +70,7 @@ The curly braces in the final rule must remain there in order to prevent the if-
 
 
 
-## Question 2
+## Question 2 (6 points)
 
 In lecture, we discussed the following Prolog predicate:
 
@@ -115,7 +115,7 @@ sorted/1 and sortie/1 are logically equivalent. sorted/1 simply compares the fir
 
 
 
-## Question 3
+## Question 3 (8 points)
 
 Simplify `sortie/1` and `allge/2` as best you can, by using only the following simplification methods:
 
@@ -139,16 +139,19 @@ Your simplified `sortie/1` should be logically equivalent to the original `sorti
 
 ```prolog
 sortie([]).
-sortie([_]). % X is used to identify the singleton list, but isn't used in the body of the clause, therefore it's better to use _, which still identifies the singleton list, but doesn't cause any unnecessary unification
+sortie([_]).
 sortie([X|L]) :- allge(L, X).
 allge([], Y).
-% This clause can be removed, as the below clause can implicitly handle the case of the singleton list
 allge([X|L], Y) :- X >= Y, allge(L, X).
+
+The X in sortie([X]) can be replaced by _ because X is used to identify the singleton list, but isn't used in the body of the clause, therefore it's better to use _, which still identifies the singleton list, but doesn't cause any unnecessary unification.
+
+The clause allge([X], Y) :- X >= Y. can be removed, as the last clause can implicitly handle the case of the singleton list.
 ```
 
 
 
-## Question 4
+## Question 4 (3 points)
 
 Russell's paradox centers on the set of all sets that are not members of themselves. Suppose we attempt to investigate the paradox in GNU Prolog, by asking the question "Is there a list `L` that is a member of itself?"
 
@@ -170,7 +173,7 @@ f(L) :- member(L, L).
 
 
 
-## Question 5
+## Question 5 (12 points)
 
 Try the query out in GNU Prolog, and explain the resulting misbehavior.
 
@@ -183,12 +186,12 @@ Try the query out in GNU Prolog, and explain the resulting misbehavior.
 ### Answer
 
 ```
-If the predicate f(L) is used as a query, the error "cannot display cyclic term for L ?" appears. This is because Prolog is attempting to unify L with a list that contains L, which means it needs to unify L with a list that contains itself. Therefore, L will be continuously unified with a list that contains a list, that contains a list, etc., resulting in an infinite-loop, which prompts this error from Prolog.
+If the predicate f(L) is used as a query, the error "cannot display cyclic term for L ?" appears. This is because Prolog is attempting to unify L with a list that contains L, which means it needs to unify L with a list that contains itself. Therefore, L will be continuously unified with a list that contains a list, that contains a list, etc., resulting in an infinite-loop/cyclic definition which prompts this error from Prolog.
 ```
 
 
 
-## Question 6
+## Question 6 (10 points)
 
 Can you fix the misbehavior by defining and using your own predicate instead of the standard one? If so, show how; if not, briefly explain why not.
 
@@ -212,7 +215,7 @@ f(L) :- my_mem(L, L).
 
 
 
-## Question 7
+## Question 7 (8 points)
 
 If `!` makes Prolog code run faster and helps it avoid infinite or near-infinite loops, why not use `!` all the time? Briefly explain by giving an example where `!` breaks things.
 
@@ -237,7 +240,7 @@ The query to should_succeed should succeed. However, Prolog will first look at t
 
 
 
-## Question 8
+## Question 8 (10 points)
 
 Define a Scheme function `c2` such that `(c2 f)` returns a curried version of the two-argument function `f`. For example, `(((c2 cons) 'a) 'b)` should return the pair `(a . b)` just as `(cons 'a 'b)` does.
 
@@ -258,7 +261,7 @@ Define a Scheme function `c2` such that `(c2 f)` returns a curried version of th
 
 
 
-## Question 9
+## Question 9 (10 points)
 
 Assuming you've defined `c2`, what does `(c2 apply)` return? Illustrate with an example of using the returned value. Hint: `apply` is a builtin function that applies a function to a list of arguments; for example, `(apply + '(3 2 9))` is equivalent to `(+ 3 2 9)` and returns `14`.
 
@@ -278,7 +281,7 @@ For instance, the call (((c2 apply) +) '(3 2 1)) gets such a curried function, t
 
 
 
-## Question 10
+## Question 10 (12 points)
 
 ```scheme
 (define (g x)
@@ -308,7 +311,7 @@ g is not curried, as currying involves the use of single-parameter functions, wh
 
 
 
-## Question 11
+## Question 11 (12 points)
 
 Translate the definition of `g` to OCaml as best you can, or, if such a translation is impossible, explain why not.
 
@@ -321,12 +324,12 @@ Translate the definition of `g` to OCaml as best you can, or, if such a translat
 ### Answer
 
 ```
-This definition is not possible to translate into OCaml, as let-expressions in OCaml must be made up of expressions that are able to be evaluated beforehand. Since (y x) cannot be evaluated beforehand, assuming y doesn't yet exist in the program, this procedure cannot be replicated in OCaml.
+This definition is not possible to translate into OCaml, as let-expressions in OCaml must be made up of expressions that are able to be evaluated beforehand. This is due to OCaml's nature of being a strongly-typed language, which is strict on static type checking. Since (y x) cannot be evaluated beforehand, assuming y doesn't yet exist in the program, this procedure cannot be replicated in OCaml.
 ```
 
 
 
-## Question 12
+## Question 12 (18 points)
 
 Dybvig gives the following example of the continuation-passing style:
 
@@ -373,7 +376,7 @@ let product k =
 
 
 
-## Question 13
+## Question 13 (9 points)
 
 The Homework 2 hint code uses something like CPS, but it isn't curried CPS because the continuations (which are called "acceptors") are passed *after* the actual arguments, whereas curried CPS wants them passed *before*.
 
@@ -424,7 +427,7 @@ let make_appended_matchers accept make_a_matcher ls =
 
 
 
-## Question 14
+## Question 14 (10 points)
 
 Give a Java code example of synchronization that uses only `volatile` (not `synchronized` or any atomic data type). In your example, show how `volatile` prevents a race condition that could occur if some or all of the `volatile` keywords in your example were removed.
 
@@ -451,12 +454,12 @@ public class Example {
 ```
 
 ```
-If the volatile keyword were removed from the above class, then a race condition could occur. Say 2 threads were executing the functions in the class above. Without volatile, Java allows these threads to access the value of count that they have cached for themselves for greater efficiency. As a result, they would be able to increment and return differenct values of count throughout their execution. By declaring count as volatile, we're forcing these threads to avoid this optimization, instead reading and writing the value of count from main memory, preventing possible race conditions that may arise from varying orders of execution.
+If the volatile keyword were removed from the above class, then a race condition could occur. Say 2 threads were executing the functions in the class above. Without volatile, Java allows these threads to access the value of count that they have cached for themselves for greater efficiency. As a result, they would be able to increment and return different values of count throughout their execution. By declaring count as volatile, we're forcing these threads to avoid this optimization, instead reading and writing the value of count from main memory, preventing possible race conditions that may arise from varying orders of execution.
 ```
 
 
 
-## Question 15
+## Question 15 (12 points)
 
 The formal definition of the Java Memory Model contains this statement in section 17.4.4 "Synchronization Order":
 
@@ -477,12 +480,12 @@ Suppose we relax the Java Memory Model by removing this statement. Show that thi
 ### Answer
 
 ```
-Without the use of the T1.join() in the dowork method, race conditions form in the timing of execution performed by each thread. Each thread is started and then joined to track cputime variables, however, by ignoring the JMM, the data collected by each thread is unaware of each other. As a result, when the main thread accumulates the CPU time taken by each thread, it will improperly count due to the lack of joining, resulting in a compromised CPU time.
+Without the use of the T1.join() in the dowork method, race conditions form in the timing of execution performed by each thread. Each thread is started and then joined to track CPU time variables, however, by ignoring the JMM, the data collected by each thread is unaware of each other. As a result, when the main thread accumulates the CPU time taken by each thread, it will improperly count due to the lack of joining, resulting in a compromised CPU time.
 ```
 
 
 
-## Question 16
+## Question 16 (10 points)
 
 Explain why copying garbage collectors typically can make more effective use of hardware caches than conservative garbage collectors can.
 
@@ -500,7 +503,7 @@ Copying garbage collectors make use of a structure called the nursery. They orga
 
 
 
-## Question 17
+## Question 17 (18 points)
 
 The basic idea of the Python `asyncio` library can be used in other programming languages as well. Evaluate the following three languages as potential candidates for supporting applications that are built much like these apps are built in Python with `asyncio`:
 
