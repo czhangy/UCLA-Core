@@ -108,7 +108,7 @@ In `.git/objects` Git splits the 40-character SHA-1 text checksum into two parts
 
 ### Answer
 
-```prolog
+```
 Git needs this split of checksums in the first place to prevent a single
 directory from growing too large. Therefore, Git uses the first 2 characters to
 index into a subdirectory. Git doesn’t split them into equal parts of 20
@@ -194,12 +194,14 @@ the stream (of file data in bytes) to the appropriate position. fseek takes in 3
 arguments, the first being a pointer to the file being read, the second being
 the “offset,” or the new position to which the stream has been read, and the
 last being the origin of the stream (output file).
-	- For the first parameter, we must pass in a pointer to the file that is being
-	  written to, which would be the “output” file in this case.
-	- Using the function, ftell, allows us to set the offset argument which is the
-	  location of the new position indicator.
-	- The constant SEEK_SET should be passed in as the third argument, for it
-	  contains the file pointer to the beginning of the file.
+
+- For the first parameter, we must pass in a pointer to the file that is being
+	written to, which would be the “output” file in this case.
+- Using the function, ftell, allows us to set the offset argument which is the
+	location of the new position indicator.
+- The constant SEEK_SET should be passed in as the third argument, for it
+	contains the file pointer to the beginning of the file.
+
 There should be another function that returns the position where writing to the
 output file starts.
 ```
@@ -208,17 +210,11 @@ output file starts.
 int startPosition(int numBytes) {
   char *pos;
 	File *outputFile = fopen("output", "rb");
-	fseek(outputFile, SEEK_END, SEEK_SET); // Moves the position indicator to the
-  																			 // end of the output file
-	long int position = ftell(outputFile); // Returns the byte position of where
-  																			 // the position indicator is pointing
-	if(outputFile == NULL) { // If no output file already exists, that means the
-      										 // inputted number of bytes should be generated
+	fseek(outputFile, SEEK_END, SEEK_SET); // Moves the position indicator to the end of the output file
+	long int position = ftell(outputFile); // Returns the byte position of where the position indicator is pointing
+	if(outputFile == NULL) { // If no output file already exists, that means the inputted number of bytes should be generated
 		return numBytes;
-	} else if(position != 0) { // If the current position of the position
-    												 // indicator is not at the beginning, a fewer
-    												 // number of bytes should be generated than
-    												 // requested
+	} else if(position != 0) { // If the current position of the position indicator is not at the beginning, a fewer number of bytes should be generated than requested
 			return (numBytes - position);
   }
 }
@@ -362,7 +358,8 @@ large amount of simultaneous connections with high throughput. This is good when
 a developer wants to create an application that needs a lot of connections with
 many clients. For our project, this criticism does apply to some extent since
 our backend code needed packages for sending requests to the server (Axios) and
-reading a file (Async-file). Building these packages’ functionalities would be time-consuming to implement ourselves, importing other people’s packages helped
+reading a file (Async-file). Building these packages’ functionalities would be
+time-consuming to implement ourselves, importing other people’s packages helped
 to speed up development time. However, importing packages rely that the person
 who created them ensures the package is stable and robust. It is placing a lot
 of trust into the developer of the package, which many people may hesitate to
@@ -437,8 +434,7 @@ touch ex2.txt # Creating 2 .txt files in newbranch
 git add . # Add these new files to the staging area
 echo “I like dogs” >> ex1.txt # Adding a change to an existing file
 git checkout master # Move back into the master branch
-git merge newbranch master # Merge newbranch (which has uncommitted changes)
-													 # with master
+git merge newbranch master # Merge newbranch (which has uncommitted changes) with master
 ```
 
 ```
