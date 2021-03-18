@@ -196,11 +196,11 @@ the “offset,” or the new position to which the stream has been read, and the
 last being the origin of the stream (output file).
 
 - For the first parameter, we must pass in a pointer to the file that is being
-	written to, which would be the “output” file in this case.
+  written to, which would be the “output” file in this case.
 - Using the function, ftell, allows us to set the offset argument which is the
-	location of the new position indicator.
+  location of the new position indicator.
 - The constant SEEK_SET should be passed in as the third argument, for it
-	contains the file pointer to the beginning of the file.
+  contains the file pointer to the beginning of the file.
 
 There should be another function that returns the position where writing to the
 output file starts.
@@ -209,13 +209,13 @@ output file starts.
 ```c
 int startPosition(int numBytes) {
   char *pos;
-	File *outputFile = fopen("output", "rb");
-	fseek(outputFile, SEEK_END, SEEK_SET); // Moves the position indicator to the end of the output file
-	long int position = ftell(outputFile); // Returns the byte position of where the position indicator is pointing
-	if(outputFile == NULL) { // If no output file already exists, that means the inputted number of bytes should be generated
-		return numBytes;
-	} else if(position != 0) { // If the current position of the position indicator is not at the beginning, a fewer number of bytes should be generated than requested
-			return (numBytes - position);
+  File *outputFile = fopen("output", "rb");
+  fseek(outputFile, SEEK_END, SEEK_SET); // Moves the position indicator to the end of the output file
+  long int position = ftell(outputFile); // Returns the byte position of where the position indicator is pointing
+  if(outputFile == NULL) { // If no output file already exists, that means the inputted number of bytes should be generated
+    return numBytes;
+  } else if(position != 0) { // If the current position of the position indicator is not at the beginning, a fewer number of bytes should be generated than requested
+    return (numBytes - position);
   }
 }
 ```
