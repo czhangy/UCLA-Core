@@ -169,7 +169,9 @@ sortie([_]).
 sortie([X|L]) :- allge(L, X).
 allge([], Y).
 allge([X|L], Y) :- X >= Y, allge(L, X).
+```
 
+```
 The X in sortie([X]) can be replaced by _ because X is used to identify the
 singleton list, but isn't used in the body of the clause, therefore it's better
 to use _, which still identifies the singleton list, but doesn't cause any
@@ -244,7 +246,9 @@ any lists that are members of themselves. The cyclic behavior error that occurs
 when using Prolog's builtin predicate can be avoided by using the
 unify_with_occurs_check predicate, however, this will simply lead to the
 predicate f/1 succeeding, outputting true.
+```
 
+```prolog
 my_mem(X, L) :- unify_with_occurs_check(X, L).
 my_mem(X, [X|_]).
 my_mem(X, [_|T]) :- my_mem(X, T).
@@ -272,12 +276,16 @@ cuts. Green cuts are cuts that are used for the sole purpose of making a program
 more efficient, and should be used whenever possible. On the other hand, red
 cuts may affect a program's performance, which is why ! is not used as often as
 possible. For instance, take the following predicate:
+```
 
+```prolog
 p :- should_succeed.
 
 should_succeed :- !, fail.
 should_succeed.
+```
 
+```
 The query to should_succeed should succeed. However, Prolog will first look at
 the rule defining should_succeed that uses a cut. This cut will get backtracked
 into due to the fail, and p will be told to immediately fail. This behavior
@@ -506,15 +514,15 @@ Give a Java code example of synchronization that uses only `volatile` (not `sync
 
 ```java
 public class Example {
-	private volatile int count = 0;
-    
-    public int getCount() {
-        return count;
-    }
-    
-    public void inc() {
-        count++;
-    }
+  private volatile int count = 0;
+  
+  public int getCount() {
+    return count;
+  }
+  
+  public void inc() {
+    count++;
+  }
 }
 ```
 
