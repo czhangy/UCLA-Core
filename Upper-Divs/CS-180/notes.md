@@ -431,11 +431,11 @@
         - `O(1)`
 - In Kruskal, how do we find the cycles?
   - Union-Find
-  - Originally `e log e` time
-  - For each edge, we do a union and a find → `O(log n)` time → `e log n` total
-  - Combine → `e log e`
-- Kruskal - `e log e`
-- Prim - `n^2` or `e log e`
+  - Originally `O(e log e)` time
+  - For each edge, we do a union and a find → `O(log n)` time → `O(e log n)` total
+  - Combine → `O(e log e)`
+- Kruskal - `O(e log e)`
+- Prim - `O(n^2)` or `O(e log e)`
 
 ## **Lecture 10.: Clustering and Sorting**
 
@@ -457,7 +457,7 @@
   - Split problem into 2 groups of roughly equal size → likely involves recursive partitioning
   - Split into smallest possible parts
   - Merge lists until returned to full size
-  - Count based on how many comparisons it took to place an arbitrary element `z` in final list `F` → gets there because of 1 comparison → runtime is order `t + s`
+  - Count based on how many comparisons it took to place an arbitrary element `z` in final list `F` → gets there because of 1 comparison → runtime is `O(t + s)`
 - Merge takes `O(n)` time
 - Recursive sort takes `O(n log n)` time
 - Merge sort takes `O(n log n)`
