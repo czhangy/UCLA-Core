@@ -461,18 +461,18 @@ Rewrite the following three functions of the Homework 2 hint code so that they u
 
 ```ocaml
 let match_nucleotide nt frag accept =
-    match frag with
-    | [] -> None
-    | n::tail -> if n == nt then accept tail else None
+	match frag with
+	| [] -> None
+	| n::tail -> if n == nt then accept tail else None
 
 let append_matchers matcher1 matcher2 frag accept =
-    matcher1 frag (fun frag1 -> matcher2 frag1 accept)
+	matcher1 frag (fun frag1 -> matcher2 frag1 accept)
 
 let make_appended_matchers make_a_matcher ls = 
-	let rec mams = function
-        | [] -> match_empty
-        | head::tail -> append_matchers (make_a_matcher head) (mams tail)
-	in mams ls
+  let rec mams = function
+  | [] -> match_empty
+  | head::tail -> append_matchers (make_a_matcher head) (mams tail)
+  in mams ls
 ```
 
 
@@ -485,17 +485,17 @@ let make_appended_matchers make_a_matcher ls =
 
 ```ocaml
 let match_nucleotide accept nt = function
-    | [] -> None
-    | n::tail -> if n == nt then accept tail else None;;
+| [] -> None
+| n::tail -> if n == nt then accept tail else None;;
 
 let append_matchers accept matcher1 matcher2 =
-    (accept matcher1) matcher2;;
+	(accept matcher1) matcher2;;
 
-let make_appended_matchers accept make_a_matcher ls = 
-	let rec mams = function
-        | [] -> match_empty
-        | head::tail -> append_matchers accept (make_a_matcher head) (mams tail)
-	in mams ls
+let make_appended_matchers accept make_a_matcher ls =
+  let rec mams = function
+  | [] -> match_empty
+  | head::tail -> append_matchers accept (make_a_matcher head) (mams tail)
+  in mams ls
 ```
 
 
