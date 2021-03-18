@@ -65,7 +65,8 @@ d=$(sed -n '2p' tmp.txt | cut -c 1-8) # Second line of output
 rm tmp.txt # Removing created file
 if [ $c -ne $d ] # Comparing hash values
 then
-	exit 1 fi
+exit 1 
+fi
 exit 0
 ```
 
