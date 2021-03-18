@@ -1,4 +1,4 @@
-# COM SCI 111 - Eyolfson - Spring '21
+# COM SCI 111 - Spring '21 - Eyolfson
 
 
 
