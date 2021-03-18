@@ -2,7 +2,6 @@
 
 MSG=$(date +'%D')
 MSG+=" update"
-
 hold=""
 
 while true
