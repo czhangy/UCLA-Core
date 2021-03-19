@@ -1,4 +1,4 @@
-# CS 97 - Software Construction Projects
+# CS 35L - Software Construction
 
 # Eggert - Fall '20
 

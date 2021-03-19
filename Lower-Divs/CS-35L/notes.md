@@ -1,4 +1,4 @@
-# COM SCI 97 - Fall '20 - Eggert
+# COM SCI 35L - Fall '20 - Eggert
 
 
 
