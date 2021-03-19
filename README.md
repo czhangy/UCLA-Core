@@ -1,17 +1,17 @@
 # Charles Zhang - GPA: 3.90 - Computer Science
 
 ## Lower Division Courses
-| Course | Term | Grade | 
+| Course | Term | Grade |
 |:---:|:---:|:---:|
 | COM SCI 1 | Fall '19 | A |
 | COM SCI 31 | Fall '19 | A- |
 | COM SCI 32 | Winter '20 | A |
 | COM SCI 33 | Spring '20 | A |
-| COM SCI M51A | Winter '21 | IP |
-| COM SCI 97 | Fall '20 | P |
+| COM SCI 35L  |  Fall '20  |   P   |
+| COM SCI M51A | Winter '21 |  IP   |
 
 ## Upper Division Courses
-| Course | Term | Grade | 
+| Course | Term | Grade |
 |:---:|:---:|:---:|
 | COM SCI 111 | Spring '21 | PL |
 | COM SCI 118 | ??? | ??? |
