@@ -4,7 +4,7 @@
 
 [TOC]
 
-## Lecture 1: Bits and Bytes
+## **Lecture 1: Bits and Bytes**
 
 - Pre-processor -> compiler -> assembler -> linker
   - Text to binary through assembler
