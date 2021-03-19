@@ -1,4 +1,4 @@
-## Upper Division Courses
+# Upper Division Courses
 
 | Course                                                       |    Term    |  Professor  | Grade |
 | :----------------------------------------------------------- | :--------: | :---------: | :---: |
