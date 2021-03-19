@@ -1,4 +1,4 @@
-## Lower Division Courses
+# Lower Division Courses
 
 | Course                                             |    Term    | Professor  | Grade |
 | :------------------------------------------------- | :--------: | :--------: | :---: |
