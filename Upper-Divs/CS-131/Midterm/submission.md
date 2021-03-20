@@ -42,8 +42,7 @@ Suppose tokenizers were generous instead of greedy. That is, suppose that, inste
 ### Answer
 
 ```
-This would be problematic specifically in OCaml, as it would compromise the ability to curry.
-A structure such as f a b c where c is passed to b, which is then passed to a is very common.
+This would be problematic specifically in OCaml, as it would compromise the ability to curry. A structure such as f a b c where c is passed to b, which is then passed to a is very common.
 With greedy tokenization this works fine as the entire expression (if valid) will be tokenized.
 However, since f a is also valid, a “generous” tokenizer might simply apply f to a and then
 separately apply c to b which would produce a different, incorrect result.
