@@ -28,7 +28,7 @@
 - Report in file named `hw6.pdf`
   - [x] Create template
   - [x] Address strengths and weaknesses
-  - [x] What is the biggest problem anticipated?
+  - [x] Address potential problems
   - [x] Address language-relevant characteristics
   - [x] References
 
