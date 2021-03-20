@@ -7,7 +7,7 @@
 ## **Lecture 1: Introduction**
 
 - Digital system - inputs and outputs are a finite number of discrete values
-  - Ex) Calculator
+  - Ex) calculator
   - Can be used for numerical and nonnumerical processing
   - Information processing can use a general-purpose system
   - Digital representation - binary signals
