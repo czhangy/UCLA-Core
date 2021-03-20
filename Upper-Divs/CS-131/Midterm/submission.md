@@ -116,7 +116,7 @@ Prove that `ambigrammar` is ambiguous
 
 ### Answer
 
-```prolog
+```
 The string $2++2 can be parsed 2 different ways, according to ambigrammar.
 
 Parse tree 1 (Increment 2):
