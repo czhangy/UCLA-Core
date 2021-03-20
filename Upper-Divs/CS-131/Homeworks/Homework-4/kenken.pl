@@ -256,6 +256,7 @@ noop_kenken(Dimension, Cages, Operators, T) :- true.
     kenken/3 or plain_kenken/3 execution. Upon success, the Operators term will contain a list
     of constraints, exactly like the ones passed as C into kenken/3 and plain_kenken/3. 
 */
+
 noop_kenken_testcase :-
     noop_kenken(
         4,
