@@ -2,12 +2,12 @@
 
 ## Goal
 
-**Research the effectivenes of D as a potential platform for a proposed implementation of HVAC units**
+**Research the effectiveness of D as a potential platform for a proposed implementation of HVAC units**
 
 ## Problems
 
 - C and C++ may be vulnerable to potential attacks
-- Python and Java's complex structure, including the use of garbage collectors and interpreters, msy act as a weak point in the system
+- Python and Java's complex structure, including the use of garbage collectors and interpreters, may act as a weak point in the system
 
 ## Report
 
