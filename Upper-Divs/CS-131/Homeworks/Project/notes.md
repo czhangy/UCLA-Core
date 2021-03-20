@@ -38,7 +38,7 @@
 - Servers log I/O into a file, design the format
 - Servers only handle one request per connection
 - Messages are ended by `EOF`, can be handled by `reader.read`
-- Server must manually create `HTTP GET` requests using the `aiohttp` library
+- Server must manually create HTTP GET requests using the `aiohttp` library
   - `asyncio` only supports TCP and SSL protocols
 - Main file names `server.py`
   - Takes one command line argument: `python3 server.py [SERVER_ID]`
@@ -63,7 +63,7 @@
 - Focus on:
   - How easy is it to write `asyncio`-based programs that run and exploit server herds?
   - What are the performance implications of using `asyncio`?
-  - How important is it to rely on asyncio features of Python 3.9 or later, such as `asyncio.run` and `python -m asyncio`, or is it easy to get by with older versions of Python?
+  - How important is it to rely on `asyncio` features of Python 3.9 or later, such as `asyncio.run` and `python -m asyncio`, or is it easy to get by with older versions of Python?
 - LaTeX styling
 - 5 pages maximum
 
