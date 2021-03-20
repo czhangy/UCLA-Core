@@ -3449,7 +3449,7 @@
       calories([food(_, _, C) | Rest], X) :- calories(Rest, RestC), X is C + RestC.
       ```
 
-    - ```
+    - ```prolog
       % subseq(X, Y) succeeds when list X is the same as list Y, but with 0 or more elements omitted
       
       subseq([], []).
