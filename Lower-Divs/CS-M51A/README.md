@@ -2,7 +2,7 @@
 
 # Abari - Winter '21
 
-## Overall: IP | Raw Percentage: IP
+## Overall: A | Raw Percentage: 98.2%
 
 ## Grading
 
@@ -23,4 +23,4 @@
 | 7 | 90/90 |
 | 8 | 120/120 |
 | 9 | 120/120 |
-| 10 | ??? |
+| 10 | 90/90 |
