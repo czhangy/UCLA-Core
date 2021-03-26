@@ -8,7 +8,7 @@
 | COM SCI 32 | Winter '20 | A |
 | COM SCI 33 | Spring '20 | A |
 | COM SCI 35L  |  Fall '20  |   P   |
-| COM SCI M51A | Winter '21 |  IP   |
+| COM SCI M51A | Winter '21 |  A+   |
 
 ## Upper Division Courses
 | Course | Term | Grade |
