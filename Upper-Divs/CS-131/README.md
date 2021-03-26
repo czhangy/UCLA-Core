@@ -28,5 +28,5 @@
 
 | Exam | Score |
 |:---:|:---:|
-| Midterm | 92.4/110 |
+| Midterm | 92.4/100 |
 | Final | ??? |
