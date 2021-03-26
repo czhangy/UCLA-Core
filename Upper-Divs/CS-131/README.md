@@ -22,7 +22,7 @@
 | 4. KenKen Solver | Prolog | 100/100 |
 | 5. Scheme Code Difference Analyzer | Scheme | 95/100 |
 | 6. Evaluate a Language for Secure Camera-Based HVAC Control | D | 100/100 |
-| Project: Proxy Herd with asyncio | Python | ??? |
+| Project: Proxy Herd with asyncio | Python | 95/100 |
 
 ## Exams
 
