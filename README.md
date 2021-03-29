@@ -1,4 +1,4 @@
-# Charles Zhang - GPA: 3.90 - Computer Science
+# Charles Zhang - GPA: 3.92 - Computer Science
 
 ## Lower Division Courses
 | Course | Term | Grade |
