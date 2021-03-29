@@ -29,4 +29,4 @@
 | Exam | Score |
 |:---:|:---:|
 | Midterm | 92.4/100 |
-| Final | ??? |
+| Final | 153/180 |
