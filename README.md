@@ -13,11 +13,11 @@
 ## Upper Division Courses
 | Course | Term | Grade |
 |:---:|:---:|:---:|
-| COM SCI 111 | Spring '21 | PL |
+| COM SCI 111 | Spring '21 | IP |
 | COM SCI 118 | ??? | ??? |
 | COM SCI 130 | ??? | ??? |
 | COM SCI 131 | Winter '21 | A |
 | COM SCI M151B | ??? | ??? |
 | COM SCI M152A | ??? | ??? |
 | COM SCI 180 | Fall '20 | A |
-| COM SCI 181 | Spring '21 | PL |
+| COM SCI 181 | Spring '21 | IP |
