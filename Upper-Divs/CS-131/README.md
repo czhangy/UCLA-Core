@@ -2,7 +2,7 @@
 
 # Eggert - Winter '21
 
-## Overall: IP | Raw Percentage: IP
+## Overall: IP | Raw Percentage: 90.84%
 
 ## Grading
 
