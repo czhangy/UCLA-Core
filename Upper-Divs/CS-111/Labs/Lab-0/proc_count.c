@@ -8,11 +8,15 @@ static struct proc_dir_entry *ent;
 
 // Command that gets run when cat is used
 static int proc_count_show(struct seq_file *m, void *v) {
+	// Build list of processes?
 	struct task_struct *p;
 	int count = 0;
+	// For each running process
 	for_each_process(p) {
-		seq_printf(m, "hello\n");
+		count++;
 	}
+	// Place final count into /proc/count
+	seq_printf(m, "%d\n", count);
 	return 0;
 }
 

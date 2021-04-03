@@ -36,14 +36,14 @@
 - Coding
   - [x] Properly create and remove `/proc/count` when your module loads and unloads, respectively
   - [x] Make `/proc/count` return some string when you run `cat /proc/count`
-  - [ ] Make `/proc/count` return an integer with the number of running processes (or tasks) when you run `cat /proc/count`
+  - [x] Make `/proc/count` return an integer with the number of running processes (or tasks) when you run `cat /proc/count`
 
 - Documentation
-  - [ ] One sentence description of the module
-  - [ ] Explain how to build the module
-  - [ ] Explain how to run the module and what should be output
-  - [ ] Explain how to remove the module and clean up the code
-  - [ ] Report which kernel version the module was tested on
+  - [x] One sentence description of the module
+  - [x] Explain how to build the module
+  - [x] Explain how to run the module and what should be output
+  - [x] Explain how to remove the module and clean up the code
+  - [x] Report which kernel version the module was tested on
 
 - Submission
   - [ ] Use `git push` to push the final submission to the repository
