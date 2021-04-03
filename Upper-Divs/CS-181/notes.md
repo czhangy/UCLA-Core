@@ -1,10 +1,10 @@
-# COM SCI 181 - Spring '21 - Osman
+# COM SCI 181 - Spring '21 - Campbell
 
 
 
 [TOC]
 
-## Lecture 1:
+## Lecture 1: Models of Computation
 
 - Course lies at the intersection of multiple disciplines: 
   - Discrete mathematics
@@ -74,4 +74,28 @@
         - `w` contains 2 runs of `a`
         - `w` contains 2 runs of `b`
         - `w` contains 1 run of `c`
+
+
+
+## Reading 1: Mathematic Notions, Terminology, and Proofs
+
+- Mathematical Notions and Terminology
+
+  - Sets
+
+    - A **set** is a group of objects represented as a unit
+
+    - Sets can contain numbers, symbols, and other sets
+
+    - Objects in a set are called **elements** or **members**
+
+    - Can be described as:
+
+      - $$
+        S = {7, 21, 57}
+        $$
+
+        
+
+        
 

@@ -1,12 +1,10 @@
 # A Kernel Seedling
 
-In this lab, we have designed a kernel module that accesses the system's process
-table in order to generate a `/proc/count` file containing the total number of
-processes running on the machine.
+In this lab, we have designed a kernel module that accesses the system's process table in order to generate a `/proc/count` file containing the total number of processes running on the machine.
 
 ## Building
 
-Build the file in the root directory using the Makefile:
+Build the module in the root directory using the Makefile:
 ```bash
 make
 ```
@@ -47,6 +45,4 @@ make clean
 
 ## Testing
 
-Testing was performed on kernel version `5.11.9-arch1-1` (found using `uname -r`),
-with release information of `#1 SMP PREEMPT Wed, 24 Mar 2021 18:53:34 +0000`
-(found using `uname -v`)
+Testing was performed on kernel version `5.11.9-arch1-1` (found using `uname -r`), with release information of `#1 SMP PREEMPT Wed, 24 Mar 2021 18:53:34 +0000` (found using `uname -v`)
