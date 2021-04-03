@@ -77,6 +77,75 @@
 
 
 
+## Lecture 2: Deterministic Finite Automata
+
+- Problem refers to an infinite number of instances
+
+- An alphabet is defined as any nonempty, finite set of objects (other than epsilon) called symbols
+
+- A string/word is defined as a finite sequence of symbols from a given alphabet `Σ`
+
+  - We generally refer to this as a string or word over an alphabet
+
+  - The length of a word, `|w|` is the number of symbols in `w`
+
+  - $$
+    \Sigma^+\equiv\{\text{all nonempty words over}\  \Sigma\}
+    $$
+
+    - Infinite set of finite-length strings
+      - The strings are indefinitely long
+
+    - String of length 1 could also be a symbol in the alphabet
+
+- Let `Σ` be an alphabet and `w` be a string over `Σ` of the form `rst`
+
+  - `r`, `s`, and `t` are substrings of `w`
+    - Any substring of `w` is called a proper substring of `w` as long as its not the entire word
+  - `r` is a prefix of `w`
+  - `t` is a suffix of `w`
+
+- Define `#(a, w)` where:
+
+  - $$
+    a\in\Sigma\\
+    w\in\Sigma^+
+    $$
+
+  - To be the number of occurrences of symbol `a` in string `w`
+
+- Define a "run of `a` in `w`" as a substring of `w` such that it consists only of 1 symbol `a` and there are no other `a`'s adjacent to it
+
+- Define `w^R` as a word `w` written in reverse order
+
+- Given an alphabet `Σ`, we define a langauge over `Σ` to be any set of words over `Σ`
+
+  - So, a language is any subset of `Σ^+`
+    - `{}` is a language over any alphabet
+    - A language is any member of `P(Σ^+)`
+  - Languages can represent computational problems
+
+- `ε` can be a proper substring of any string except `ε`
+
+- Generalize concatenate:
+
+  - $$
+    \Sigma^+=\Sigma\cup\Sigma\cdot\Sigma\cup\Sigma\cdot\Sigma\cdot\Sigma\cup\cdot\cdot\cdot
+    $$
+
+    - Language concatenation:
+
+      - $$
+        S\cdot T\equiv\{s\cdot t|\ s\in S, t\in T\}
+        $$
+
+- Formal Definition of Deterministic Finite Automata
+
+  - See Reading 2
+  - If a DFA is missing some input option, then blocking occurs and the input is rejected
+
+  
+
 ## Reading 1: Discrete Concepts
 
 - Mathematical Notions and Terminology
