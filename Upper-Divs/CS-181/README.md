@@ -5,3 +5,14 @@
 ## Overall: IP | Raw Percentage: IP
 
 ## Grading
+
+| Category  | Percentage |
+| :-------: | :--------: |
+| Homeworks |    100%    |
+
+## Homeworks
+
+|  #   | Score |
+| :--: | :---: |
+|  1   |  ???  |
+
