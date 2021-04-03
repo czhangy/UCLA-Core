@@ -34,8 +34,8 @@
 ## Deliverables
 
 - Coding
-  - [ ] Properly create and remove `/proc/count` when your module loads and unloads, respectively
-  - [ ] Make `/proc/count` return some string when you run `cat /proc/count`
+  - [x] Properly create and remove `/proc/count` when your module loads and unloads, respectively
+  - [x] Make `/proc/count` return some string when you run `cat /proc/count`
   - [ ] Make `/proc/count` return an integer with the number of running processes (or tasks) when you run `cat /proc/count`
 
 - Documentation
