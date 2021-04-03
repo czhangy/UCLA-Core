@@ -7,12 +7,14 @@
 static struct proc_dir_entry *ent;
 
 // Command that gets run when cat is used
-static int proc_count_show(struct seq_file *m, void *v) {
+static int proc_count_show(struct seq_file *m, void *v)
+{
 	// Build list of processes?
 	struct task_struct *p;
 	int count = 0;
 	// For each running process
-	for_each_process(p) {
+	for_each_process(p)
+	{
 		count++;
 	}
 	// Place final count into /proc/count
@@ -21,14 +23,16 @@ static int proc_count_show(struct seq_file *m, void *v) {
 }
 
 // Create /proc/count
-static int __init proc_count_init(void) {
+static int __init proc_count_init(void)
+{
 	pr_info("proc_count: init\n");
 	ent = proc_create_single("count", 0, NULL, proc_count_show);
 	return 0;
 }
 
 // Clean up
-static void __exit proc_count_exit(void) {
+static void __exit proc_count_exit(void)
+{
 	pr_info("proc_count: exit\n");
 	proc_remove(ent);
 }
