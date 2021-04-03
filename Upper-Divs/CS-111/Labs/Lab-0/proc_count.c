@@ -8,7 +8,11 @@ static struct proc_dir_entry *ent;
 
 // Command that gets run when cat is used
 static int proc_count_show(struct seq_file *m, void *v) {
-	seq_printf(m, "Hello\n");
+	struct task_struct *p;
+	int count = 0;
+	for_each_process(p) {
+		seq_printf(m, "hello\n");
+	}
 	return 0;
 }
 
@@ -26,7 +30,7 @@ static void __exit proc_count_exit(void) {
 }
 
 // isnmod and rmmod
-module_init(proc_count_init); 
+module_init(proc_count_init);
 module_exit(proc_count_exit);
 
 // Lol idk
