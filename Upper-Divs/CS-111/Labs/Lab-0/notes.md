@@ -46,7 +46,7 @@
   - [x] Report which kernel version the module was tested on
 
 - Submission
-  - [ ] Use `git push` to push the final submission to the repository
+  - [x] Use `git push` to push the final submission to the repository
 
 
 
