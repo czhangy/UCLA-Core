@@ -118,7 +118,7 @@
 
 - Define `w^R` as a word `w` written in reverse order
 
-- Given an alphabet `Σ`, we define a langauge over `Σ` to be any set of words over `Σ`
+- Given an alphabet `Σ`, we define a language over `Σ` to be any set of words over `Σ`
 
   - So, a language is any subset of `Σ^+`
     - `{}` is a language over any alphabet
