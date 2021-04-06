@@ -477,7 +477,234 @@
 
 ## Reading 3: Nondeterminism
 
+- When a DFA machine is in a given state and reads the next input symbol, we know what the next state will be - **deterministic** computation
+
+  - In a **nondeterministic** machine, several choices may exist for the next state at any point
+  - Nondeterminism is a generalization of determinism => every deterministic finite automaton is automatically a nondeterministic finite automaton
+
+- Differences:
+
+  - Every state of a DFA has exactly 1 exiting transition arrow for each symbol in the alphabet
+    - In an NFA, a state may have 0, 1, or many exiting arrows for each alphabet symbol
+  - In a DFA, labels on the transition arrows are symbols from the alphabet
+    - An NFA may have 0, 1, or many arrows from each state labeled with `ε`
+
+- How does an NFA compute?
+
+  - After reading a symbol, the NFA splits into multiple copies of itself and follows all possibilities in parallel
+    - Each copy takes a single way to proceed and continues as before
+    - For subsequent choices, the machine will split again
+    - If the next input symbol doesn't appear on any of the arrows exiting the current state, that copy of the machine dies
+  - If any one of the copies of the machine is in an accept state at the end of the input, the input string is accepted
+  - If a state with a `ε` symbol on an exiting arrow is encountered, the machine will split and follow each of these arrows, while leaving a copy of the machine at the current state
+  - Operates like a tree of possibilities, where the root of the tree is the start of the computation
+
+- Every NFA can be converted into an equivalent DFA
+
+- Formal Definition of a Nondeterministic Finite Automaton
+
+  - In a DFA, the transition function takes a state and an input symbol and produces the next state
+
+  - In an NFA, the transition function takes a state and an input symbol or the empty string and produces the set of possible next states
+
+  - A **nondeterministic finite automaton** is a 5 tuple `(Q, Σ, δ, q_0, F)` where:
+
+    - `Q` is a finite set of states
+
+    - `Σ` is a finite alphabet
+
+    - The transition function is:
+
+      - $$
+        \delta : Q\times \Sigma_\varepsilon\rightarrow\mathcal{P}(Q)
+        $$
+
+    - The start state is:
+
+      - $$
+        q_0\in Q
+        $$
+
+    - The set of accept states is:
+
+      - $$
+        F\subseteq Q
+        $$
+
+- Equivalence of NFAs and DFAs
+
+  - Deterministic and nondeterministic finite automata recognize the same class of languages
+
+  - 2 machines are **equivalent** if they recognize the same language
+
+  - > Every nondeterministic finite automaton has an equivalent deterministic finite
+    > automaton
+
+    - Proof:
+
+      - Let `N = (Q, Σ, δ, q_0, F)` be the NFA recognizing some language `A`, we construct a DFA `M = (Q', Σ', δ'', q_0', F')` recognizing `A`
+
+      - $$
+        Q'=\mathcal{P}(Q)
+        $$
+
+        - Every state of `M` is a set of states of `N` => `P(Q)` is the set of subsets of Q
+
+      - For `R ∈ Q'` and `a ∈ Σ`, let:
+
+        - $$
+          \delta '(R, a) = \{q\in Q|\ q\in \delta(r, a) \ \text{for some}\ r\in R\}
+          $$
+
+          - If `R` is a state of `M`, it is also a set of states of `N`
+
+          - When `M` reads a symbol `a` in state `R`, it shows where `a` takes each state in `R`
+
+          - $$
+            \delta '(R,a) =\bigcup_{r\in R}\delta(r,a)
+            $$
+
+      - $$
+        q_0' =\{q_0\}
+        $$
+
+        - `M` starts in the state corresponding to the collection containing just the start state of `N`
+
+      - $$
+        F' =\{R\in Q'|\ R\ \text{contains an accept state of}\ N\}
+        $$
+
+        - The machine `M` accepts if one of the possible states that `N` could be in at this point is an accept state
+
+      - For any state `R` of `M`, we define `E(R)` to be the collection of states that can be reached from members of `R` by going only along `ε` arrows, including the members of `R` themselves:
+
+        - $$
+          E(R)=\{q|\ q\ \text{can be reached from}\ R\ \text{by traveling along 0 or more}\ \varepsilon\ \text{arrows}\}
+          $$
+
+      - $$
+        \delta'(R, a)=\{q\in Q|\ q\in E(\delta(r,a))\ \text{for some}\ r\in R\}
+        $$
+
+        - Modify the transition function of `M` to place additional "fingers" on all states that can be reached by going along `ε` arrows after every step
+
+      - $$
+        q'_0=E(\{q_0\})
+        $$
+
+        - Modify the start state of `M` to move the fingers initially to all possible states that can be reached from the start state of `N` along the `ε` arrows
+
+  - > A language is regular if and only if some nondeterministic finite automaton recognizes it
+
+- Closure Under the Regular Operations
+
+  - > The class of regular languages is closed under the union operation
+
+    - Proof:
+
+      - Let `N_1 = (Q_1, Σ, δ_1, q_1, F_1)` recognize `A_1` and `N_2 = (Q_2, Σ, δ_2, q_2, F_2)` recognize `A_2`, construct `N = (Q, Σ, δ, q, F)` to recognize `A_1 ∪ A_2`
+
+      - $$
+        Q=\{q_0\}\cup Q_1\cup Q_2
+        $$
+
+        - The states of `N` are all the states of `N_1` and `N_2`, with the addition of a new start state `q_0`
+
+      - The state `q_0` is the start state of `N`
+
+      - The set of accept states:
+
+        - $$
+          F=F_1\cup F_2
+          $$
+
+          - The accept states of `N` are all the accept states of `N_1` and `N_2` => `N` accepts if either `N_1` or `N_2` accept
+
+      - Define `δ` so that for any `q ∈ Q'` and any `a ∈ Σ_ε`:
+
+        - $$
+          \delta(q,a)=\begin{cases}\delta_1(q,a)&q\in Q_1\\\delta_2(q,a)&q\in Q_2\\\{q_1,q_2\}&q=q_0\ \text{and}\ a=\varepsilon\\\emptyset&q=q_0\ \text{and}\ a\ne\varepsilon\end{cases}
+          $$
+
+  - > The class of regular languages is closed under the concatenation operation
+
+    - Proof:
+
+      - Let `N_1 = (Q_1, Σ, δ_1, q_1, F_1)` recognize `A_1` and `N_2 = (Q_2, Σ, δ_2, q_2, F_2)` recognize `A_2`, construct `N = (Q, Σ, δ, q, F)` tp recognize `A_1 ◦ A_2`
+
+      - $$
+        Q=Q_1\cup Q_2
+        $$
+
+        - The states of `N` are all the states of `N_1` and `N_2`
+
+      - The state `q_1` is the same as the start state of `N_1`
+
+      - The accept states `F_2` are the same as the accept states of `N_2`
+
+      - Define `δ` so that for any `q ∈ Q'` and any `a ∈ Σ_ε`:
+
+        - $$
+          \delta(q,a)=\begin{cases}\delta_1(q,a)&q\in Q_1\ \text{and}\ q\notin F_1\\\delta_2(q,a)&q\in F_1\ \text{and}\ a\ne\varepsilon\\\delta_1(q,a)\cup\{q_2\}&q\in F_1\ \text{and}\ a=\varepsilon\\\delta_2(q,a)&q\in Q_2\end{cases}
+          $$
+
+  - > The class of regular languages is closed under the star operation
+
+    - Proof:
+
+      - Let `N_1 = (Q_1, Σ, δ_1, q_1, F_1)` recognize `A_1`, construct `N = (Q, Σ, δ, q, F)` tp recognize `A_1*`
+
+      - $$
+        Q=\{q_0\}\cup Q_1
+        $$
+
+        - The states of `N` are the states of `N_1` plus a new start state
+
+      - The state `q_0` is the new start state
+
+      - $$
+        F=\{q_0\}\cup F_1
+        $$
+
+        - The accept states are the old accept states plus the new start state
+
+      - Define `δ` so that for any `q ∈ Q'` and any `a ∈ Σ_ε`:
+
+        - $$
+          \delta(q,a)=\begin{cases}\delta_1(q,a)&q\in Q_1\ \text{and}\ q\notin F_1\\\delta_1(q,a)&q\in F_1\ \text{and}\ a\ne\varepsilon\\\delta_1(q,a)\cup\{q_1\}&q\in F_1\ \text{and}\ a=\varepsilon\\\{q_1\}&q=q_0\ \text{and}\ a=\varepsilon\\\emptyset&q=q_0\ \text{and}\ a\ne\varepsilon\end{cases}
+          $$
+
+
+
+## Reading 4: Regular Expressions
+
 - 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
