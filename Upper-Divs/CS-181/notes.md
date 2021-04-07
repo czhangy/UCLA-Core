@@ -344,7 +344,7 @@
 
         - If an NFA does not have any legal move to make at some step before reaching the end of the input string, then that nondeterministic computation doesn't accept
 
-        - If an NFA passes through one or more states on `ε` moves after reading the last input symbol, it accepts if any of the states visitied after the end of the input are accepting
+        - If an NFA passes through one or more states on `ε` moves after reading the last input symbol, it accepts if any of the states visited after the end of the input are accepting
 
     - We can extend the domain of the transition function to `δ*()` in exactly the same manner as we did for the DFA
 
@@ -352,13 +352,7 @@
       - The result of the function `δ*(q, w)` is the set of all states the NFA could be in after starting in state `q` and then reading input `w`
         - This automatically takes into account `ε` moves, including the special case at the end of the input
 
-      
 
-       
-
-      
-
-      
 
 ## Reading 1: Discrete Concepts
 
@@ -892,7 +886,246 @@
 
 ## Reading 4: Regular Expressions
 
+- We can use the regular operations to build up expressions describing languages, which are called **regular expressions**
+
+  - $$
+    (0\cup 1)0*
+    $$
+
+    - `0` and `1` are shorthand for `{0}` and `{1}` => union of these leads to the language `{0, 1}`
+    - Concatenation symbol can be thought of as implicit in regular expressions
+
+  - The value of a regular expression is a language => example above: the language consisting of all strings starting with a `0` or `1`, followed by any number of `0`s
+
+  - Order of operations: star, concatenation, union (unless parentheses are used)
+
+- Formal Definition of a Regular Expression
+
+  - Say that `R` is a **regular expression** if `R` is:
+
+    - `a` for some `a` in the alphabet `Σ`
+    - `ε`
+    - `∅`
+    - `(R_1 ∪ R_2)`, where `R_1` and `R_2` are regular expressions
+    - `(R_1 ◦ R_2)`, where `R_1` and `R_2` are regular expressions
+    - `(R_1*)`, where `R_1` is a regular expression
+
+  - May be in danger of defining the notion of a regular expression in terms of itself => **circular definition**
+
+    - Would be invalid
+    - However, `R_1` and `R_2` are always smaller than `R`, so we're definining regular expressions in terms of smaller regular expressions, avoiding circularity
+      - **Inductive definition**
+
+  - `R+` is shorthand for `RR*`
+
+    - `R*` has all strings that are 0+ concatenations of strings from `R`, while `R+` has all strings that are 1+ concatenations of strings from `R`
+
+      - $$
+        R^+\cup\varepsilon=R^*
+        $$
+
+  - `R^k` is shorthand for the concatenation of `k` `R`'s with each other
+
+  - We use `L(R)` to distinguish between the language of `R` and the regular expression `R`
+
+  - Identities:
+
+    - $$
+      R\cup\emptyset=R
+      $$
+
+    - $$
+      R\circ\varepsilon=R
+      $$
+
+  - Elemental objects in a programming language, called **tokens** can be described with regular expressions
+
+    - Once syntax has be described, automatic systems can generate the **lexical analyzer**, which initially processes the input program
+
+- Equivalence with Finite Automata
+
+  - Regular expressions and finite automata are equivalent in their descriptive power
+
+    - Any regular expression can be converted into a finite automaton that recognizes the language it describes and vice versa
+
+  - > A language is regular if and only if some regular expression describes it
+
+    - > If a language is described by a regular expression, then it is regular
+
+      - Proof:
+
+        - Convert `R` into an NFA `N`
+
+        - `R = a` for some `a` in `Σ` => then `L(R) = {a}`
+
+          - $$
+            N=(\{q_1,q_2\},\Sigma,\delta,q_1,\{q_2\})\\\delta(q_1,a)=\{q_2\}\\\delta(r,b)=\emptyset\ \text{for}\ r\ne q_1\ \text{or}\ b\ne a
+            $$
+
+        - `R = ε` => then `L(R) = ε` 
+
+          - $$
+            N=(\{q_1\},\Sigma,\delta,q_1,\{q_1\})\\\delta(r,b)=\emptyset\ \text{for any}\ r\ \text{and}\ b
+            $$
+
+        - `R = ∅` => then `L(R) = ∅`
+
+          - $$
+            N=(\{q\},\Sigma,\delta,q,\emptyset)
+            \delta(r,b)=\emptyset\ \text{for any}\ r\ \text{and}\ b
+            $$
+
+        - $$
+          R=R_1\cup R_2
+          $$
+
+        - $$
+          R=R_1\circ R_2
+          $$
+
+        - $$
+          R=R_1^*
+          $$
+
+          - For the last three cases, we use the constructions given in the proofs for closure
+
+    - > If a language is regular, then it is described by a regular expression
+
+      - **Generalized nondeterministic finite automata** are nondeterministic finite automata wherein the transition arrows may have any regular expressions as labels
+
+        - GNFAs read blocks of symbols from the input, not just one input at a time like normal NFA
+        - Require:
+          - The start state has transition arrows going to every other state, but no arrows coming in from any other state
+          - There is only a single accept state, and it has arrows coming in from every other state, but no arrows going to any other state
+            - The accept state is not the same as the start state
+          - Except for the start and accept states, one arrow goes from every state to every other state and also from each state to itself
+
+      - Convert DFA to GNFA
+
+        - Add a new start state with an `ε` arrow to the old start state and a new accept state with `ε` arrows from the old accept states
+        - If any arrows have multiple labels, we replace each with a single arrow whose label is the union of the previous labels
+        - Add arrows labeled `∅` between states that had no arrows
+
+      - Convert GNFA to regular expression
+
+        - Say the GNFA has `k` states
+
+          - Since GNFAs have distinct start and accept states, we know that `k >= 2`
+          - If `k > 2`, then we construct an equivalent GNFA with `k - 1` states => repeat until `k = 2`
+            - Select a state, rip it out of the machine, and repair the remainder by altering the regular expressions that label each of the remaining arrows
+          - When `k = 2`, there's a single arrow going from the start state to the accept state, labelled by the equivalent regular expression
+
+        - Formally:
+
+          - GNFAs are similar to NFAs except for the transition function:
+
+            - $$
+              \delta: (Q-\{q_{accept}\})\times(Q-\{q_{start}\})\rightarrow\mathcal{R}
+              $$
+
+              - The symbol `R` is the collection of all regular expressions over the alphabet `Σ`
+
+            - A GNFA is a 5-tuple:
+
+              - $$
+                (Q,\Sigma,\delta,q_{start},q_{accept})
+                $$
+
+                - `Q` is the finite set of states
+
+                - `Σ` is the input alphabet
+
+                - The transition function is:
+
+                  - $$
+                    \delta: (Q-\{q_{accept}\})\times(Q-\{q_{start}\})\rightarrow\mathcal{R}
+                    $$
+
+                - `q_start` is the start state
+
+                - `q_accept` is the accept state
+
+          - A GNFA accepts a string `w` in `Σ*` if `w = w_1w_2 ... w_k`, where each `w_i` is in `Σ*` and a sequence of states `q_0, q_1, ... , q_k` exists such that:
+
+            - $$
+              q_0=q_{start}
+              $$
+
+            - $$
+              q_k=q_{accept}
+              $$
+
+            - `R_i` is the expression on the arrow from `q_i-1` to `q_i`
+
+      - Proof:
+
+        - Let `M` be the DFA for language `A`
+
+        - Convert `M` to GNFA `G` using `CONVERT(G)`, which uses **recursion** (it calls on itself)
+
+          - `CONVERT(G)`:
+
+            - Let `k` be the number of states of `G`
+
+            - If `k = 2`, then `G` must consist of a start state, an accept state, and a single arrow connecting them and labeled with a regular expression `R` => return the expression `R`
+
+            - If `k > 2`, we select any state `q_rip` in `Q` different from `q_start` and `q_accept` and let `G'` be the GNFA where:
+
+              - $$
+                Q'=Q-\{Q_{rip}\}
+                $$
+
+              - $$
+                q_i\in Q'-\{q_{accept}\}\\q_j\in Q'-\{q_{start}\}\\\delta'(q_i,q_j)=(R_1)(R_2)^*(R_3)\cup(R_4)\\R_1=\delta(q_i,q_{rip})\\R_2=\delta(q_{rip},q_{rip})\\R_3=\delta(q_{rip},q_j)\\R_4=\delta(q_i,q_j) 
+                $$
+
+            - Compute `CONVERT(G')` and return this value
+
+        - Claim: for any GNFA, `CONVERT(G)` is equivalent to `G`
+
+        - Basis: prove the claim true for `k = 2` states
+
+          - If `G` has only two states, it can have only a single arrow, which goes from the start state to the accept state
+          - The regular expression that labels this arrow describes all the strings that allow `G` to get to the accept state
+          - This expression is equivalent to `G`
+
+        - Induction step: assume that the claim is true for `k - 1` states and use this assumption to prove that the claim is true for `k` states
+
+          - Prove `G` and `G'` recognize the same language
+            - Suppose `G` accepts an input `w`
+            - In an accepting branch of the computation, `G` enters a sequence of states: `q_start, q_1, ... , q_accept`
+            - If none of them is the removed state `q_rip`, then clearly `G'` also accepts `w`
+              - Each of the new regular expressions labeling the arrows of `G'` contains the old regular expression as part of a union
+            - If `q_rip` does appear, removing each run of consecutive `q_rip` states forms an accepting computation for `G'`
+              - The states `q_i` and `q_j` bracketing a run have a new regular expression on the arrow between them that describes all strings taking `q_i` to `q_j` via `q_rip` on `G` => `G'` accepts `w`
+            - The induction hypothesis states that when an algorithm calls itself recursively on input `G'`, the result is a regular expression that is equivalent to `G'` because `G'` has `k - 1` states
+              - This regular expression is also equivalent to `G` and the algorithm is proved correct
+
+
+
+## Reading 5: Nonregular Languages
+
 - 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
