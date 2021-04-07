@@ -141,10 +141,224 @@
 
 - Formal Definition of Deterministic Finite Automata
 
-  - See Reading 2
-  - If a DFA is missing some input option, then blocking occurs and the input is rejected
-
+  - Deterministic Finite Automaton:
   
+  - $$
+      M=(Q,\Sigma,\delta,q_0,F)
+      $$
+  
+      - `Q` is a finite set of states
+  
+      - `Σ` is a finite set representing the alphabet
+  
+      - $$
+        q_0\in Q
+        $$
+  
+      - $$
+        F\subseteq Q
+        $$
+  
+      - $$
+        \delta: Q\times \Sigma\rightarrow Q
+        $$
+  
+        - `δ(q, a) = q'` is interpreted as: in state `q` on input `a`, go to state `q'`
+        - Each move consumes one input symbol `a`
+  
+  - Initial configuration of `M`: in the initial state. `q_0`, with the input on the input tape and the input tape head at the first symbol of the input
+  
+  - Define computation of `M` on input `w = w_1w_2 ... w_m`:
+  
+    - A sequence of legal moves from the initial state, proceeding as long as there are legal moves to make
+  
+    - Formally:
+  
+      - There exists a sequence of states of `M`, `q_0, q_1, ... , q_m` in `Q` such that:
+  
+        - $$
+          \text{For all}\ 0\le i\le m-1,\delta(q_i, w_{i+1}) = q_{i+1}
+          $$
+  
+  - The computation is accepting if `q_m` is in `F`, otherwise it's rejecting
+  
+    - Also, if a DFA does not have any legal move to make at some step before reaching the end of the input string, then the computation "blocks" and rejects
+  
+  - We can extend the definition of `δ()` over `Q x Σ` to `δ*()` over `Q x Σ*`, recursively/inductively on the length of the input string
+  
+    - Define:
+  
+      - $$
+        \delta^*:(Q\times\Sigma^*)\rightarrow Q
+        $$
+  
+      - $$
+        \delta^*(q,\varepsilon)=q,\ \text{for all}\ q\in Q
+        $$
+  
+      - $$
+        \delta^*(a, ay)=\delta^*(\delta(q,a),y),\ \text{for all}\ q\in Q,a\in\Sigma,\ \text{and}\ y\in\Sigma^*
+        $$
+  
+    - This is the transitive closure of `δ` with respect to the second argument, `Σ`
+  
+  - If a DFA is missing some input option, then blocking occurs and the input is rejected
+  
+
+
+
+## Lecture 3: Graph Theory, Closure, and NFA
+
+- Consider the language defined by:
+
+  - $$
+    \Sigma=\{a,b,\#\}\\
+    L=\{w\#w^R|\ w\in\{a,b\}^*\}
+    $$
+
+  - Proof:
+
+    - Suppose `L` were a finite state language, then by definition, there must be a DFA for `L` such that:
+
+      - $$
+        M=(Q,\Sigma,\delta,q_0,F)
+        $$
+
+    - Take the input `w#w^R`, and assume the DFA has read `w`
+
+    - There are `2^|w|` possible prefixes prior to the delimiter
+
+    - If `2^|w| > |Q|`:
+
+      - The DFA will go from state `q_0` to some state `q`, where the input `w#` has been read
+      - From there, it will read `w^R` and end up in a state `q_F ∈ F`
+      - Now consider the input `w'#w'^R`, where `w != w'`
+        - Since there are a finite number of states and an indefinite number of strings, some string `w'#` must end up in the same state `q` as the prior input by the pigeon hold principle
+        - Imagine if the input following arrival at that state were `w^R`
+        - Then the machine would have to accept it, as established above, which would mean the DFA was accepting the string `w'#w^R`, which is not a part of the language -><-
+        - Implies no such DFA may exist => `L` is not an FSL
+
+- Graph Theory
+
+  - $$
+    G=(V,E)\\E\subseteq V\times V
+    $$
+
+    
+
+  - Any acyclic graph is a tree
+
+  - Any node of a tree (regardless of how its drawn) can be a root
+
+  - Directed rooted tree: directed graph that is acyclic even when you view it as undirected, and it has a designated root node
+
+    - $$
+      G=(V,E,r)\\r\in V
+      $$
+
+    - In CS, we say that all edges are directed from the root towards the leaves
+
+    - A directed rooted `k`-ary tree is a directed rooted tree where the outdegree of every node is `<=` to `k`
+
+- Intro to Closure Properties of Families of Languages
+
+  - Recall: a language is any set of strings/words over an alphabet `Σ`
+
+  - A family of languages is any set of languages over a common alphabet `Σ`
+
+    - Usually, they have something in common, hence the name "family"
+      - e.g., the FSLs are a family of languages, and the thing they have in common is every one is accepted by some DFA
+      - e.g., fact: if `L` is an FSL, then so is `L'` => FSLs are closed under complementation
+        - When a family of languages has a property where you take a language and modify it by some operation and the result is guaranteed to still be in the same family of languages,  we say the family is closed under that operation
+
+  - FSLs are closed under complementation
+
+    - Proof:
+
+      - `L` is FSL => there is a DFA that accepts it
+
+      - Assume:
+
+        - $$
+          M=(Q,\Sigma,\delta,q_0,F)
+          $$
+
+      - Then:
+
+        - $$
+          \bar{M}=(Q,\Sigma,\delta,q_0,(Q - F))
+          $$
+
+          - Make any accepting state reject and vice versa
+
+- Formal Definition of Nondeterministic Finite Automata
+
+  - Nondeterministic Finite Automaton (NFA):
+
+    - $$
+      N=(Q,\Sigma,\delta,q_0,F)
+      $$
+
+      - Where:
+
+        - `Q`, `Σ`, `q_0`, and `F` are the same as for a DFA
+
+        - $$
+          \Sigma_\varepsilon=\Sigma\cup\{\varepsilon\}
+          $$
+
+        - $$
+          \delta:Q\times\Sigma_\varepsilon\rightarrow\mathcal{P}(Q)
+          $$
+
+          - The result of the `δ` function being a set of possible states in `P(Q)`, is how the definition allows for nondeterminism
+            - `δ(q, a)` contains `q'` is imterpreted as: in state `q` on input `a`, `N` can go to state `q'`
+            - Each move on a symbol `a` in `Σ` consumes that one input symbol
+            - `ε` moves allow `N` to change state without consuming input
+
+    - Initial configuration of `N`: in the initial state `q_0`, with the input on the input tape and the input tape head at the first symbol of the input
+
+    - Define computation of `N` on input `w`:
+
+      - A sequence of legal moves from the initial state, proceeding as long as there are legal moves to make
+
+      - Formally:
+
+        - There exists a sequence `y_1, y_2, ... , y_m`, where each `y_i` is in `Σ_ε`, such that `y_1y_2 ... y_m = w`
+
+        - There exists a sequence of states of `N`, `q_0, q_1, ... , q_m` in `Q` such that:
+
+          - $$
+            \text{For all}\ 0\le i\le m-1,\ \text{the set}\ \delta(q_i,y_{i+1})\ \text{contains}\ q_{i+1}
+            $$
+
+      - The computation is accepting if:
+
+        - $$
+          q_m\in F
+          $$
+
+        - Non-accepting computations don't count
+
+        - `N` accepts input `w` if any computation by `N` on `w` accepts
+
+        - If an NFA does not have any legal move to make at some step before reaching the end of the input string, then that nondeterministic computation doesn't accept
+
+        - If an NFA passes through one or more states on `ε` moves after reading the last input symbol, it accepts if any of the states visitied after the end of the input are accepting
+
+    - We can extend the domain of the transition function to `δ*()` in exactly the same manner as we did for the DFA
+
+      - Thus, instead of applying the `δ` function one step at a time, we can apply `δ*` to an entire word, `w`
+      - The result of the function `δ*(q, w)` is the set of all states the NFA could be in after starting in state `q` and then reading input `w`
+        - This automatically takes into account `ε` moves, including the special case at the end of the input
+
+      
+
+       
+
+      
+
+      
 
 ## Reading 1: Discrete Concepts
 
