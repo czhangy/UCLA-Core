@@ -1105,7 +1105,35 @@
 
 ## Reading 5: Nonregular Languages
 
-- 
+- $$
+  B=\{0^n1^n|\ n\ge 0\}
+  $$
+
+  - DFAs cannot recognize this language => you need to be able to track an indefinite number of 0s with a finite number of states
+
+- The Pumping Lemma for Regular Languages
+
+  - The **pumping lemma** states that all regular languages have a special property
+
+    - If we can show that a language doesn't have this property, we are guaranteed that it is not regular
+    - The property states that all strings in the language can be "pumped" if they are at least as long as a certain special value called the **pumping length**
+      - This means that each such string contains a section that can be repeated any number of times with the resulting string remaining in the language
+
+  - > If `A` is a regular language, then there is a number `p` (the pumping length) where if `s` is any string in `A` of length at least `p`, then `s` may be divided into three pieces, `s = xyz`, satisfying the following conditions:
+    >
+    > - For each `i >= 0`:
+    >
+    >   - $$
+    >     xy^iz\in A
+    >     $$
+    >
+    > - `|y| > 0`
+    >
+    > - `|xy| <= p`
+    >
+    >   
+
+  
 
 
 
