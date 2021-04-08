@@ -1130,10 +1130,62 @@
     > - `|y| > 0`
     >
     > - `|xy| <= p`
-    >
-    >   
 
-  
+  - Proof idea:
+
+    - Let `M` be a DFA that recognizes `A`
+    - Assign the pumping length `p` to be the number of states of `M`
+    - If `s` in `A` has at least length `p`, then we can use **pigeonhole principle** to show that a state will be revisited
+      - If `n` is the length of `s`, we know `n + 1` is greater than `p` since `n` is at least `p`
+    - Since a state is revisited, it is possible to repeat the states that are visited between the revisited states
+
+  - Proof:
+
+    - Let `M` be a DFA recognizing `A` and `p` be the number of states of `M`
+
+    - Let `s = s_1s_2 ... s_n` be a string in `A` of length `n`, where `n >= p`
+
+    - Let `r_1, ... , r_n+1` be the sequence of states that `M` enters while processing `s`
+
+      - $$
+        r_{i+1}=\delta(r_i,s_i)\ \text{for}\ 1\le i\le n
+        $$
+
+      - This sequence has length `n + 1`, which is at least `p + 1`
+
+    - By the pigeonhole principle, there must be 2 states in the first `p + 1` elements of the sequence that are the same state
+
+      - The first is `r_j` and the second is `r_l`
+
+        - $$
+          l\le p+1\\x=s_1...s_{j-1},y=s_j...s_{l-1},z=s_l...s_n
+          $$
+
+    - `x` takes `M` from `r_1` to `r_j`, `y` takes `M` from `r_j` to `r_j`, and `z` takes `M` from `r_j` to `r_n+1`, which means `M` must accept `xy^iz` for `i >= 0`
+
+    - `j != l`, so `|y| > 0`
+
+    - `l <= p + 1`, so `|xy| < p`
+
+  - Prove a language `B` is not regular using the pumping lemma
+
+    - Use the pumping lemma to guarantee the existence of a pumping length `p` such that all strings of length `p` or greater in `B` can be pumped
+    - Find a string `s` in `B` that has length `p` or greater but that cannot be pumped
+    - Demonstrate that `s` cannot be pumped by considering all ways of dividing `s` into `x`, `y`, and `z` and, for each division, finding a value `i` where `xy^iz` is not in `B`
+      - Involves grouping various ways of dividing `s` into several cases and analyzing them individually
+    - The existence of `s` contradicts the pumping lemma if `B` were regular => `B` must be nonregular
+
+
+
+## Reading 6:
+
+- 
+
+
+
+
+
+
 
 
 
