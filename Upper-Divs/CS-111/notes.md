@@ -415,6 +415,7 @@
   - Normal runs of `alloc-example` outputs `x = 0x561116384260`
   - Create `alloc-wrapper.so` that outputs all `malloc` and `free` calls
   - Interesting, we did not make 2 `malloc` calls
+    - `printf` allocates a buffer for itself
 
 - Detecting Memory Leaks
 
@@ -426,7 +427,7 @@
 
     - > "The GNU C library (`libc.so`), which is used by all programs, may allocate memory for its own uses. Usually it doesn't bother to free that memory when the program ends - there would be no point, since the Linux kernel reclaims all process resources when a process exits anyway, so it would just slow things down"
 
-      - This does not excuse you from not calling `free`
+    - This does not excuse you from not calling `free`
 
 - Standard File Descriptors for Unix
 
@@ -452,6 +453,7 @@
     - Dynamic libraries and a comparison to static libraries
       - How to manipulate the dynamic loader
     - Example of issues from ABI changes without API changes
+      - If something escapes your library, that ABI must remain constant, or else it could break any program that depends on it
     - Standard file descriptor conventions for UNIX
 
 - A Process is an Instance of a Running Program
@@ -513,56 +515,79 @@
     - Not parallel and concurrent
   - You can talk (or drink) and gesture at the same time, and you could switch
     - Parallel and concurrent
+  
 - Uniprogramming is for Old Batch Processing Operating Systems
   - Uniprogramming: only one process running at a time
     - Two processes are not parallel and not concurrent, no matter what
   - Multiprogramming: allow multiple processes
     - Two processes can run in parallel or concurrently
   - Modern operating systems try to run everything in parallel and concurrently
+  
+- Process State Diagram
+
+  - => Created
+  - Created => Waiting/Ready
+  - Waiting/Ready => Running
+  - Running => Waiting/Ready
+  - Running => Terminated (Accept state)
+  - Running => Blocked
+  - Blocked => Waiting/Ready
+
 - The Scheduler Decides When to Switch
   - To create a process, the OS has to at least load it into memory
   - When it's waiting, the scheduler (coming later) decides when it's running
   - We're going to first focus on the mechanics of switching processes
+  
 - The Core Scheduling Loop Changes Running Processes
   - 1. Pause the currently running process
     2. Save its state, so you can restore it later
     3. Get the next process to run from the scheduler
     4. Load the next process' state and let that run
+  
 - We Can Let Processes Themselves, or the OS Pause
   - Cooperative multitasking: the processes use a system call to tell the OS to pause it
+    - Processes use system calls to manage pausing
   - True multitasking: the OS retains control and pauses processes
   - For true multitasking, the OS can:
     - Give processes set time slices
     - Wake up periodically using interrupts to do scheduling
+  
 - Swapping Processes is Called Context Switching
   - We've said that, at minimum, we'd have to save all of the current registers
     - We have to save all of the values, using the same CPU as we're trying to save
   - There's hardware support for saving state, however, you may not want to save everything
   - Context switching is pure overhead, we want it to be as fast as possible
   - Usually, there's a combination of hardware and software to save as little as possible
+  - You can think of a process as a program + context
+  
 - We Could Create Processes from Scratch
   - We load the program into memory and create the process control block
     - This is what Windows does
   - Could we decompose this into more flexible abstractions?
+  
 - Instead of Creating a New Process, We Could Clone It
   - Pause the currently running process, and copy it's PCB into a new one
     - This will reuse all of the information from the process, including variables
   - Distinguish between the two processes with a parent and child relationship
     - They could both execute different parts of the program together
   - We could then allow either process to load a new program and setup a new PCB
+  
 - On Unix, the Kernel Launches A Single User Process
   - After the kernel initializes, it creates a single process from a program
   - This process is called `init` and it looks for it in `/sbin/init`
     - Responsible for executing every other process on the machine
+      - Will be the parent/ancestor of every process on the machine
     - Must always be active, if it exits, the kernel thinks you're shutting down
   - For Linux, `init` will probably be `systemd`, but there's other options
-  - Aside: some OSes create an "idle" process that the scheduler can run
-
+- Aside: some OSes create an "idle" process that the scheduler can run
+  
 - How You Can See Your Process Tree
   - Use `htop`
     - `sudo pacman -S htop` to install on the virtual machine
   - You can press `F5` to switch between tree and list view
-
+- You may have to update all your packages first:
+    - `sudo pacman -Syu` (Reboot if your kernel updates)
+  
 - The Parent Process is Responsible for Its Child
   - The OS sets the exit status when a process terminates (by calling `exit`)
     - It can't remove its PCB yet
@@ -570,23 +595,29 @@
   - There's two situations:
     - The child exits first (zombie process)
     - The parent exits first (orphan process)
+  
 - A Zombie Process Waits for Its Parent to Read Its Exit Status
   - The process is terminated, but it hasn't been acknowledged
   - A process may have an error in it, where it never reads the child's exit status
   - The OS can interrupt the parent process to tell it to acknowledge the child
     - This is a basic form of IPC called a signal
-  - The OS has to keep the zombie process until the parent exits
+    - By default, processes may ignore this
+  - The OS has to keep the zombie process at least until the parent exits if it doesn't acknowledge it
+  
 - An Orphan Process Needs a New Parent
   - The child process lost its parent process
     - The child still needs a process to acknowledge its exit
   - The OS re-parents the child process to `init`
     - The `init` process is now responsible to acknowledge the child
+  
 - The OS Creates and Runs Processes
   - The OS has to:
     - Load a program and create a process with context
+      - Register values, instruction pointer, etc.
     - Maintain process control blocks, including state
     - Switch between running processes using a context switch
     - Unix kernels start an `init` process
+      - Responsible for running all the processes on the rest of the machine
     - Unix processes have to maintain a parent and child relationship
 
 
