@@ -383,437 +383,436 @@
 
 ## Lecture 3: Libraries and Processes
 
-- Semantic Versioning Meets Developer's Expectations
+- Libraries
 
-  - Given a version number `MAJOR.MINOR.PATCH`, increment the:
-    - `MAJOR` version when you make incompatible API/ABI changes
-    - `MINOR` version when you add functionality in a backwards-compatible manner
-    - `PATCH` version when you make backwards-compatible bug fixes
+  - Semantic Versioning Meets Developer's Expectations
 
-- Dynamic Libraries Allow Easier Debugging
+    - Given a version number `MAJOR.MINOR.PATCH`, increment the:
+      - `MAJOR` version when you make incompatible API/ABI changes
+      - `MINOR` version when you add functionality in a backwards-compatible manner
+      - `PATCH` version when you make backwards-compatible bug fixes
 
-  - Control dynamic linking with environment variables
+  - Dynamic Libraries Allow Easier Debugging
 
-    - `LD_LIBRARY_PATH` and `LD_PRELOAD`
+    - Control dynamic linking with environment variables
 
-  - Consider the following example:
+      - `LD_LIBRARY_PATH` and `LD_PRELOAD`
+
+    - Consider the following example:
+
+      - ```c
+        #include <stdlib.h>
+        #include <stdio.h>
+        
+        int main(int argc, char **argv) {
+            int *x = malloc(sizeof(int));
+            printf("x = %p\n", x);
+            free(x);
+            return 0;
+        }
+        ```
+
+  - We Can Monitor All Allocations with Our Own Library
+
+    - Normal runs of `alloc-example` outputs `x = 0x561116384260`
+    - Create `alloc-wrapper.so` that outputs all `malloc` and `free` calls
+    - Interesting, we did not make 2 `malloc` calls
+      - `printf` allocates a buffer for itself
+
+  - Detecting Memory Leaks
+
+    - `valgrind` is another useful tool to detect memory leaks from `malloc` and `free`
+
+      - Usage: `valgrind <executable>`
+
+    - Here's a note from the `man` pages regarding what we saw:
+
+      - > "The GNU C library (`libc.so`), which is used by all programs, may allocate memory for its own uses. Usually it doesn't bother to free that memory when the program ends - there would be no point, since the Linux kernel reclaims all process resources when a process exits anyway, so it would just slow things down"
+
+      - This does not excuse you from not calling `free`
+
+  - Standard File Descriptors for Unix
+
+    - All command line executables use the following standard for file descriptors:
+      - `0` - `stdin` (Standard input)
+      - `1` - `stdout` (Standard output)
+      - `2` - `stderr` (Standard error)
+    - The terminal emulator's job is to:
+      - Translate key presses to bytes and write to `stdin`
+      - Display bytes read from `stdout` and `stderr`
+      - May redirect file descriptors between processes
+
+  - Checking Open File Descriptors on Linux
+
+    - `/proc/<PID>/fd` is a directory containing all open file descriptors for a process
+    - `ps x` shows a list of processes matching your user (lots of other flags available)
+    - `lsof <file>` shows you what processes have the file open
+      - For example, processes using C: `lsof /lib/libc.so.6`
+
+  - Operating Systems Provide the Foundation for Libraries
+
+    - We learned:
+      - Dynamic libraries and a comparison to static libraries
+        - How to manipulate the dynamic loader
+      - Example of issues from ABI changes without API changes
+        - If something escapes your library, that ABI must remain constant, or else it could break any program that depends on it
+      - Standard file descriptor conventions for UNIX
+
+- Processes
+
+  - A Process is an Instance of a Running Program
+  - A program (or application) is just a static definition, including
+      - Instructions
+      - Data
+      - Memory allocations
+      - Symbols it uses
+    - When you start executing a program, it turns into a process
+  - Process is Like a Combination of all the Virtual Resources
+
+    - If we consider a "virtual CPU", the OS needs to track all registers
+    - It also contains all other resources it can access (memory and I/O)
+    - Every execution runs the same code (part of the program)
+      - An execution is running some specific code (part of the process)
+  - A Process is More Flexible
+
+    - A process contains both the program and information specific to its execution
+    - It allows multiple executions of the same program
+    - It even allows a process to run multiple copies of itself
+  - A Process Control Block (PCB) Contains All Execution Information
+
+    - Specifically, in Linux, this is the `task_struct` we saw in Lab 0
+    - It contains:
+      - Process state
+      - CPU registers
+      - Scheduling information
+      - Memory management information
+      - I/O status information
+      - Any other type of accounting information
+  - Aside: Concurrency and Parallelism Aren't the Same
+
+    - Concurrency: switching between two or more things (can you get interrupted)
+      - Goal: make progress on multiple things
+    - Parallelism: running two or more things at the same time (are they independent)
+      - Goal: run as fast as possible
+  - A Real Life Situation of Concurrency and Parallelism
+
+    - You're sitting at a table for dinner, and you can:
+      - Eat
+      - Drink
+      - Talk
+      - Gesture
+    - You're so hungry that if you start eating, you won't stop until you finish
+    - Which tasks can and can't be done concurrently, and in parallel?
+  - Choose Any Two Tasks in the Real Life Example
+    - You can't eat and talk (or drink) at the same time, and you can't switch
+      - Not parallel and not concurrent
+    - You could eat and gesture at the same time, but you can't switch
+      - Parallel and not concurrent
+    - You can't drink and talk at the same time, and you could switch
+      - Not parallel and concurrent
+    - You can talk (or drink) and gesture at the same time, and you could switch
+      - Parallel and concurrent
+  - Uniprogramming is for Old Batch Processing Operating Systems
+    - Uniprogramming: only one process running at a time
+      - Two processes are not parallel and not concurrent, no matter what
+    - Multiprogramming: allow multiple processes
+      - Two processes can run in parallel or concurrently
+    - Modern operating systems try to run everything in parallel and concurrently
+  - Process State Diagram
+
+    - => Created
+    - Created => Waiting/Ready
+    - Waiting/Ready => Running
+    - Running => Waiting/Ready
+    - Running => Terminated (Accept state)
+    - Running => Blocked
+    - Blocked => Waiting/Ready
+  - The Scheduler Decides When to Switch
+    - To create a process, the OS has to at least load it into memory
+    - When it's waiting, the scheduler (coming later) decides when it's running
+    - We're going to first focus on the mechanics of switching processes
+  - The Core Scheduling Loop Changes Running Processes
+    - 1. Pause the currently running process
+      2. Save its state, so you can restore it later
+      3. Get the next process to run from the scheduler
+      4. Load the next process' state and let that run
+  - We Can Let Processes Themselves, or the OS Pause
+    - Cooperative multitasking: the processes use a system call to tell the OS to pause it
+      - Processes use system calls to manage pausing
+    - True multitasking: the OS retains control and pauses processes
+    - For true multitasking, the OS can:
+      - Give processes set time slices
+      - Wake up periodically using interrupts to do scheduling
+  - Swapping Processes is Called Context Switching
+    - We've said that, at minimum, we'd have to save all of the current registers
+      - We have to save all of the values, using the same CPU as we're trying to save
+    - There's hardware support for saving state, however, you may not want to save everything
+    - Context switching is pure overhead, we want it to be as fast as possible
+    - Usually, there's a combination of hardware and software to save as little as possible
+    - You can think of a process as a program + context
+  - We Could Create Processes from Scratch
+    - We load the program into memory and create the process control block
+      - This is what Windows does
+    - Could we decompose this into more flexible abstractions?
+  - Instead of Creating a New Process, We Could Clone It
+    - Pause the currently running process, and copy it's PCB into a new one
+      - This will reuse all of the information from the process, including variables
+    - Distinguish between the two processes with a parent and child relationship
+      - They could both execute different parts of the program together
+    - We could then allow either process to load a new program and setup a new PCB
+  - On Unix, the Kernel Launches A Single User Process
+    - After the kernel initializes, it creates a single process from a program
+    - This process is called `init` and it looks for it in `/sbin/init`
+      - Responsible for executing every other process on the machine
+        - Will be the parent/ancestor of every process on the machine
+      - Must always be active, if it exits, the kernel thinks you're shutting down
+    - For Linux, `init` will probably be `systemd`, but there's other options
+  - Aside: some OSes create an "idle" process that the scheduler can run
+  - How You Can See Your Process Tree
+    - Use `htop`
+      - `sudo pacman -S htop` to install on the virtual machine
+    - You can press `F5` to switch between tree and list view
+  - You may have to update all your packages first:
+    
+    - `sudo pacman -Syu` (Reboot if your kernel updates)
+  - The Parent Process is Responsible for Its Child
+    - The OS sets the exit status when a process terminates (by calling `exit`)
+      - It can't remove its PCB yet
+    - The minimum acknowledgement the parent has to do is read the child's exit status
+    - There's two situations:
+      - The child exits first (zombie process)
+      - The parent exits first (orphan process)
+  - A Zombie Process Waits for Its Parent to Read Its Exit Status
+    - The process is terminated, but it hasn't been acknowledged
+    - A process may have an error in it, where it never reads the child's exit status
+    - The OS can interrupt the parent process to tell it to acknowledge the child
+      - This is a basic form of IPC called a signal
+      - By default, processes may ignore this
+    - The OS has to keep the zombie process at least until the parent exits if it doesn't acknowledge it
+  - An Orphan Process Needs a New Parent
+    - The child process lost its parent process
+      - The child still needs a process to acknowledge its exit
+    - The OS re-parents the child process to `init`
+      - The `init` process is now responsible to acknowledge the child
+  - The OS Creates and Runs Processes
+    - The OS has to:
+      - Load a program and create a process with context
+        - Register values, instruction pointer, etc.
+      - Maintain process control blocks, including state
+      - Switch between running processes using a context switch
+      - Unix kernels start an `init` process
+        - Responsible for running all the processes on the rest of the machine
+      - Unix processes have to maintain a parent and child relationship
+
+
+
+## Lecture 4: Process API and Basic IPC
+
+- Process API
+
+  - Linux Terminology is Slightly Different
+
+    - You can look at a process' state by reading `/proc/<pid>/state`
+      - Replace `<pid>` with the process ID
+    - `R`: Running and runnable [Running and waiting]
+    - `S`: Interruptible sleep [Blocked]
+      - Could be opened up to execute
+    - `D`: Uninterruptible sleep [Blocked]
+    - `T`: Stopped
+    - `Z`: Zombie
+    - The kernel lets you explicitly stop a process to prevent it from running
+      - You or another process must explicitly continue it
+
+  - On POSIX Systems, You Can Find Documentation Using `man`
+
+    - We'll be using the following APIs:
+      - `execve`
+      - `fork`
+      - `wait`
+    - You can use `man <function>` to look up documentation, or `man <number> <function>`
+      - `2`: System calls
+      - `3`: Library calls
+
+  - `execve` Loads Another Program, and Replaces process with a New One
+
+    - `execve` has the following API:
+      - `pathname`: full path of the program to load
+      - `argv`: array of strings (array of characters), terminated by a null pointer
+        - Represents arguments to the process
+      - `envp`: same as `argv`
+        - Represents the environment of the process
+      - Returns an error on failure, does not return if successful
+
+  - `execve-example.c` Turns the Process into `ls`
 
     - ```c
-      #include <stdlib.h>
-      #include <stdio.h>
-      
-      int main(int argc, char **argv) {
-          int *x = malloc(sizeof(int));
-          printf("x = %p\n", x);
-          free(x);
+      int main(int argc, char *argv[]) {
+          printf("I'm going to become another process\n");
+          char *exec_argv[] = {"ls", NULL};
+          char *exec_envp[] = {NULL};
+          int exec_return = execve("/use/bin/ls", exec_argv, exec_envp);
+          if (exec_return == -1) {
+              exec_return = errno;
+              perror("execve failed");
+              return exec_return;
+          }
+          printf("If execve worked, this will never print\n");
           return 0;
       }
       ```
 
-- We Can Monitor All Allocations with Our Own Library
+  - `fork` Creates a New Process, a Copy of the Current One
 
-  - Normal runs of `alloc-example` outputs `x = 0x561116384260`
-  - Create `alloc-wrapper.so` that outputs all `malloc` and `free` calls
-  - Interesting, we did not make 2 `malloc` calls
-    - `printf` allocates a buffer for itself
+    - `fork` has the following API:
+      - Returns the process IS of the newly created child process
+        - `-1`: on failure
+        - `0`: in the child process
+        - `>0`: in the parent process
+    - There are now 2 processes running
+      - Note: they can access the same variables, but they're separate
+        - OS does "copy on write" to maximize sharing
 
-- Detecting Memory Leaks
+  - `fork-example.c` Has One Process Execute Each Branch
 
-  - `valgrind` is another useful tool to detect memory leaks from `malloc` and `free`
+    - ```c
+      int main(int argc, char *argv[]) {
+          pid_t pid = fork();
+          if (pid == -1) {
+              int err = errno;
+              perror("fork failed");
+              return err;
+          }
+          if (pid == 0) {
+              printf("Child return pid: %d\n", pid);
+              printf("Child pid: $d\n", getpid());
+              printf("Child parent pid: %d\n", getppid());
+          }
+          else {
+              printf("Parent returned pid: %d\n", pid);
+              printf("Parent pid: %d\n", getpid());
+              printf("Parent parent pid: %d\n", getppid());
+          }
+          return 0;
+      }
+      ```
 
-    - Usage: `valgrind <executable>`
+  - `orphan-example.c` The Parent Exits Before the Child, `init` Cleans Up
 
-  - Here's a note from the `man` pages regarding what we saw:
+    - ```c
+      int main(int argc, char *argv[]) {
+          pid_t pid = fork();
+          if (pid == -1) {
+              int err = errno;
+              perror("fork failed");
+              return err;
+          }
+          if (pid == 0) {
+              printf("Child parent pid: %d\m", getppid());
+              sleep(2);
+              printf("Child parent pid (after sleep): %d\n", getppid());
+              // getppid will be init or a subreaper id
+          }
+          else {
+              sleep(1);
+          }
+          return 0;
+      }
+      ```
 
-    - > "The GNU C library (`libc.so`), which is used by all programs, may allocate memory for its own uses. Usually it doesn't bother to free that memory when the program ends - there would be no point, since the Linux kernel reclaims all process resources when a process exits anyway, so it would just slow things down"
+  - `zombie-example.c` The Parent Monitors the Child to Check Its State
 
-    - This does not excuse you from not calling `free`
+    - ```c
+      pid_t pid = fork();
+      // Error checking
+      if (pid == 0) {
+          sleep(2);
+      }
+      else {
+          // Parent process
+          int ret;
+          sleep(1);
+          printf("Child process state: ");
+          ret = print_state(pid);
+          if (ret < 0) { return errno; }
+          sleep(2);
+          printf("Child process state: ");
+          ret = print_state(pid);
+          if (ret < 0) { return errno; }
+      }
+      ```
 
-- Standard File Descriptors for Unix
+  - You Need to Call `wait` on Child Processes
 
-  - All command line executables use the following standard for file descriptors:
-    - `0` - `stdin` (Standard input)
-    - `1` - `stdout` (Standard output)
-    - `2` - `stderr` (Standard error)
-  - The terminal emulator's job is to:
-    - Translate key presses to bytes and write to `stdin`
-    - Display bytes read from `stdout` and `stderr`
-    - May redirect file descriptors between processes
+    - `wait` has the following API:
+      - `status`: address to store the wait status of the process
+      - Returns the process ID of child process
+        - `-1`: on failure
+        - `0`: for no blocking calls with no child changes
+        - `>0`: the child with a change
+      - The wait status contains a bunch of information, including the exit code
+        - Use `man wait` to find all the macros to query wait status
+          - You can use `waitpid` to wait on a specific child process
+    - Acknowledges the child
 
-- Checking Open File Descriptors on Linux
+  - `wait-example.c` Blocks Until the Child Process Exists, and Cleans Up
 
-  - `/proc/<PID>/fd` is a directory containing all open file descriptors for a process
-  - `ps x` shows a list of processes matching your user (lots of other flags available)
-  - `lsof <file>` shows you what processes have the file open
-    - For example, processes using C: `lsof /lib/libc.so.6`
-
-- Operating Systems Provide the Foundation for Libraries
-
-  - We learned:
-    - Dynamic libraries and a comparison to static libraries
-      - How to manipulate the dynamic loader
-    - Example of issues from ABI changes without API changes
-      - If something escapes your library, that ABI must remain constant, or else it could break any program that depends on it
-    - Standard file descriptor conventions for UNIX
-
-- A Process is an Instance of a Running Program
-
-  - A program (or application) is just a static definition, including
-    - Instructions
-    - Data
-    - Memory allocations
-    - Symbols it uses
-  - When you start executing a program, it turns into a process
-
-- Process is Like a Combination of all the Virtual Resources
-
-  - If we consider a "virtual CPU", the OS needs to track all registers
-  - It also contains all other resources it can access (memory and I/O)
-  - Every execution runs the same code (part of the program)
-    - An execution is running some specific code (part of the process)
-
-- A Process is More Flexible
-
-  - A process contains both the program and information specific to its execution
-  - It allows multiple executions of the same program
-  - It even allows a process to run multiple copies of itself
-
-- A Process Control Block (PCB) Contains All Execution Information
-
-  - Specifically, in Linux, this is the `task_struct` we saw in Lab 0
-  - It contains:
-    - Process state
-    - CPU registers
-    - Scheduling information
-    - Memory management information
-    - I/O status information
-    - Any other type of accounting information
-
-- Aside: Concurrency and Parallelism Aren't the Same
-
-  - Concurrency: switching between two or more things (can you get interrupted)
-    - Goal: make progress on multiple things
-  - Parallelism: running two or more things at the same time (are they independent)
-    - Goal: run as fast as possible
-
-- A Real Life Situation of Concurrency and Parallelism
-
-  - You're sitting at a table for dinner, and you can:
-    - Eat
-    - Drink
-    - Talk
-    - Gesture
-  - You're so hungry that if you start eating, you won't stop until you finish
-  - Which tasks can and can't be done concurrently, and in parallel?
-
-- Choose Any Two Tasks in the Real Life Example
-  - You can't eat and talk (or drink) at the same time, and you can't switch
-    - Not parallel and not concurrent
-  - You could eat and gesture at the same time, but you can't switch
-    - Parallel and not concurrent
-  - You can't drink and talk at the same time, and you could switch
-    - Not parallel and concurrent
-  - You can talk (or drink) and gesture at the same time, and you could switch
-    - Parallel and concurrent
-  
-- Uniprogramming is for Old Batch Processing Operating Systems
-  - Uniprogramming: only one process running at a time
-    - Two processes are not parallel and not concurrent, no matter what
-  - Multiprogramming: allow multiple processes
-    - Two processes can run in parallel or concurrently
-  - Modern operating systems try to run everything in parallel and concurrently
-  
-- Process State Diagram
-
-  - => Created
-  - Created => Waiting/Ready
-  - Waiting/Ready => Running
-  - Running => Waiting/Ready
-  - Running => Terminated (Accept state)
-  - Running => Blocked
-  - Blocked => Waiting/Ready
-
-- The Scheduler Decides When to Switch
-  - To create a process, the OS has to at least load it into memory
-  - When it's waiting, the scheduler (coming later) decides when it's running
-  - We're going to first focus on the mechanics of switching processes
-  
-- The Core Scheduling Loop Changes Running Processes
-  - 1. Pause the currently running process
-    2. Save its state, so you can restore it later
-    3. Get the next process to run from the scheduler
-    4. Load the next process' state and let that run
-  
-- We Can Let Processes Themselves, or the OS Pause
-  - Cooperative multitasking: the processes use a system call to tell the OS to pause it
-    - Processes use system calls to manage pausing
-  - True multitasking: the OS retains control and pauses processes
-  - For true multitasking, the OS can:
-    - Give processes set time slices
-    - Wake up periodically using interrupts to do scheduling
-  
-- Swapping Processes is Called Context Switching
-  - We've said that, at minimum, we'd have to save all of the current registers
-    - We have to save all of the values, using the same CPU as we're trying to save
-  - There's hardware support for saving state, however, you may not want to save everything
-  - Context switching is pure overhead, we want it to be as fast as possible
-  - Usually, there's a combination of hardware and software to save as little as possible
-  - You can think of a process as a program + context
-  
-- We Could Create Processes from Scratch
-  - We load the program into memory and create the process control block
-    - This is what Windows does
-  - Could we decompose this into more flexible abstractions?
-  
-- Instead of Creating a New Process, We Could Clone It
-  - Pause the currently running process, and copy it's PCB into a new one
-    - This will reuse all of the information from the process, including variables
-  - Distinguish between the two processes with a parent and child relationship
-    - They could both execute different parts of the program together
-  - We could then allow either process to load a new program and setup a new PCB
-  
-- On Unix, the Kernel Launches A Single User Process
-  - After the kernel initializes, it creates a single process from a program
-  - This process is called `init` and it looks for it in `/sbin/init`
-    - Responsible for executing every other process on the machine
-      - Will be the parent/ancestor of every process on the machine
-    - Must always be active, if it exits, the kernel thinks you're shutting down
-  - For Linux, `init` will probably be `systemd`, but there's other options
-- Aside: some OSes create an "idle" process that the scheduler can run
-  
-- How You Can See Your Process Tree
-  - Use `htop`
-    - `sudo pacman -S htop` to install on the virtual machine
-  - You can press `F5` to switch between tree and list view
-- You may have to update all your packages first:
+    - ```c
+      int main(int argc, char *argv[]) {
+          pid_t pid = fork();
+          if (pid == -1) {
+              return errno
+          }
+          else {
+              printf("Calling wait\n");
+              int wstatus;
+              pid_t wait_pid = wait(&wstatus);
+              if (WIFEXITED(wstatus)) {
+                  printf("Wait reutrned for an exited process! pid: %d, status: %d\n",
+                        wait_pid, WEXITSTATUS(wstatus));
+              }
+          }
+          return 0;
+      }
+      ```
     
-  - `sudo pacman -Syu` (Reboot if your kernel updates)
-  
-- The Parent Process is Responsible for Its Child
-  - The OS sets the exit status when a process terminates (by calling `exit`)
-    - It can't remove its PCB yet
-  - The minimum acknowledgement the parent has to do is read the child's exit status
-  - There's two situations:
-    - The child exits first (zombie process)
-    - The parent exits first (orphan process)
-  
-- A Zombie Process Waits for Its Parent to Read Its Exit Status
-  - The process is terminated, but it hasn't been acknowledged
-  - A process may have an error in it, where it never reads the child's exit status
-  - The OS can interrupt the parent process to tell it to acknowledge the child
-    - This is a basic form of IPC called a signal
-    - By default, processes may ignore this
-  - The OS has to keep the zombie process at least until the parent exits if it doesn't acknowledge it
-  
-- An Orphan Process Needs a New Parent
-  - The child process lost its parent process
-    - The child still needs a process to acknowledge its exit
-  - The OS re-parents the child process to `init`
-    - The `init` process is now responsible to acknowledge the child
-  
-- The OS Creates and Runs Processes
-  - The OS has to:
-    - Load a program and create a process with context
-      - Register values, instruction pointer, etc.
-    - Maintain process control blocks, including state
-    - Switch between running processes using a context switch
-    - Unix kernels start an `init` process
-      - Responsible for running all the processes on the rest of the machine
-    - Unix processes have to maintain a parent and child relationship
+  - We Used System Calls to Create Processes
 
+    - You should be comfortable with:
+      - `execve`
+      - `fork`
+      - `wait`
+    - This includes understanding processes and their relationships
 
+- Basic IPC
 
-## Lecture 4: Process API
-
-- Linux Terminology is Slightly Different
-
-  - You can look at a process' state by reading `/proc/<pid>/state`
-    - Replace `<pid>` with the process ID
-  - `R`: Running and runnable [Running and waiting]
-  - `S`: Interruptible sleep [Blocked]
-  - `D`: Uninterruptible sleep [Blocked]
-  - `T`: Stopped
-  - `Z`: Zombie
-  - The kernel lets you explicitly stop a process to prevent it from running
-    - You or another process must explicitly continue it
-
-- On POSIX Systems, You Can Find Documentation Using `man`
-
-  - We'll be using the following APIs:
-    - `execve`
-    - `fork`
-    - `wait`
-  - You can use `man <function>` to look up documentation, or `man <number> <function>`
-    - `2`: System calls
-    - `3`: Library calls
-
-- `execve` Loads Another Program, and Replaces process with a New One
-
-  - `execve` has the following API:
-    - `pathname`: full path of the program to load
-    - `argv`: array of strings (array of characters), terminated by a null pointer
-      - Represents arguments to the process
-    - `envp`: same as `argv`
-      - Represents the environment of the process
-    - Returns an error on failure, does not return if successful
-
-- `execve-example.c` Turns the Process into `ls`
-
-  - ```c
-    int main(int argc, char *argv[]) {
-        printf("I'm going to become another process\n");
-        char *exec_argv[] = {"ls", NULL};
-        char *exec_envp[] = {NULL};
-        int exec_return = execve("/use/bin/ls", exec_argv, exec_envp);
-        if (exec_return == -1) {
-            exec_return = errno;
-            perror("execve failed");
-            return exec_return;
-        }
-        printf("If execve worked, this will never print\n");
-        return 0;
-    }
-    ```
-
-- `fork` Creates a New Process, a Copy of the Current One
-
-  - `fork` has the following API:
-    - Returns the process IS of the newly created child process
-      - `-1`: on failure
-      - `0`: in the child process
-      - `>0`: in the parent process
-  - There are now 2 processes running
-    - Note: they can access the same variables, but they're separate
-      - OS does "copy on write" to maximize sharing
-
-- `fork-example.c` Has One Process Execute Each Branch
-
-  - ```c
-    int main(int argc, char *argv[]) {
-        pid_t pid = fork();
-        if (pid == -1) {
-            int err = errno;
-            perror("fork failed");
-            return err;
-        }
-        if (pid == 0) {
-            printf("Child return pid: %d\n", pid);
-            printf("Child pid: $d\n", getpid());
-            printf("Child parent pid: %d\n", getppid());
-        }
-        else {
-            printf("Parent returned pid: %d\n", pid);
-            printf("Parent pid: %d\n", getpid());
-            printf("Parent parent pid: %d\n", getppid());
-        }
-        return 0;
-    }
-    ```
-
-- `orphan-example.c` The Parent Exits Before the Child, `init` Cleans Up
-
-  - ```c
-    int main(int argc, char *argv[]) {
-        pid_t pid = fork();
-        if (pid == -1) {
-            int err = errno;
-            perror("fork failed");
-            return err;
-        }
-        if (pid == 0) {
-            printf("Child parent pid: %d\m", getppid());
-            sleep(2);
-            printf("Child parent pid (after sleep): %d\n", getppid());
-        }
-        else {
-            sleep(1);
-        }
-        return 0;
-    }
-    ```
-
-- `zombie-example.c` The Parent Monitors the Child to Check Its State
-
-  - ```c
-    pid_t pid = fork();
-    // Error checking
-    if (pid == 0) {
-        sleep(2);
-    }
-    else {
-        // Parent process
-        int ret;
-        sleep(1);
-        printf("Child process state: ");
-        ret = print_state(pid);
-        if (ret < 0) { return errno; }
-        sleep(2);
-        printf("Child process state: ");
-        ret = print_state(pid);
-        if (ret < 0) { return errno; }
-    }
-    ```
-
-- You Need to Call `wait` on Child Processes
-
-  - `wait` has the following API:
-    - `status`: address to store the wait status of the process
-    - Returns the process ID of child process
-      - `-1`: on failure
-      - `0`: for no blocking calls with no child changes
-      - `>0`: the child with a change
-    - The wait status contains a bunch of information, including the exit code
-      - Use `man wait` to find all the macros to query wait status
-        - You can use `waitpid` to wait on a specific child process
-
-- `wait-example.c` Blocks Until the Child Process Exists, and Cleans Up
-
-  - ```c
-    int main(int argc, char *argv[]) {
-        pid_t pid = fork();
-        if (pid == -1) {
-            return errno
-        }
-        else {
-            printf("Calling wait\n");
-            int wstatus;
-            pid_t wait_pid = wait(&wstatus);
-            if (WIFEXITED(wstatus)) {
-                printf("Wait reutrned for an exited process! pid: %d, status: %d\n",
-                      wait_pid, WEXITSTATUS(wstatus));
-            }
-        }
-        return 0;
-    }
-    ```
+  - IPC is Transferring Bytes Between Two or More Processes
+    - Reading and writing files is a form of IPC
+    - For a process, you can read the input and write the output
+      - Think about Lab 0
+    - The `read` and `write` system calls allow any bytes
+  - A Simple Process Could Write Everything It Reads
+    - See: `lecture-06/read-write/example.c`
+    - We `read` from `stdin` and `write` to `stdout`
+      - Does this remind you of any program you've seen before? => `cat`
+    - If we run it in our terminal without arguments, it'll wait for input
+      - Press `Ctrl + D` when you're done to send end-of-file (`EOF`)
+  - `read` Just Reads Data from a File Descriptor
+    - See: `man 2 read`
+    - There's no `EOF` character, `read` just returns 0 bytes read
+      - The kernel returns `0` on a closed file descriptor
+    - We need to check for errors!
+      - Save `errno` if you're using another function that may set it
+  - `write` Just Writes Data to a File Descriptor
+    - See: `man 2 write`
+    - It returns the number of bytes written, you can't assume it's always successful
+      - Save `errno` if you're using another function that may set it
+    - Both ends of the `read` and `write` have a corresponding `write` and `read`
+      - This makes two communication channels with command line programs
 
 
 
 ## Lecture 5: Basic IPC
 
-- IPC is Transferring Byes Between Two or More Processes
-  - Reading and writing files is a form of IPC
-  - For a process, you can read the input and write the output
-    - Think about Lab 0
-  - The read and write system calls allow any bytes
-- A Simple Process Could Write Everything It Reads
-  - See: `lecture-06/read-write/example.c`
-  - We `read` from `stdin` and `write` to `stdout`
-    - Does this remind you of any program you've seen before?
-  - If we run it in our terminal without arguments, it'll wait for input
-    - Press `Ctrl + D` when you're done to send end-of-file (`EOF`)
-- `read` Just Reads Data from a File Descriptor
-  - See: `man 2 read`
-  - There's no `EOF` character, `read` just returns 0 bytes read
-    - The kernel returns `0` on a closed file descriptor
-  - We need to check for errors!
-    - Save `errno` if you're using another function that may set it
-- `write` Just Writes Data to a File Descriptor
-  - See: `man 2 write`
-  - It returns the number of bytes written, you can't assume it's always successful
-    - Save `errno` if you're using another function that may set it
-  - Both ends of the `read` and `write` have a corresponding `write` and `read`
-    - This makes two communication channels with command line programs
 - The Standard File Descriptors are Powerful
   - We could close `stdin` (freeing file descriptor `0`) and open a file instead
     - Linux uses the lowest available file descriptor for new ones
