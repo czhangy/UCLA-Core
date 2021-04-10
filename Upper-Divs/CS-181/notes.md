@@ -354,6 +354,57 @@
 
 
 
+## Lecture 4: NFAs and Regular Expressions
+
+- Main closure properties of the FSLs (or "Regular Languages/Sets"):
+
+  - Union, Concatenation, Kleene* and Kleene+
+  - Complementation and Intersection (and therefore, set difference, symmetric set difference, etc. via DeMorgan's Laws)
+  - Reversal
+  - If a language is not an FSL, these properties generally tell you nothing about the resulting language
+    - The exceptions to this are complementation and reversal (complementing a complement and reversing a reversal give you the original language) 
+
+- Pattern Matching
+
+  - $$
+    \Sigma=\{a,b\}\\L=\{\text{strings with}\ abab\ \text{as a substring}\}
+    $$
+
+  - DFA:
+
+    - Have consecutive states marking each step of the target substring
+      - Once you reach the end, mark it as an accept state and loop into that state for the rest of the string
+    - Intermediate steps can be filled in based on target behavior
+
+  - NFA:
+
+    - Same consecutive states + tail end as the DFA
+    - Use nondeterminism to loop each input to the beginning of the check
+      - No rejection in NFAs
+
+- Several equally valid interpretations of nondeterminism
+
+  - Search NFA digraph for path from `q_0` to any `q_i` in `F`
+  - Every time you come to a nondeterministic choice, consider both paths in parallel from then on similar to consider tree of all possible computations
+  - Guess and check: NFA guesses which choices will lead to accepting states, but it must check its guess before accepting
+  - Choosy generator
+    - Follow whatever paths you want, but the machine only successfully generates strings that end in an accepting state
+
+- Intro to Regular Expressions
+
+  - All regular expressions (syntax) => all regular sets = FSLs (semantics)
+  - Formally, `L(R)` is the set of strings denoted by regular expression `R`, but we usually use them interchangeably
+  - `a^n` shorthand for `a` concatenated with itself `n` times
+    - `a^n` concatenated with `b^n` is not a regular expression => `n`s have to be equal, not possible to check in a FSL
+
+
+
+## Lecture 5:
+
+- 
+
+
+
 ## Reading 1: Discrete Concepts
 
 - Mathematical Notions and Terminology
