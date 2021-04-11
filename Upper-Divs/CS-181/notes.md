@@ -796,65 +796,64 @@
 
   - 2 machines are **equivalent** if they recognize the same language
 
-  - > Every nondeterministic finite automaton has an equivalent deterministic finite
-    > automaton
-
-    - Proof:
-
-      - Let `N = (Q, Σ, δ, q_0, F)` be the NFA recognizing some language `A`, we construct a DFA `M = (Q', Σ', δ'', q_0', F')` recognizing `A`
-
-      - $$
+  - > Every nondeterministic finite automaton has an equivalent deterministic finite automaton
+    
+- Proof:
+    
+  - Let `N = (Q, Σ, δ, q_0, F)` be the NFA recognizing some language `A`, we construct a DFA `M = (Q', Σ', δ'', q_0', F')` recognizing `A`
+    
+  - $$
         Q'=\mathcal{P}(Q)
         $$
-
-        - Every state of `M` is a set of states of `N` => `P(Q)` is the set of subsets of Q
-
-      - For `R ∈ Q'` and `a ∈ Σ`, let:
-
-        - $$
+    
+    - Every state of `M` is a set of states of `N` => `P(Q)` is the set of subsets of Q
+    
+  - For `R ∈ Q'` and `a ∈ Σ`, let:
+    
+    - $$
           \delta '(R, a) = \{q\in Q|\ q\in \delta(r, a) \ \text{for some}\ r\in R\}
           $$
-
-          - If `R` is a state of `M`, it is also a set of states of `N`
-
-          - When `M` reads a symbol `a` in state `R`, it shows where `a` takes each state in `R`
-
-          - $$
+    
+      - If `R` is a state of `M`, it is also a set of states of `N`
+    
+      - When `M` reads a symbol `a` in state `R`, it shows where `a` takes each state in `R`
+    
+      - $$
             \delta '(R,a) =\bigcup_{r\in R}\delta(r,a)
             $$
-
-      - $$
+    
+  - $$
         q_0' =\{q_0\}
         $$
-
-        - `M` starts in the state corresponding to the collection containing just the start state of `N`
-
-      - $$
+    
+    - `M` starts in the state corresponding to the collection containing just the start state of `N`
+    
+  - $$
         F' =\{R\in Q'|\ R\ \text{contains an accept state of}\ N\}
         $$
-
-        - The machine `M` accepts if one of the possible states that `N` could be in at this point is an accept state
-
-      - For any state `R` of `M`, we define `E(R)` to be the collection of states that can be reached from members of `R` by going only along `ε` arrows, including the members of `R` themselves:
-
-        - $$
+    
+    - The machine `M` accepts if one of the possible states that `N` could be in at this point is an accept state
+    
+  - For any state `R` of `M`, we define `E(R)` to be the collection of states that can be reached from members of `R` by going only along `ε` arrows, including the members of `R` themselves:
+    
+    - $$
           E(R)=\{q|\ q\ \text{can be reached from}\ R\ \text{by traveling along 0 or more}\ \varepsilon\ \text{arrows}\}
           $$
-
-      - $$
+    
+  - $$
         \delta'(R, a)=\{q\in Q|\ q\in E(\delta(r,a))\ \text{for some}\ r\in R\}
         $$
-
-        - Modify the transition function of `M` to place additional "fingers" on all states that can be reached by going along `ε` arrows after every step
-
-      - $$
+    
+    - Modify the transition function of `M` to place additional "fingers" on all states that can be reached by going along `ε` arrows after every step
+    
+  - $$
         q'_0=E(\{q_0\})
         $$
-
-        - Modify the start state of `M` to move the fingers initially to all possible states that can be reached from the start state of `N` along the `ε` arrows
-
-  - > A language is regular if and only if some nondeterministic finite automaton recognizes it
-
+    
+    - Modify the start state of `M` to move the fingers initially to all possible states that can be reached from the start state of `N` along the `ε` arrows
+    
+- > A language is regular if and only if some nondeterministic finite automaton recognizes it
+  
 - Closure Under the Regular Operations
 
   - > The class of regular languages is closed under the union operation
@@ -1228,66 +1227,126 @@
 
 
 
-## Reading 6:
+## Reading 6: Context-Free Grammars
+
+- **Context-free grammars** - describe certain features that have a recursive structure
+
+  - First used in the study of human languages
+
+- **Parser** - extracts the meanings of a program prior to generating the compiled code or performing the interpreted execution
+
+  - A number of methodologies facilitate the construction of a parser once a CFG is available
+  - The compiler extracts the meaning of the code to be compiled in a process called **parsing**
+
+- **Context-free languages** - languages associated with CFGs
+
+  - Includes all the regular languages and many additional languages
+
+- **Pushdown automata** - class of machines recognizing the CFGs
+
+- Context-Free Grammars
+
+  - $$
+    A\rightarrow0A1\\A\rightarrow B\\ B\rightarrow\#
+    $$
+
+  - A grammar consists of a collection of **substitution rules** or **productions**
+
+    - Each of these appears as a line in the grammar, comprising of a symbol and a string separated by an arrow
+      - The symbol is called a **variable**
+        - Often represented by capital letters
+        - One variable is designated as the **start variable**, usually occurring on the LHS of the top-most rule
+      - The string consists of variables and other symbols called **terminals**
+        - Analogous to the input alphabet and often are represented by lowercase letters, numbers, or special symbols
+
+  - A grammar can be used to describe a language by generating each string in the following manner:
+
+    - Write down the start variable
+    - Find a variable that is written down and a rule that starts with that variable
+    - Replace the written down variable with the RHS of that rule
+    - Repeat until no variables remain
+
+  - **Derivation** - the sequence of substitutions to obtain a string
+
+    - Can be represented pictorially with a **parse tree**
+    - All strings generated in these ways constitute the **language of the grammar**
+      - Any language that can be generated by some CFG is called a **context-free language**
+
+  - The symbol `|` is often used to abbreviate several rules with the same LHS
+
+  - Formal Definition of a Context-Free Grammar
+
+    - A **context-free-grammar** is a 4-tuple `(V, Σ, R, S)` where:
+      - `V` is a finite set called the variables
+      - `Σ` is a finite set, disjoint from `V`, called the terminals
+      - `R` is a finite set of rules, with each rule being a variable and a string of variables and terminals
+      - `S ∈ V` is the start variable
+    - If `u`, `v`, and `w` are strings of variables and terminals and `A -> w` is a rule of the grammar, we say that `uAv` **yields** `uwv`
+    - Often a grammar is specified by writing down only its rules
+
+  - Designing Context-Free Grammars
+
+    - Many CFLs are the union of simpler CFLs
+    - Constructing a CFG for a language that happens to be regular is easy if you can first construct a DFA for that language
+      - Make a variable `R_i` for each state `q_i` of the DFA
+      - Add the rule `R_i -> aR_j` to the CFG if `δ(q_i, a) = q_j` us a transition in the DFA
+      - Add the rule `R_i -> ε` if `q_i` is an accept state of the DFA
+      - Make `R_0` the start variable of the grammar, where `q_0` is the start state of the machine
+    - Certain CGLs contains strings with two substrings that are linked in the sense that a machine for such a language would need to remember an unbounded amount of information about one of the substrings to verify that it corresponds properly to the other substring
+      - `R -> uRv`
+    - Strings may contain certain structures that appear recursively as part of other (or the same) structures
+      - Place the variable symbol generating the structure in the location of the rules corresponding to where that structure may recursively appear
+
+  - Ambiguity
+
+    - Sometimes a grammar can generate the same string in several different ways
+
+      - String will have several different parse trees and thus several different meanings
+      - We say this string is derived **ambiguously** in that grammar
+        - If this occurs for a string in a grammar, we say that grammar is ambiguous
+
+    - A derivation of a string `w` in a grammar `G` is a **leftmost derivation** if at every step the leftmost remaining variable is the one replaced
+
+    - A string `w` is derived **ambiguously** in context-free grammar `G` if it has two or more different leftmost derivations
+
+      - Grammar `G` is **ambiguous** if it generates some string ambiguously
+
+    - Sometimes ambiguous grammars can be rewritten to become unambiguous
+
+      - CFLs that can only be generated by ambiguous grammars are **inherently ambiguous**
+
+    - Chomsky Normal Form
+
+      - A CFG is in **Chomsky normal form** if every rule is of the form:
+
+        - $$
+          A\rightarrow BC\\A\rightarrow a
+          $$
+
+          - Where `a` is any terminal and `A`, `B`, and `C` are any variables
+          - The rule `S -> ε`, where `S` is the start variable is also permitted
+
+      - > Any context-free language is generated by a context-free grammar in Chomsky normal form
+
+        - Proof:
+          - Add a new start variable `S_0` and the rule `S_0 -> S`, guaranteeing that the start variable doesn't occur on the RHS of any rule
+          - Remove `ε`-rules of the form `A -> ε`, where `A` is not the start variable
+            - For each occurrence of `A` on the RHS of a rule, we add a new rule with that occurrence deleted
+            - For the rule `R -> A`, we add `R -> ε` unless that rule was already removed previously
+            - Repeat until there are no more`ε`-rules
+          - Remove all unit rules of the form `A -> B`
+            - Whenever a rule `B -> u` appears, we add the rule `A -> u` unless it was a unit rule already removed
+            - Repeat until all unit rules are removed
+          - Convert remaining rules into proper form
+            - Replace all rules `A -> u_1u_2 ... u_k` where `k >= 3` and each `u_i` is a variable or terminal symbol with the rules `A -> u_1A_1`, `A_1 -> u_2A_2`, ..., `A_k-2 -> u_k-1uk`
+              - The `A_i`s are new variables
+              - We replace any terminal `u_i` in the preceding rules with the new variable `U_i` and add the rule `U_i -> u_i`
+
+
+
+## Reading 7:
 
 - 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
