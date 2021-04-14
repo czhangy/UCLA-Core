@@ -889,8 +889,9 @@
     - It is also a system call, taking a `pid` and signal number
   - Find a processes' ID with `pidof`, e.g. `pidof ./signal-example-2`
   - After, use `kill <pid>`, which by default sends `SIGTERM`
-  - Use `kill -9 <pid>` to tell the kernel ton terminate the process
+  - Use `kill -9 <pid>` to tell the kernel to terminate the process
     - Process won't terminate if it's in uninterruptible sleep
+    - Sends `SIGKILL`, which can't be ignored
 
 - Shared Memory Allows Two Processes to Access the Same Memory
 
