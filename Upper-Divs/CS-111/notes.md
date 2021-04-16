@@ -811,132 +811,351 @@
 
 
 
-## Lecture 5: Basic IPC
+## Lecture 5: Basic IPC and Basic Scheduling
 
-- The Standard File Descriptors are Powerful
-  - We could close `stdin` (freeing file descriptor `0`) and open a file instead
-    - Linux uses the lowest available file descriptor for new ones
-  - See: `lecture-06/open-example.c` and `man 2 open`
-  - Without changing the core code, it now works with multiple input types
-  - You could type or use a file
-- Your Shell will Let You Redirect Standard File Descriptors
-  - Instead of running `./open-example open-example.c`, we could run: `./open-example < open-example.c`
-  - Your shell will do the `open` for you and replace the `stdin`
-    - We didn't actually have to write that
-  - You could also redirect across multiple processes
-    - `cat open-example.c | ./open-example`
-- Piping in Your Shell Connects Two Processes Together
-  - In `./p1 | ./p2`, the shell connects `p1`'s `stdout` to `p2`'s `stdin`
-  - The kernel has a `pipe` system call that returns two file descriptors
-    - `fd_pair[0]` is for `read` and `fd_pair[1]` is for `write`
-  - This forms a one-way communication channel
+- Basic IPC
+  
+  - The Standard File Descriptors are Powerful
+    
+    - We could close `stdin` (freeing file descriptor `0`) and open a file instead
+      - Linux uses the lowest available file descriptor for new ones
+    - See: `lecture-06/open-example.c` and `man 2 open`
+    - Without changing the core code, it now works with multiple input types
+    - You could type or use a file
+    
+  - Your Shell will Let You Redirect Standard File Descriptors
+    - Instead of running `./open-example open-example.c`, we could run: `./open-example < open-example.c`
+    - Your shell will do the `open` for you and replace the `stdin`
+      - We didn't actually have to write that
+    - You could also redirect across multiple processes
+      - `cat open-example.c | ./open-example`
+    
+  - Piping in Your Shell Connects Two Processes Together
+    - In `./p1 | ./p2`, the shell connects `p1`'s `stdout` to `p2`'s `stdin`
+    - The kernel has a `pipe` system call that returns two file descriptors
+      - `fd_pair[0]` is for `read` and `fd_pair[1]` is for `write`
+    - This forms a one-way communication channel
+  
+  - Your Shell Properly Handles All the File Descriptors
+  
+    - This includes changing file descriptors, and closing them properly
+    - You can use `dup2` to move a file descriptor to a new one
+      - If the new one is already open, it'll `close` it first
+    - See: `man 2 dup2` and `man 2 close`
+    - How do you give processes different file descriptors
+      - `fork` copies all the file descriptors to the new process
+  
+  - Signals are a Form of IPC that Interrupts
+  
+    - You could also press `Ctrl + C` to stop `./open-example`
+      - This interrupts your program's execution and exits early
+    - Kernel sends a number to your program indicating the type of signal
+      - Kernel default handlers either ignore the signal or terminate your process
+    - `Ctrl + C` sends `SIGINT` (interrupt from keyboard)
+    - If the default handler occurs, the exit code will be `128 + signal number`
+  
+  - You Can Set Your Own Signal Handlers with `signal`
+  
+    - See: `lecture-6/signal-example.c` and `man 2 signal`
+    - You just declare a function that doesn't return a value, and has an `int` argument
+      - The integer is the signal number
+    - Some numbers are non-standard, here are a few from Linux x86-64:
+      - `2`: `SIGINT` (interrupt from keyboard)
+      - `9`: `SIGKILL` (terminate immediately)
+      - `11`: `SIGSEGV` (memory access violation)
+      - `15`: `SIGTERM` (terminate)
+  
+  - A Signal Pauses your Process and Runs the Signal Handler
+  
+    - Your process can be interrupted at any point in execution
+      - Your process resumes after the signal handler finishes
+    - This is an example of concurrency, your process switches execution
+      - You have to be careful what you write here
+    - Run `./signal-example` and press `Ctrl + C`
+  
+  - You Need to Account for Interrupted System Calls
+  
+    - You should see:
+  
+      - ```
+        Ignoring signal 2
+        read: Interrupted system call
+        ```
+  
+    - We can rewrite it to retry interrupted system calls
+  
+      - See: `lecture-06/signal-example-2.c`
+  
+    - Now the program continues when we press `Ctrl + C`
+  
+  - You Can Send Signals to Processes with Their PID
+  
+    - You can use the command `kill`
+      - It is also a system call, taking a `pid` and signal number
+    - Find a processes' ID with `pidof`, e.g. `pidof ./signal-example-2`
+    - After, use `kill <pid>`, which by default sends `SIGTERM`
+    - Use `kill -9 <pid>` to tell the kernel to terminate the process
+      - Process won't terminate if it's in uninterruptible sleep
+      - Sends `SIGKILL`, which can't be ignored
+  
+  - Shared Memory Allows Two Processes to Access the Same Memory
+  
+    - See: `lecture-06/shared-memory-example.c` and `man 3 shm_open`
+    - You use `shm_open`, which returns a file descriptor
+    - You can think of it as a new location to read and write bytes to
+      - This needs to be resized with `ftruncate`
+    - Note: on some implementations, this just opens a file in `/dev/shm`
+  
+  - `mmap` Allows You to Memory Map the Contents of a File Descriptor
+  
+    - See: `man 3 mmap`
+    - Instead of using `read` and `write` system calls, you just access memory
+      - The OS is responsible for management
+    - Instead of accessing the file sequentially, you can access any part of it
+    - You can `mmap` regular files as well
+  
+  - We Explored Basic IPC in an OS
+  
+    - Some basic IPC includes:
+      - `read` and `write` through file descriptors (could be a regular file)
+      - Redirecting file descriptors for communication
+      - Pipes (which you'll explore)
+      - Signals
+      - Shared Memory
+  
+- Basic Scheduling
 
-- Your Shell Properly Handles All the File Descriptors
-
-  - This includes changing file descriptors, and closing them properly
-  - You can use `dup2` to move a file descriptor to a new one
-    - If the new one is already open, it'll `close` it first
-  - See: `man 2 dup2` and `man 2 close`
-  - How do you give processes different file descriptors
-    - `fork` copies all the file descriptors to the new process
-
-- Signals are a Form of IPC that Interrupts
-
-  - You could also press `Ctrl + C` to stop `./open-example`
-    - This interrupts your program's execution and exits early
-  - Kernel sends a number to your program indicating the type of signal
-    - Kernel default handlers either ignore the signal or terminate your process
-  - `Ctrl + C` sends `SIGINT` (interrupt from keyboard)
-  - If the default handler occurs, the exit code will be `128 + signal number`
-
-- You Can Set Your Own Signal Handlers with `signal`
-
-  - See: `lecture-6/signal-example.c` and `man 2 signal`
-  - You just declare a function that doesn't return a value, and has an `int` argument
-    - The integer is the signal number
-  - Some numbers are non-standard, here are a few from Linux x86-64:
-    - `2`: `SIGINT` (interrupt from keyboard)
-    - `9`: `SIGKILL` (terminate immediately)
-    - `11`: `SIGSEGV` (memory access violation)
-    - `15`: `SIGTERM` (terminate)
-
-- A Signal Pauses your Process and Runs the Signal Handler
-
-  - Your process can be interrupted at any point in execution
-    - Your process resumes after the signal handler finishes
-  - This is an example of concurrency, your process switches execution
-    - You have to be careful what you write here
-  - Run `./signal-example` and press `Ctrl + C`
-
-- You Need to Account for Interrupted System Calls
-
-  - You should see:
-
-    - ```
-      Ignoring signal 2
-      read: Interrupted system call
-      ```
-
-  - We can rewrite it to retry interrupted system calls
-
-    - See: `lecture-06/signal-example-2.c`
-
-  - Now the program continues when we press `Ctrl + C`
-
-- You Can Send Signals to Processes with Their PID
-
-  - You can use the command `kill`
-    - It is also a system call, taking a `pid` and signal number
-  - Find a processes' ID with `pidof`, e.g. `pidof ./signal-example-2`
-  - After, use `kill <pid>`, which by default sends `SIGTERM`
-  - Use `kill -9 <pid>` to tell the kernel to terminate the process
-    - Process won't terminate if it's in uninterruptible sleep
-    - Sends `SIGKILL`, which can't be ignored
-
-- Shared Memory Allows Two Processes to Access the Same Memory
-
-  - See: `lecture-06/shared-memory-example.c` and `man 3 shm_open`
-  - You use `shm_open`, which returns a file descriptor
-  - You can think of it as a new location to read and write bytes to
-    - This needs to be resized with `ftruncate`
-  - Note: on some implementations, this just opens a file in `/dev/shm`
-
-- `mmap` Allows You to Memory Map the Contents of a File Descriptor
-
-  - See: `man 3 mmap`
-  - Instead of using `read` and `write` system calls, you just access memory
-    - The OS is responsible for management
-  - Instead of accessing the file sequentially, you can access any part of it
-  - You can `mmap` regular files as well
-
-- We Explored Basic IPC in an OS
-
-  - Some basic IPC includes:
-    - `read` and `write` through file descriptors (could be a regular file)
-    - Redirecting file descriptors for communication
-    - Pipes (which you'll explore)
-    - Signals
-    - Shared Memory
+  - There are Preemptible and Non-Preemptible resources
+    - A preemptible resource can be taken away and used for something else, e.g. a CPU
+    - The resource is shared through scheduling
+    - A non-preemptible resource cannot be taken away without acknowledgement, e.g. disk space
+    - The resource is shared through allocations and deallocations
+      - Note: Parallel and distributed systems may allow you to allocate a CPU
+  - A Dispatcher and Scheduler Work Together
+    - A dispatcher is a low-level mechanism
+      - Responsible for context switching
+    - A scheduler is a high-level policy
+      - Responsible for deciding which processes to run
+  - The Scheduler Runs Whenever a Process Changes State
+    - First let's consider non-preemptible processes
+      - Once the process starts, it runs uintil completion
+    - In this case, the scheduler will only make a decision when the process terminates
+    - Preemptive allows the OS to run the scheduler at will
+      - Check `uname -v`, your kernel should tell you it's preemptible
+  - Metrics
+    - Minimize waiting time and response time
+      - Don't have a process waiting too long (or too long to start)
+    - Maximize CPU utilization
+      - Don't have the CPU idle
+    - Maximize throughput
+      - Complete as many processes as possible
+    - Fairness
+      - Try to give each process the same percentage of the CPU
+  - First Come First Served (FCFS)
+    - The most basic form of scheduling
+    - The first process that arrives gets the CPU
+    - Processes are stored in a FIFO queue in arrival order
+  - A Gantt Chart Illustrates the Schedule
+  - What Happens to Our Waiting Time with a Different Arrival Order?
+  - Shortest Job First (SJF)
+    - A slight tweak to FCFS, we always schedule the job with the shortest burst time first
+    - We're still assuming no preemption
+  - SJF Minimizes the Average Wait Time Over FCFS
+  - SJF is Not Practical
+    - It is provably optimal at minimizing average wait time (if no preemption)
+    - You will not know the burst times of each process
+      - You could use the past to predict future executions => may not always work
+    - You may starve long jobs (they may never execute)
+  - Shortest Remaining Time First (SRTF)
+    - Changing SJF to run with preemption requires another tweak
+    - We'll assume that our minimum execution time is one unit
+    - Similar to SJF, this optimizes the average waiting time
+  - SRTF Reduces the Average Wait Time Compared to SJF
+  - Round-Robin (RR)
+    - So far we haven't handled fairness (it's a trade off with other metrics)
+    - The OS divides execution into time slices (or quanta)
+      - An individual time slice is called a quantum
+    - Maintain a FIFO queue of processes similar to FCFS
+      - Preempt if still running at end of quantum and re-add to queue
+    - What are practical considerations for determining quantum length?
+      - Context switching can't be a significant amount of the quantum length
+  - Metrics for RR (3 Unit Quantum Length)
+    - Note: on ties (a new process arrives while one is preempted), favor the new one
+  - RR Performance Depends on Quantum Length and Job Length
+    - RR has low response, good interactivity
+      - Fair allocation of CPU
+      - Low average waiting time (when job lengths vary)
+    - The performance depends on the quantum length
+      - Too high and it becomes FCFS
+      - Too low and there's too many context switches (overhead)
+    - RR has poor average waiting time when jobs have similar lengths
+  - Scheduling Involves Trade-Offs
+    - We looked at few different algorithms:
+      - First Come First Served (FCFS) is the most basic scheduling algorithm
+      - Shortest Job First (SJF) is a tweak that reduces waiting time
+      - Shortest Remaining Time First (SRTF) uses SJF ideas with preemptions
+        - SRTF optimizes lowest waiting time (or turnaround time)
+      - Round-robin (RR) optimizes fairness and response time
 
 
 
-## Lecture 6:
+## Lecture 6: Advanced Scheduling and Scheduling Example
 
-- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- Advanced Scheduling
+  - We Could Add Priorities
+    - We may favor some processes over others
+      - Assign each process a priority
+    - Run higher priority process first, round-robin processes of equal priority
+      - Can be preemptive or non-preemptive
+  - Priorities Can Be Assigned an Integer
+    - We can pick a lower, or higher number, to mean high priority
+      - In Linux, -20 is the highest priority, 19 is the lowest
+    - We may lead processes to starvation if there's a lot of higher priority processes
+    - One solution is to have the OS dynamically change the priority
+      - Older processes that haven't been executed in a long time increase priority
+  - Priority Inversion is a New Issue
+    - We can accidentally change the priority of a low priority process to a high one
+      - This is caused by dependencies, e.g. a high priority depends a low priority
+    - One solution is priority inheritance
+      - Inherit the highest priority of the waiting processes
+      - Chain together multiple inheritences if needed
+      - Revert back to the original priority after dependency
+  - A Foreground Process Can Receive User Input, Background Cannot
+    - Unix background process when: process group ID differs from its terminal group ID
+      - You do not need to know this specific definition
+    - The idea is to separate processes that users interact with:
+      - Foreground processes are interactive and need good response time
+      - Background processes may not need good response time, just throughput
+  - We Can Use Multiple Queues for Other Purposes
+    - We could create different queues for foreground and background processes
+      - Foreground uses RR
+      - Background uses FCFS
+    - Now we have to schedule between queues
+      - RR between the queues
+      - Use a priority for each queue
+  - Scheduling Can Get Complicated
+    - There's no right answer, only trade-offs
+    - We haven't talked about multiprocessor scheduling yet
+    - We'll assume symmetric multiprocessing
+      - All CPUs are connected to the same physical memory
+      - The CPUs have their own private cache (at least the lowest levels)
+  - One Approach is to Use the Same Scheduling for All CPUs
+    - There's still only one scheduler
+      - It just keeps adding processes while there's available CPUs
+    - Advantages
+      - Good CPU utilization
+      - Fair to all processes
+    - Disadvantages
+      - Not scalable (everything blocks on global scheduler)
+      - Poor cache locality
+    - This was the approach in Linux 2.4
+  - We Can Create Per-CPU Schedulers
+    - When there's a new process, assign it to a CPU
+      - One strategy is to assign it to the CPU with the lowest number of processes
+    - Advantages
+      - Easy to implement
+      - Scalable (there's no blocking on a resource)
+      - Good cache locality
+    - Disadvantages
+      - Load imbalance
+        - Some CPUs may have less processes, or less intensive ones
+  - We Can Compromise Between Global and Per-CPU
+    - Keep a global scheduler that can rebalance per-CPU queues
+      - If a CPU is idle, take a process from another CPU (work stealing)
+    - You may want more control over which processes can switch
+      - Some may be more sensitive to caches
+    - Use processor affinity
+      - The preference of a process to be scheduled on the same core
+    - This is a simplified version of the `O(1)` scheduler in Linux 2.6
+  - Another Strategy is "Gang" Scheduling
+    - Multiple process may need to be scheduled simultaneously
+    - The scheduler on each CPU cannot be completely independent
+    - "Gang Scheduling" (Co-scheduling)
+      - Allows you to run a set of processes simultaneously (acting as a unit)
+    - This requires a global context-switch across all CPUs
+  - Real-Time Scheduling is Yet Another Problem
+    - Real-time means there are time constraints, either for a deadline or rate
+      - e.g. audio, autopilot
+    - A hard real-time system
+      - Required to guarantee a task complete within a certain amount of time
+    - A soft real-time system
+      - Critical processes have a higher priority and the deadline is met in practice
+    - Linux is an example of soft real-time
+  - Linux Also Implements FCFS and RR Scheduling
+    - You can search around in the source tree FCFS (`SCHED_FIFO`) and RR (`SCHED_RR`)
+    - Use a multilevel queue scheduler for processes with the same priority
+      - Also let the OS dynamically adjust the priority
+    - Soft real-time processes always schedule the highest priority processes first
+    - Normal processes adjust the priority based on aging
+  - Real-Time Processes are Always Prioritized
+    - The soft real-time scheduling policy will either be `SHCED_FIFO` or `SCHED_RR`
+      - There are 100 static priority levels (`1`-`99`)
+    - Normal scheduling policies apply to the other processes (`SHCED_NORMAL`)
+      - By default the priority is `0`
+      - Priority ranges from `[-20, 19]`
+    - Processes can change their own priorities with system calls: `nice`, `sched_setscheduler`
+  - Linux Scheduler Evolution
+    - 2.4-2.6, a `O(N)` global queue
+      - Simple, but poor performance with multiprocessors and many processes
+    - 2.6-2.6.22, a per-CPU run queue, `O(1)` scheduler
+      - Complex to get right, interactivity had issues
+      - No guarantee of fairness
+    - 2.6.23-Present, the completely fair scheduler (CFS)
+      - Fair and allows for good interactivity
+  - The `O(1)` Scheduler Has Issues with Modern Processes
+    - Foreground and background processes are a good division
+      - Easier with a terminal, less so with GUI processes
+    - Now the kernel has to detect interactive processes with heuristics
+      - Processes that sleep a lot may be more interactive
+        - This is ad hoc, and could be unfair
+    - How would we introduce fairness for different priority processes
+      - Use different size time slices
+      - The higher the priority, the larger the time slice
+        - There are also situations where this ad hoc solution could be unfair
+  - Ideal Fair Scheduling
+    - Assume you have an infinitely small time slice
+      - If you have `n` processes, each runs at `1/n` rate
+    - CPU usage is divided equally among every process
+  - Example IFS Scheduling
+  - IFS is the Fairest but Impractical Policy
+    - This policy is fair, every process gets an equal amount of CPU time
+      - Boosts interactivity, has the ideal response time
+    - However, this would perform way too many context switches
+    - You have to constantly scan all processes, which is `O(N)`
+  - Completely Fair Scheduler (CFS)
+    - For each runnable process, assign it a "virtual runtime"
+      - At each scheduling point where the process runs for time `t`, increase the virtual runtime by `t x weight` (based on priority)
+    - The virtual runtime monotonically increases
+      - Scheduler selects the process based on the lowest virtual runtime
+        - Compute its dynamic time slice based on the IFS
+    - Allow the process to run, when the time slice ends, repeat the process
+  - CFS is Implemented with Red-Black Trees
+    - A red-black tree is a self-balancing BST
+      - Keyed by virtual runtime
+        - `O(log N)` insert, delete, and update
+        - `O(1)` find minimum
+    - The implementation uses a red-black tree with a nanosecond granularity
+      - Doesn't need to guess the interactivity of a process
+    - CFS tends to favor I/O bound processes by default
+      - Small CPU bursts translate to a low virtual runtime
+        - It will get a larger time slice, in order to catch up to the ideal
+  - Scheduling Gets Even More Complex
+    - There are more solutions, and more issues:
+      - Introducing priority also introduces priority inversion
+      - Some processes need good interactivity, others not so much
+      - Multiprocessors may require per-CPU queues
+      - Real-time requires predictability
+      - Completely Fair Scheduler (CFS) tries to model the ideal fairness
+- Scheduling Example
+  - We're Going to Develop `lecture-09/srtf.c`
+    - Filling the basic fields of processes are done for you - `data` and `size`
+    - There's a doubly linked list set up for you
+      - `man TAILQ_INIT`
+        - It's overkill for now, but you might need it later
+    - Ask any questions about this, or anything that hasn't been clear up to this point
+  - We Did Implementation Today
+    - Implemented SRTF in C:
+      - Reports the average waiting and response time
+      - (Hopefully) handles edge cases
+      - Matches the results in the lecture
 
