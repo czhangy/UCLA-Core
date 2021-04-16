@@ -399,7 +399,44 @@
 
 
 
-## Lecture 5:
+## Lecture 5: The Pumping Lemma
+
+- Pumping Lemma for FSLs
+
+  - A property of every language in the family of finite state languages which allows us to prove that a given language is not finite state
+
+  - If `L` is a finite state language accepted by a DFA or NFA or represented by a regular expression, then there exists a constant `p` that depends only on `L` such that for all `s ∈ L`, if `|s| ≥ p`, then there exist substrings `x`, `y`, and `z` such that `s` can be broken down into `s = xyz` and `x`, `y`, and `z` obey the following constraints:
+
+    - $$
+      x\in\Sigma^*,y\in\Sigma^+,z\in\Sigma^*
+      $$
+
+    - $$
+      |y|\ge 1
+      $$
+
+    - $$
+      |x|+|y|\le p
+      $$
+
+    - $$
+      \text{for all}\ i\ge 0, xy^iz\in L
+      $$
+
+-   Context-Free Grammars
+
+  - A representation of languages with roots in linguistics
+  - People seeking to express language in mathematical terms invented grammars (aka "rewriting systems")
+    - Hoped grammars could represent all human language => didn't fully work out
+    - Grammars can represent most features of human language syntax and most features of artificial languages: programming languages, XML, etc.
+  - CFG defines the family of context-free languages (CFLs)
+    - The family of FSLs is a proper subset of the family of CFLs
+  - Formal Grammar:
+    - Alphabet `Σ`, variables (aka nonterminals), rewriting rules, start variable
+
+   
+
+## Lecture 6: Context-Free Grammars
 
 - 
 
@@ -797,14 +834,14 @@
   - 2 machines are **equivalent** if they recognize the same language
 
   - > Every nondeterministic finite automaton has an equivalent deterministic finite automaton
-    
+  
 - Proof:
-    
+  
   - Let `N = (Q, Σ, δ, q_0, F)` be the NFA recognizing some language `A`, we construct a DFA `M = (Q', Σ', δ'', q_0', F')` recognizing `A`
     
   - $$
         Q'=\mathcal{P}(Q)
-        $$
+    $$
     
     - Every state of `M` is a set of states of `N` => `P(Q)` is the set of subsets of Q
     
@@ -812,7 +849,7 @@
     
     - $$
           \delta '(R, a) = \{q\in Q|\ q\in \delta(r, a) \ \text{for some}\ r\in R\}
-          $$
+      $$
     
       - If `R` is a state of `M`, it is also a set of states of `N`
     
@@ -820,17 +857,17 @@
     
       - $$
             \delta '(R,a) =\bigcup_{r\in R}\delta(r,a)
-            $$
+        $$
     
   - $$
         q_0' =\{q_0\}
-        $$
+    $$
     
     - `M` starts in the state corresponding to the collection containing just the start state of `N`
     
   - $$
         F' =\{R\in Q'|\ R\ \text{contains an accept state of}\ N\}
-        $$
+    $$
     
     - The machine `M` accepts if one of the possible states that `N` could be in at this point is an accept state
     
@@ -838,20 +875,20 @@
     
     - $$
           E(R)=\{q|\ q\ \text{can be reached from}\ R\ \text{by traveling along 0 or more}\ \varepsilon\ \text{arrows}\}
-          $$
+      $$
     
   - $$
         \delta'(R, a)=\{q\in Q|\ q\in E(\delta(r,a))\ \text{for some}\ r\in R\}
-        $$
+    $$
     
     - Modify the transition function of `M` to place additional "fingers" on all states that can be reached by going along `ε` arrows after every step
     
   - $$
         q'_0=E(\{q_0\})
-        $$
+    $$
     
     - Modify the start state of `M` to move the fingers initially to all possible states that can be reached from the start state of `N` along the `ε` arrows
-    
+  
 - > A language is regular if and only if some nondeterministic finite automaton recognizes it
   
 - Closure Under the Regular Operations
