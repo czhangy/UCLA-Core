@@ -1009,7 +1009,7 @@
       - Can be preemptive or non-preemptive
   - Priorities Can Be Assigned an Integer
     - We can pick a lower, or higher number, to mean high priority
-      - In Linux, -20 is the highest priority, 19 is the lowest
+      - In Linux, `-20` is the highest priority, `19` is the lowest
     - We may lead processes to starvation if there's a lot of higher priority processes
     - One solution is to have the OS dynamically change the priority
       - Older processes that haven't been executed in a long time increase priority
@@ -1036,7 +1036,7 @@
   - Scheduling Can Get Complicated
     - There's no right answer, only trade-offs
     - We haven't talked about multiprocessor scheduling yet
-    - We'll assume symmetric multiprocessing
+    - We'll assume symmetric multiprocessing (SMP)
       - All CPUs are connected to the same physical memory
       - The CPUs have their own private cache (at least the lowest levels)
   - One Approach is to Use the Same Scheduling for All CPUs
