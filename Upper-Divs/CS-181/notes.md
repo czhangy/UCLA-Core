@@ -438,7 +438,66 @@
 
 ## Lecture 6: Context-Free Grammars
 
-- 
+- Pumping Lemma
+
+  - Your proof must contain the four essential elements of this kind of proof:
+    - Selecting the appropriate string `s` and ensuring that it is in `L`
+    - Correctly using the constraints on `x`, `y`, and `z` imposed by the lemma
+    - Showing that you have covered all the possible cases of `x`, `y`, and `z`
+    - Using sound and complete logic in each case to show that `s'` cannot be in `L`
+  - Notes:
+    - You can only give a name to `p`, you cannot assume anything about `p` other than `p > 0` and whatever you can infer about `p` from the definition of the language
+    - You can and must choose string `s` to be a specific string in `L` 
+      - You can choose any string `s` you want, as long as it's in `L` and `|s| > p`
+      - Some choices of `s` may not lead to the desired contradiction and some may work but make your job drastically more difficult than necessary
+    - You cannot assume anything about how `s` is divided into `xyz`, other than the constraints imposed by the lemma
+      - You cannot say "Let `x` = ... " where the substring at the ... is of your choosing
+      - Rather, you have to consider every possible way that `s` could be divided into `xyz`
+      - The way `s` is divided into `xyz` does not have to line up in any way with the format of the strings in the language
+    - You can choose `x'` and `i`
+
+- CFGs
+
+  - A CFG, `G = (V, Σ, R, S)` where:
+
+    - `V` is a finite, nonempty set of variables aka nonterminals
+
+    - `Σ` is an alphabet aka terminals
+
+      - `V` doesn't contain any elements of `Σ`
+
+    - `S ∈ V`
+
+    - `R` is a finite, nonempty set of rewriting rules of the form:
+
+      - $$
+        A\rightarrow\alpha\\A\in V\\\alpha\in(\Sigma\cup V)^*
+        $$
+
+  - "Context-free" because we can apply any rule for a given variable anywhere it appears
+
+  - Each time we're about to replace a variable, underline it
+
+  - For any string `s ∈ L` for a grammar `G`:
+
+    - There will be at least one parse tree
+    - There will be exactly one leftmost derivation that corresponds only to that tree
+    - There will be exactly one rightmost derivation that corresponds only to that tree
+    - If there are other parse trees, each will have its own pair of one leftmost and one rightmost corresponding derivations
+    - There can be other derivations which are neither leftmost nor rightmost for a given parse tree
+
+  - If there is `> 1` parse tree for `s ∈ L` in `G`, we say "`s` is ambiguous in `G`"
+
+  - If `G` has any ambiguous string, then we say "`G` is an ambiguous grammar" or "`G` is ambiguous"
+
+  - If every grammar for a language `L` must be ambiguous, then we say "`L` is an inherently ambiguous language"
+
+  - Ambiguity
+
+    - Good:
+      - Human language is ambiguous, so any representation of language should represent ambiguity
+    - Bad:
+      - If the programming language is ambiguous, then what should the compiler do?
 
 
 
