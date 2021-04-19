@@ -15,8 +15,8 @@
   ./pipe ls cat wc
   ls | cat | wc
   make clean
-```
-  
+  ```
+
   - The bottom two commands should have the same output, Bash program arguments do not need to be accounted for
   - The program should be able to handle 1-8+ programs
   - Process:
@@ -37,9 +37,9 @@
 ## Deliverables
 
 - Coding
-  - [ ] Execute a single program from the command line using `./pipe`
-  - [ ] Execute multiple programs from the command line using `./pipe` independently
-  - [ ] Set up the pipe between two processes
+  - [x] Execute a single program from the command line using `./pipe`
+  - [x] Execute multiple programs from the command line using `./pipe` independently
+  - [x] Set up the pipe between two processes
   - [ ] Set up the pipe between multiple processes
 
 - Documentation
@@ -56,4 +56,3 @@
 ## Relevant Links
 
 - **[Symbol and Function Lookup](https://elixir.bootlin.com/linux/latest/source)**
-
