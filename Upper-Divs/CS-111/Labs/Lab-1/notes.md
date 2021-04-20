@@ -49,7 +49,7 @@
   - [x] Explain how to clean up all binary files generated
 
 - Submission
-  - [ ] Use `git push` to push the final submission to the repository
+  - [x] Use `git push` to push the final submission to the repository
 
 
 
