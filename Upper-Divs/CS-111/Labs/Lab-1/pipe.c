@@ -48,7 +48,20 @@ int main(int argc, char *argv[])
 					exit(status);
 				}
 			}
-			close(fds[0]);
+			status = close(fds[0]);
+			if (status == -1)
+			{
+				status = errno;
+				perror("Failed to close\n");
+				exit(status);
+			}
+			status = close(fds[1]);
+			if (status == -1)
+			{
+				status = errno;
+				perror("Failed to close\n");
+				exit(status);
+			}
 			status = execlp(argv[i], argv[i], NULL);
 			// execlp error
 			if (status == -1)
@@ -64,6 +77,12 @@ int main(int argc, char *argv[])
 			status = 0;
 			waitpid(pid, &status, 0);
 			close(fds[1]);
+			if (status == -1)
+			{
+				status = errno;
+				perror("Failed to close\n");
+				exit(status);
+			}
 			input = fds[0];
 		}
 		// Fork error
