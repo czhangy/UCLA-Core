@@ -40,13 +40,13 @@
   - [x] Execute a single program from the command line using `./pipe`
   - [x] Execute multiple programs from the command line using `./pipe` independently
   - [x] Set up the pipe between two processes
-  - [ ] Set up the pipe between multiple processes
+  - [x] Set up the pipe between multiple processes
 
 - Documentation
-  - [ ] One sentence description of the program
-  - [ ] Explain how to build the program
-  - [ ] Show a test run of the program with at least two additional arguments, and the expected output
-  - [ ] Explain how to clean up all binary files generated
+  - [x] One sentence description of the program
+  - [x] Explain how to build the program
+  - [x] Show a test run of the program with at least two additional arguments, and the expected output
+  - [x] Explain how to clean up all binary files generated
 
 - Submission
   - [ ] Use `git push` to push the final submission to the repository
