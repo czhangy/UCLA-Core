@@ -1018,7 +1018,7 @@
       - This is caused by dependencies, e.g. a high priority depends a low priority
     - One solution is priority inheritance
       - Inherit the highest priority of the waiting processes
-      - Chain together multiple inheritences if needed
+      - Chain together multiple inheritances if needed
       - Revert back to the original priority after dependency
   - A Foreground Process Can Receive User Input, Background Cannot
     - Unix background process when: process group ID differs from its terminal group ID
@@ -1158,4 +1158,269 @@
       - Reports the average waiting and response time
       - (Hopefully) handles edge cases
       - Matches the results in the lecture
+
+
+
+## Lecture 7: Page Tables
+
+- Virtualization Fools Something Into Thinking it has All Resources
+
+- Virtual Memory Checklist
+
+  - Multiple processes must be able to coexist
+  - Processes are not aware they are sharing physical memory
+  - Processes cannot access each other's data (unless allowed explicitly)
+  - Performance close to using physical memory
+  - Limit the amount of fragmentation (wasted memory)
+
+- Memory Management Unit (MMU)
+
+  - Maps virtual address to physical address
+    - Also checks permissions
+  - One technique is to divide memory up into fixed-size pages (typically 4096B)
+    - A page in virtual memory is called a page
+    - A page in physical memory is called a frame
+
+- Segmentation or Segments are Coarse Grained
+
+  - Divide the virtual address space into segments for: code, data, stack, heap
+    - Note: this looks like an ELF file, large sections of memory with permissions
+  - Each segment is a variable size and can be dynamically resized
+    - This is an old legacy technique that's no longer used
+  - Segments can be large and very costly to relocate
+    - It also leads to fragmentation (gaps of unused memory)
+  - No longer used in modern OSes
+
+- Segmentation Details
+
+  - Each segment contains a: base, limit, and permissions
+    - You get a physical address by using: `segment selector: offset`
+  - The MMU checks that you offset is within the limit (size)
+    - If it is, it calculates `base + offset`, and does permission checks
+      - Otherwise, it's a segmentation fault
+  - For example, `0x1:0xFF` with segment `0x1` base = `0x2000`, limit = `0x1FF`
+    - Translates to `0x20ff`
+  - Note: Linux sets every base to `0` and limit to the maximum amount
+
+- You Typically Do Not Use all 64 Virtual Address Bits
+
+  - CPUs may have different levels of virtual addresses you can use
+    - Implementation ideas are the same
+  - We'll assume a 39-bit virtual address space used by RISC-V and other architectures
+    - Allows for 512GB of addressable memory (called Sv39)
+  - Implemented with a page table indexed by Virtual Page Number (VPN)
+    - Looks up the Physical Page Number (PPN)
+
+- The Page Table Translates Virtual to Physical Addresses
+
+- The Kernel Handles Translating Virtual Addresses
+
+  - Considering the following page table:
+
+    - |  VPN  |  PPN  |
+      | :---: | :---: |
+      | `0x0` | `0x1` |
+      | `0x1` | `0x4` |
+      | `0x2` | `0x3` |
+      | `0x3` | `0x7` |
+
+  - We would get the following virtual => physical address translations:
+
+    - ```
+      0x0AB0 -> 0x1AB0
+      0x1FA0 -> 0x4FA0
+      0x2884 -> 0x3884
+      0x32D0 -> 0x72D0
+      ```
+
+- Page Translation Example Problem
+
+  - Assume you have a 8-bit virtual address, 10-bit physical address, and each page is 64 bytes
+
+    - How many virtual pages are there?
+
+      - $$
+        \frac{2^8}{2^6}=4
+        $$
+
+    - How many physical pages are there?
+
+      - $$
+        \frac{2^{10}}{2^6}=16
+        $$
+
+    - How many entries are in the page table?
+
+      - $$
+        4
+        $$
+
+    - Given the page table is `[0x2, 0x5, 0x1, 0x8]`, what's the physical address of `0xF1`?
+
+      - $$
+        0x231
+        $$
+
+- The Page Table Entry (PTE) Also Stores Flags in the Lower Bits
+
+  - The MMU, which uses the page table, checks these flags
+    - We'll focus on the first 5 flags
+
+- Each Process Gets Its Own Virtual Address Space
+
+- Each Process Gets Its Own Page Table
+
+  - When you `fork` a process, it will copy the page table from the parent
+    - Turn off the write permission so the kernel can implement copy-on-write
+  - The problem is there are `2^27` entries in the page table, each one is 8B
+    - This means the page table would be 1GB
+  - Note that RISC-V translates a 39-bit virtual to a 56-bit physical address
+    - It has 10 bits to spare in the PTE and could expand
+    - Page size is 4096B (size of offset field)
+
+- You May Be Thinking That Seems Like A Lot of Work
+
+  - In Lab 1, we're doing a `fork` followed by an `exec`, why do we need to copy the page tables?
+  - We don't, there's a system call for that - `vfork`
+  - `vfork` shares all memory with the patent
+    - It's undefined behavior to modify anything
+  - Only used in very performance sensitive programs
+
+- Multi-Level Page Tables Save Space for Sparse Allocations
+
+- For RISC-V, Each Level Occupies One Page
+
+  - There are 512 (`2^9`) entries of 8 (`2^3`) bytes each, which is 4096B
+  - The PTE for `L(N)` points to the page table for `L(N - 1)`
+  - You follow these page tables until `L0` and that contains the PPN
+
+- Consider just one additional level
+
+  - Assume our process uses just one virtual address at `0x3FFFF008`
+    - Or `0b111111111_111111111_000000001000`
+  - We'll just consider a 30-bit virtual address with a page size of 4096B
+    - We would need a 2MB page table if we only had one (`2^18 x 2^3`)
+  - Instead, we have a 4KB `L1` page table (`2^9 x 2^3`) and a 4 KB `L0` page table
+    - Total of 8KB instead of 2MB
+  - Note: worst case if we used all virtual addresses, we could consume 2MB + 4KB
+
+- Translating `3FFFF008` with two page tables
+
+  - Consider the `L1` table with the entry:
+
+    - | Index |  PPN  |
+      | :---: | :---: |
+      | `511` | `0x8` |
+
+  - Consider the `L0` table located at `0x8000` with the entry:
+
+    - | Index |   PPN    |
+      | :---: | :------: |
+      | `511` | `0xCAFE` |
+
+  - The final translated physical address would be `0xCAFE008`
+
+- Processes use a register like `satp` to set the root page table
+
+- Page allocation uses a free list
+
+  - Given physical pages, the OS maintains a free list (linked list)
+  - The unused pages themselves contain the `next` pointer in the free list
+    - Physical memory gets initialized at boot
+  - To allocate a page, you remove it from the free list
+    - To deallocate a page, you add it back to the free list
+
+- Using the page tables for every memory access is slow
+
+  - We need to follow pointers across multiple levels of page tables
+  - We'll likely access the same page multiple times (close to the first access time)
+  - A process may only need a few VPN => PPN mappings at a time
+  - Our solution is another CS classic: caching
+
+- A Translation Lookaside Buffer (TLB) caches virtual addresses
+
+- Effective Access Time (EAT)
+
+  - Assume a single page table (there's only one additional memory access in the page table)
+
+    - $$
+      \text{TLB Hit Time}=\text{TLB Search}+\text{Mem}\\\text{TLB Miss Time}=\text{TLB Search}+2\times\text{Mem}\\\text{EAT}=\alpha\times\text{TLB Hit Time}+(1-\alpha)\times\text{TLB Miss Time}
+      $$
+
+  - If `α = 0.8`, `TLB Search = 10ns`, and memory accesses take 100ns, calculate `EAT`
+
+    - $$
+      \text{EAT}=0.8\times 110\text{ns}+0.2\times 210\text{ns}\\\text{EAT}=130\text{ns}
+      $$
+
+- Context switches require handling the TLB
+
+  - You can either flush the cache, or attach a process ID to the TLB
+  - Most implementations just flush the TLB
+    - RISC-V uses a `sfence.vma` instruction to flush the TLB
+  - On x86, loading the base page table will also flush the TLB
+
+- How many levels do I need?
+
+  - Assume we have a 32-bit virtual address with a page size of 4096B and a PTE size of 4B
+
+  - We want each page table to fit into a single page
+
+    - Find the number of PTEs we could have in a page (`2^10`)
+      - `log(#PTEs per page)` is the number of bits to index a page table
+
+  - $$
+    \text{#Levels}=\lceil\frac{\text{Virtual Bits}-\text{Offset Bits}}{\text{Index Bits}}\rceil
+    $$
+
+    - 
+      $$
+      \text{#Levels}=\lceil\frac{32-12}{10}\rceil=2
+      $$
+
+- TLB testing
+
+  - Check out `lecture-10/test-tlb` (you may need to `git submodule update --init --recursive`)
+  - `./test-tlb <size> <stride>` creates a `<size>` memory allocation and accesses it every `<stride>` bytes
+
+- Use `sbrk` for userspace allocation
+
+  - This call grows or shrinks your heap (the stack has a set limit)
+  - For growing, it'll grab pages from the free list to fulfill the request
+    - The kernel sets `PTE_V` (valid) and other permissions
+  - In memory allocators, this is difficult to use, you'll rarely shrink the heap
+    - It'll stay claimed by the process, and the kernel cannot free pages
+  - Memory allocators use `mmap` to bring in large blocks of virtual memory
+
+- The kernel initializes the process' address space (and stack)
+
+- A trampoline is a fixed virtual address set by the kernel
+
+  - It allows the process to access kernel data without using a system call
+  - The guard page will generate an exception if access meaning stack overflow
+  - A trap is anytime special handler code runs:
+    - System call
+    - Exception
+    - Interrupt (e.g. timer)
+
+- Page faults allow the OS to handle virtual memory
+
+  - Page faults are a type of exception for virtual memory access
+    - Generated if it cannot find a translation, or permission check fails
+  - This allows the OS to handle it
+    - We could lazily allocate pages, implement copy-on-write, or swap to disk
+
+- Page tables translate virtual to physical addresses
+
+  - The MMU is the hardware that uses page tables, which may:
+    - Be a single large table (wasteful, even for 32-bit machines)
+    - Be a multi-level to save space for sparse allocations
+    - Use the kernel to allocate pages from a free list
+    - Use  TLB to speed up memory accesses
+
+
+
+## Lecture 8:
+
+- 
 
