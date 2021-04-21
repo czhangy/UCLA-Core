@@ -501,6 +501,61 @@
 
 
 
+## Lecture 7: CFG Design and GNFAs
+
+- Design Patterns for CFGs
+  - Sequencing
+    - `S -> ABC` - all patterns of `ABC`
+    - `S -> AB | CD` - all patterns of `AB` or all patterns of `CD`
+  - Iteration
+    - `B -> AB | T` or `A -> AB | T` or `S -> SS | T`
+      - Right associative or left associative or freely associative
+  - Recursion/Nesting
+    - `B -> ABC | T`
+      - If `C = ε` => tail-recursion
+- Outline of proof that the families of languages represented by DFA, NFA, and regular expression models are equal
+  - These 3 models are equivalent
+  - Two sets =: `A ⊆ B & B ⊆ A => A = B`
+    - Only need three proofs: `DFA ⊆ NFA ⊆ Reg. Exp ⊆ DFA`
+    - DFA => NFA => GNFA => Reg. Exp.
+    - Reg. Exp. => NFA => DFA
+  - DFA => NFA is trivial, DFA is just an NFA without nondeterministic moves
+  - NFA => GNFA is trivial
+  - GNFA => Reg. Exp.
+  - Reg. Exp. => NFA is construction by composition
+  - NFA => DFA is direct construction
+- GNFA
+  - No outgoing edges from the accept state
+  - Move across the machine using pattern matching => defined with regular expressions
+  - Outgoing edge from every node to every other node, except for `q_start` and `q_accept`
+    - `q_start` has a transition to every other node
+    - `q_accept` has a transition from every other node
+  - Brief Introduction to Generalized NFAs
+    - Let `R` denote the set of all regular expressions
+    - `N = (Q, Σ, δ, q_0, q_F)` where:
+      - `Q`, `Σ`, `q_0` are exactly as for DFAs and NFAs
+      - `q_F ∈ Q` (similar to DFAs and NFAs)
+      - `δ: ((Q - {q_F}) x (Q - {q_0})) -> R`
+        - Recall: in digraph `(u, v, label)` = `δ(q_u, label)` = `q_v` in a DFA
+        - Equivalently, `δ(q_u, q_v) = label` in a GNFA
+          - This is merely so that `δ()` will be fully defined, and to make the notation in a proof that we're going to do a little simpler
+    - `N` accepts `w ∈ Σ*`: there exists a path from `q_0` to `q_F` such that the input matches the series of regular expressions along the path
+    - Formally:
+      - If there exists strings `w_1, w_2, ... , w_k ∈ Σ*`, such that `w = w_1 ... w_k`, and there exists a sequence of states `q_0, ... , q_k` such that:
+        - `q_k = q_f` is the accepting state
+        - For each `1 <= i <= k`, `w_i ∈ L(δ(q_i-1, q_i))`
+          - i.e., `w_i ∈ the regular set denoted by the regular expression L(δ(q_i-1, q_i))`
+          - Or equivalently, `w_i` matches the regular expression on the edge from `q_i-1` to `q_i`
+- If `L_1` and `L_2` are FSLs, then so is `L_1 ∩ L_2`
+
+
+
+## Lecture 8:
+
+- 
+
+
+
 ## Reading 1: Discrete Concepts
 
 - Mathematical Notions and Terminology
@@ -896,7 +951,7 @@
   
 - Proof:
   
-  - Let `N = (Q, Σ, δ, q_0, F)` be the NFA recognizing some language `A`, we construct a DFA `M = (Q', Σ', δ'', q_0', F')` recognizing `A`
+  - Let `N = (Q, Σ, δ, q_0, F)` be the NFA recognizing some language `A`, we construct a DFA `M = (Q', Σ', δ, q_0', F')` recognizing `A`
     
   - $$
         Q'=\mathcal{P}(Q)
