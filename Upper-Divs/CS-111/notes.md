@@ -1420,7 +1420,61 @@
 
 
 
-## Lecture 8:
+## Lecture 8: Page Replacement
+
+- As you go down the computer memory hierarchy, capacity increases, but speed decreases
+- We want to hide the hierarchy from the user
+  - Each level wants to pretend it has the speed of the layer above it and the capacity of the layer below it
+  - The memory used by all the processes may exceed the amount of physical memory
+    - Not all of them may be in use at the same time
+  - Only keep referenced pages in memory, put others on disk
+    - Swap pages back to memory when they're needed
+- Page replacement algorithms
+  - Optimal - replace the page that won't be used for the longest
+  - Random - replace a random page
+  - FIFO - replace the oldest page first
+  - Least Recently Used (LRU) - replace the page that hasn't been used in the longest time
+- Implementing LRU in hardware has to search all pages
+  - You could implement it by keeping a counter for each page
+  - For each page reference, save the system clock into the counter
+  - For replacement, scan through the pages and find the one with the oldest clock
+- Implementing LRU in software is too expensive
+  - Create a doubly linked list of pages
+  - For each page reference, move it to the front of the list
+  - For replacement, remove from the back of the list
+  - It requires six pointer updates for each page reference, and also creates a high contention bottleneck for multiple processors
+- Implementing LRU in practice isn't going to work
+  - We settle for approximate LRU
+    - LRU is an approximation of the optimal case anyways
+  - There's lots of different tweaks you can do to implement it more efficiently
+  - We'll be looking at the clock algorithm, but there's also:
+    - Least Frequently Used (LFU), 2Q, Adaptive Replacement Cache (ARC)
+- Clock Algorithm
+  - Data structures:
+    - Keeps a circular list of pages in memory
+    - Uses a reference bit for each page in memory
+    - Has a "hand" (iterator) pointing to the last element examined
+  - Algorithm, to insert a new page:
+    - Check the hand's reference bit, if it's `0`, then place the page and advance hand
+    - If the reference bit is `1`, set it to `0`, advance the hand, and repeat
+- Swapping to disk is less important now
+  - Memory is cheap, and has quite high capacity
+    - Some systems may not even have swap
+  - Larger page sizes allow for speedup
+    - Trade more fragmentation for more TLB coverage
+  - With 64 bits, we have a huge address space compared to memory capacity
+    - Lots of room to use virtual addresses for other uses (`mmap`)
+- Page replacement algorithms aim to reduce page faults
+  - We saw the following:
+    - Optimal (good for comparison, but not realistic)
+    - Random (actually works surprisingly well, avoids the worst case)
+    - FIFO (easy to implement, but Belady's anomaly)
+    - LRU (gets close to optimal, but expensive to implement)
+    - Clock (a decent approximation of LRU)
+
+
+
+## Lecture 9:
 
 - 
 
