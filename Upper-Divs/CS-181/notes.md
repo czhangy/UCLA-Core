@@ -550,9 +550,43 @@
 
 
 
-## Lecture 8:
+## Lecture 8: Closure of CFLs
 
-- 
+- Known CFLs:
+
+  - $$
+    \{a^nb^m|\ m=n\ \text{or}\ m>n\ \text{or}\ m\le n\}\\\{a^nbc^n\}\\\{w|\ w\in\{a,b\}^*\ \text{where}\ \#(a,w)=\#(b,w)\}\\\{ww^R|\ w\in\Sigma^*\}\\\{w\in\Sigma^*|\ w=w^R\}\\\{a^ib^jc^k|\ i=j\ \text{or}\ i=k\}\\\{a^ib^jc^k|\ i=j\ \text{or}\ i\ne k\}\\\{a^nb^{2n}\}\\\{a^nb^nc^md^m\}\\\{a^nb^mc^md^m\}
+    $$
+
+- Known Non-CFLs:
+
+  - $$
+    \{a^nb^nc^n\}\\\{a^ib^jc^kd^l|\ i=k\ \text{and}\ j=l\}\\\{a^nb^nc^md^m|\ n>m\}\\\{a^n|\ n\ \text{is a prime #}\}\\\{a^nb^m|\ m=n^2\}\\\{a^ib^jc^k|\ i<j<k\}\\\{ww|\ w\in\Sigma^*\}
+    $$
+
+- Closure Properties
+
+  - FSLs:
+    - Concatentation
+    - Kleene* and Kleene+
+    - Union and Intersection
+    - Complementation
+    - Reversal
+  - CFLs:
+    - Concatenation
+    - Kleene* and Kleene+
+    - Union
+    - Reversal
+
+- The family of CFLs can also be represented by a machine-like model: Pushdown Store Automaton (PDA)
+
+  - LIFO stack
+  - PDA can only see top of stack to see symbols underneath, it must pop the top of stack
+  - Both DFAs and PDAs read the input tape from left to right exactly once
+  - Represented as a semi-infinite tape
+  - Initial stack = `ε`
+  - Can consider the input symbol and the top of the stack together
+  - Represent contents of stack during computation as indefinitely long string
 
 
 
