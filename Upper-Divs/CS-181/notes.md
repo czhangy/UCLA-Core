@@ -590,6 +590,12 @@
 
 
 
+## Lecture 9:
+
+- 
+
+
+
 ## Reading 1: Discrete Concepts
 
 - Mathematical Notions and Terminology
@@ -1722,5 +1728,18 @@
                   - Input `y` can bring `P` from `r` to `s` without touching the symbol `u` that is on the stack and so `P` can go from `r` to `s` with and empty stack to `s` with an empty stack on input `y`
                   - We have removed the first and last steps of the `k + 1` steps in the original computation on `x` so the computation on `y` has `(k + 1) - 2 = k - 1` steps
                   - The induction hypothesis tells us that `A_rs` derives `y`, hence `A_pq` derives `x`
-                - Second case, let `r` be a state where the stack becomes empty other than at the beginning or end of computation 
+                - Second case, let `r` be a state where the stack becomes empty other than at the beginning or end of computation
+                  - The portions of computation from `p` to `r` and from `r` to `q` each contain at most `k` steps
+                  - Say that `y` is the input read during the first portion and `z` is the input read during the second portion
+                  - The induction hypothesis tells us that `A_pr` derives `y` and `A_rq` derives `z`
+                  - Since rule `A_pq -> A_prA_rq` is in `G`, `A_pq` derives `x`
+              - Induction step complete
+
+  - > Every regular language is context free
+
+
+
+## Reading 8:
+
+- 
 
