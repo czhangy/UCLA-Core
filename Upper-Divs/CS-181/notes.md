@@ -1529,10 +1529,198 @@
 
 
 
-## Reading 7:
+## Reading 7: Pushdown Automata
 
-- 
+- **Pushdown automata** - like NFAs, but with an extra component called a **stack**, which provides additional memory beyond the finite amount available in the control
 
+  - Allows PDA to recognize some nonregular languages
+  - Equivalent in power to CFGs
+    - Can now prove CFLs are context-free by creating a CFG or a PDA that recognizes it
+  - Can write symbols on the stack and read them back later
+    - Writing a symbol on the stack is referred to as **pushing** the symbol
+    - Removing a symbol from the stack is referred to as **popping** the symbol
+    - All access to the stack is done at the top of it => LIFO
+  - Stack is valuable because it can hold an unlimited amount of information
+    - Allows a PDA to store numbers of unbounded size
+  - May be nondeterministic
+    - Deterministic PDA and nondeterministic PDA are not equal in power => NPDA can recognize languages that no DPDA can
+    - NPDA are equivalent in power to CFGs
 
+- Formal Definition of a Pushdown Automata
 
+  - A **pushdown automata** is a 6-tuple `(Q, Σ, Γ, δ, q_0, F)` where `Q`, `Σ`, `Γ`, and `F` are all finite sets and:
+
+    - `Q` is the set of states
+
+    - `Σ` is the input alphabet
+
+    - `Γ` is the stack alphabet
+
+    - The transition function is:
+
+      - $$
+        \delta:Q\times\Sigma_\varepsilon\times\Gamma_\varepsilon\rightarrow\mathcal{P}(Q\times\Gamma_\varepsilon)
+        $$
+
+    - `q_0 ∈ Q` is the start state
+
+    - `F ⊆ Q` is the set of accept states
+
+  - Computes as follows:
+
+    - Accepts input `w` if `w` can be written as `w = w_1w_2...w_m` where each `w_i ∈ Σ_ε` and sequences of states `r_0, r_1, ... , r_m ∈ Q` and strings `s_0, s_1, ... , s_m ∈ Γ*` exist that satisfy the following three conditions:
+      - `r_0 = q_0` and `s_0 = ε` => signifies that `M` starts out properly, in the start state and with an empty stack
+      - For `i = 0, ... , m - 1`, we have `(r_i+1, b) ∈ δ(r_i, w_i+1, a)`, where `s_i = at` and `s_i+1 = bt` for some `a, b ∈ Γ_ε` and `t ∈ Γ_ε` => states that `M` moves properly according to the state, stack, and next input symbol
+      - `r_m ∈ F` => states that an accept state occurs at the input end
+
+  - Contains no formal mechanism for the PDA to test for an empty stack
+
+    - Can use the special symbol `$` to signify beginning of stack
+
+  - Contains no formal mechanism for checking if the input has reached the end
+
+    - Allow the accept states to only work when the machine is at the end of the input
+
+- Equivalence with Context-Free Grammars
+
+  - > A language is context free if and only if some pushdown automata recognizes it
+
+    - > If a language is context free, then some pushdown automata recognizes it
+
+      - Proof:
+
+        - Let `q` and `r` be the states of the PDA and let `a` be in `Σ_ε` and `s` be in `Γ_ε`
+
+        - We want the PDA to go from `q` to `r` when it reads `a` and pops `s`, while also pushing the entire string `u = u_1 ... u_l` on the stack
+
+        - We use the notation `(r, u) ∈ δ(q, a, s)` to mean that when `q` is the state of the automaton, `a` is the next input symbol, and `s` is the symbol on top of the stack, the PDA may read the `a` and pop the `s`, then push the string `u` onto the stack and go on to the state `r`
+
+        - The states of `P` are `Q = {q_start, q_loop, q_accept} ∪ E`, where `E` is the set of states we need for implementing the shorthand just described
+
+          - The start state is `q_start` and the only accept state is `q_accept`
+
+        - Transition function:
+
+          - Begin by initializing the stack to contain the symbols `$` and `S`
+
+          - Main loop:
+
+            - Case where the top of the stack contains a variable: 
+
+              - $$
+                \delta(q_{loop}, \varepsilon,A)=\{(q_{loop},w)|\ \text{where}\ A\rightarrow w\ \text{is a rule in}\ R\}
+                $$
+
+            - Case where the top of the stack contains a terminal:
+
+              - $$
+                \delta(q_{loop},a,a)=\{(q_{loop},\varepsilon)\}
+                $$
+
+            - Case where the empty stack marker `$` is on top of the stack:
+
+              - $$
+                \delta(q_{loop},\varepsilon,$)=\{(q_{accept},\varepsilon)\}
+                $$
+
+    - > If a pushdown automaton recognizes some language, then it is context free
+
+      - We want to make a CFG that generates all the strings that a given PDA accepts
+
+        - Design a grammar that does more
+
+          - For each pair of states `p` and `q` in `P`, the grammar will have a variable `A_pq`, which generates all the strings that can take `P` from `p` with an empty stack to `q` with an empty stack
+            - Such strings can also take `P` from `p` to `q`, regardless of the stack contents at `p`, leaving the stack at `q` in the same condition as it was at `p`
+
+        - `P` has the following three features:
+
+          - It has a single accept state, `q_accept`
+
+          - It empties its stack before accepting
+
+          - Each transition either pushes a symbol onto the stack or pops one off the stack, but it doesn't do both at the same time
+
+            - Replace each transition that simultaneously pops and pushes with a two transition sequence that foes through a new state, and we replace each transition that neither pops nor pushes with a two transition sequence that pushes then pops an arbitrary stack symbol
+
+          - First move on `P` must be a push, as the empty stack can't be popped => last move must be a pop
+
+            - Two possibilities: the symbol popped at the end is the symbol that was pushed in the beginning, or not
+
+              - If so, the stack is only empty at the beginning and end
+
+                - $$
+                  A_{pq}\rightarrow aA_{rs}b
+                  $$
+
+                  - `a` is the input read at the first move, `b` is the input read at the last move, `r` is the state following `p`, and `s` is the state preceding `q`
+
+              - Otherwise, the initial symbol must have been popped at some point, making the stack empty
+
+                - $$
+                  A_{pq}\rightarrow A_{pr}A_{rq}
+                  $$
+
+                  - `r` is the state when the stack becomes empty
+
+      - Proof:
+
+        - Say that `P = (Q, Σ, Γ, δ, q_0, {q_accept})` and construct `G`
+
+          - Variables of `G` are:
+
+            - $$
+              \{A_{pq}|\ p,q\in Q\}
+              $$
+
+          - Start variable is `A_q0,q_accept`
+
+          - `G`'s rules:
+
+            - For each `p, q, r, s ∈ Q`, `u ∈ Γ`, and `a, b ∈ Σ_ε`, if `δ(p, a, ε)` contains `(r, u)` and `δ(s, b u)` contains `(q, ε)`, put the rule `A_pq -> aA_rsb` in `G`
+            - For each `p, q, r ∈ Q`, put the rule `A_pq -> A_prA_rq` in `G`
+            - Finally, for each `p ∈ Q`, put the rule `A_pp -> ε` in `G`
+
+        - Prove this construction works by demonstrating that `A_pq` generates `x` if and only if `x` can bring `P` from `p` with empty stack to `q` with empty stack
+
+          - > If `A_pq` generates `x`, then `x` can bring `P` from `p` to empty stack with `q` to empty stack
+
+            - Basis: the derivation has 1 step
+              - A derivation with a single step must use a rule whose RHS contains no variables
+              - The only rules in `G` where no variables occur on the RHS are `A_pp -> ε`
+              - Input `ε` takes `P` from `p` with empty stack to `q` with empty stack so the basis is proved
+            - Induction step:
+              - Assume true for derivations of length at most `k`, where `k >= 1` and prove true for derivations of length `k + 1`
+              - Suppose that `A_pq` derives `x` with `k + 1` steps
+              - The first step in this derivation is either `A_pq -> aA_rsb` or `A_pq -> A_prA_rq`
+                - First case, consider the portion `y` of `x` that `A_rs` generates, so `x = ayb`
+                  - Since `A_rs` derives `y` with `k` steps, the induction hypothesis tells us that `P` can go from `r` on empty stack to `s` on empty stack
+                  - Since `A_pq -> aA_rsb` is a rule of `G`, `δ(p, a, ε)` contains `(r, u)` and `δ(s, b, u)` contains `(q, ε)` for some stack symbol `u`
+                  - If `P` starts at `p` with empty stack, after reading `a` it can go to state `r` and push `u` onto the stack
+                  - Then, reading string `y` can bring it to `s` and leave `u` on the stack
+                  - Then, after reading `b`, it can go to state `q` and pop `u` off the stack
+                  - Therefore, `x` can bring it from `p` with empty stack to `q` with empty stack
+                - Second case, consider the portions `y` and `z` of `x` that `A_pr` and `A_rq` respectively generate, so `x = yz`
+                  - `A_pr` derives `y` in at most `k` steps and `A_rq` derives `z` in at most `k` steps, so the induction hypothesis tells us that `y` can bring `P` from `p` to `r`, and `z` can bring `P` from `r` to `q`, with empty stacks at the beginning and end
+                  - `x` can bring it from `p` with empty stack to `q` with empty stack
+              - Induction step complete
+
+          - > If `x` can bring `P` from `p` with empty stack to `q` with empty stack, `A_pq` generates `x`
+
+            - Basis: the computation has 0 steps
+              - The computation starts and ends at the same state, say `p`
+              - We must show that `A_pp` derives `x`
+              - In 0 steps, `P` cannot read any characters, so `x = ε`
+              - `G` has the rule `A_pp -> ε`, so the basis is proved
+            - Induction step:
+              - Assume true for computations of length at most `k`, where `k >= 0` and prove true for computations of length `k + 1`
+              - Suppose that `P` has a computation, wherein `x` brings `p` to `q` with empty stacks in `k + 1` steps
+              - Either the stack is empty only at the beginning and end of this computation, or it becomes empty somewhere else too
+                - First case, the symbol (`u`) that is pushed at the first move must be the same as the symbol that is popped at the last move
+                  - Let `a` be the input read in the first move, `b` be the input read in the last move, `r` be the state after the first move, and `s` be the state before the last move
+                  - Then `δ(p, a, ε)` contains `(r, u)` and `δ(s, b, u)` contains `(q, ε)`, and so rule `A_pq -> aA_rsb` is in `G`
+                  - Let `y` be the portion of `x` without `a` and `b`, so `x = ayb`
+                  - Input `y` can bring `P` from `r` to `s` without touching the symbol `u` that is on the stack and so `P` can go from `r` to `s` with and empty stack to `s` with an empty stack on input `y`
+                  - We have removed the first and last steps of the `k + 1` steps in the original computation on `x` so the computation on `y` has `(k + 1) - 2 = k - 1` steps
+                  - The induction hypothesis tells us that `A_rs` derives `y`, hence `A_pq` derives `x`
+                - Second case, let `r` be a state where the stack becomes empty other than at the beginning or end of computation 
 
