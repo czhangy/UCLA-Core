@@ -203,7 +203,6 @@
     - This is the transitive closure of `δ` with respect to the second argument, `Σ`
   
   - If a DFA is missing some input option, then blocking occurs and the input is rejected
-  
 
 
 
@@ -590,7 +589,11 @@
 
 
 
-## Lecture 9:
+## Lecture 9: Pushdown Automata
+
+
+
+## Lecture 10:
 
 - 
 
