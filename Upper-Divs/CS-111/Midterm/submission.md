@@ -391,8 +391,7 @@ What is priority inversion with respect to scheduling, and how would you mitigat
 ### Answer
 
 ```
-Priority inversion occurs when a process with a high priority has a dependence on a process with a low priority.
-Here,
+Priority inversion occurs when a process with a high priority has a dependence on a process with a low priority. Here,
 the high priority process can't run, even when called upon, because the lower priority process has yet to be called on.
 As a result, the higher priority process essentially has the same priority as the lower priority, since the lower
 priority process needs to run for the higher priority process to run. This can be mitigated using priority inheritence,
