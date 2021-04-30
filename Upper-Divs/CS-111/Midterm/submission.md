@@ -51,7 +51,7 @@ What is something both monolithic kernels and microkernels need to do?
 ### Answer
 
 ```
-Virtual memory
+Process scheduling
 ```
 
 
@@ -101,7 +101,7 @@ Assume that execution begins at `main` and `fork` never fails. How many processe
 ### Answer
 
 ```
-8 processes
+8
 ```
 
 
@@ -394,7 +394,7 @@ What is priority inversion with respect to scheduling, and how would you mitigat
 Priority inversion occurs when a process with a high priority has a dependence on a process with a low priority. Here,
 the high priority process can't run, even when called upon, because the lower priority process has yet to be called on.
 As a result, the higher priority process essentially has the same priority as the lower priority, since the lower
-priority process needs to run for the higher priority process to run. This can be mitigated using priority inheritence,
+priority process needs to run for the higher priority process to run. This can be mitigated using priority inheritance,
 which has priorities in a dependence chain inherit the highest priority in the chain. This can be chained across
 multiple dependencies if necessary, and the processes reset to their original priorities when the dependencies have
 been resolved.
