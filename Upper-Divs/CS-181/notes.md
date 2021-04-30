@@ -566,7 +566,7 @@
 - Closure Properties
 
   - FSLs:
-    - Concatentation
+    - Concatenation
     - Kleene* and Kleene+
     - Union and Intersection
     - Complementation
@@ -593,9 +593,33 @@
 
 
 
-## Lecture 10:
+## Lecture 10: CFL Pumping Lemma
 
-- 
+- PDA State Transition Diagrams:
+  - `q -> (w_i, a -> b) q'`
+    - `w_i` is in the input alphabet, and is either the input symbol or `ε`, which means ignore the input
+    - `a` and `b` are in the stack alphabet or are `ε`
+    - Any combination of `w_i`, `a`, and `b` can be `ε`
+    - `w_i` and/or `a` = `ε` means "don't care"
+      - `b = ε` is more complicated
+  - Allowable actions of the PDA model
+    - Input: read or ignore
+    - Stack: push, pop (depend on top of stack), peek, swap
+      - `ε -> <input symbol>` represents a push
+      - `<input symbol> -> ε` represents a pop
+      - `ε -> ε` represents a move where the symbol at the top of the stack doesn't matter
+      - `<input symbol> -> <input symbol>` represents a swap or a peek
+  - Can't explicitly test for empty stack
+  - Nondeterministic: if any computation foes into or passes through an accepting state after reading last symbol of the input, we accept; otherwise, we don't
+- Pumping Lemma for CFLs
+  - If `L` is a context-free language over `Σ`, then there exists a number, `p`, depending only on `L` such that:
+    - For all strings `s` in `L`, if `|s| >= p`, then:
+      - There exist five substrings of `s`: `u`, `v`, `x`, `y`, and `z` in `Σ*` such that:
+        - `s = uvxyz`
+        - For all `i >= 0`, `uv^ixy^iz` is in `L`
+        - `|vy > 0|`
+        - `vxy| <= p`
+    - Note that the substring `vxy` could be anywhere in `s`, i.e., `u` and/or `z` could be `ε`
 
 
 
