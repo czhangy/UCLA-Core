@@ -1742,7 +1742,130 @@
 
 
 
-## Reading 8:
+## Reading 8: Deterministic Context-Free Languages
 
-- 
+- Pumping lemma for CFLs
 
+  - > If `A` is a context-free language, then there is a number `p` (the pumping length) where, if `s` is any string in `A` of length at least `p`, then `s` may be divided into five pieces `s = uvxyz` satisfying the conditions
+    >
+    >  - for each `i >= 0`
+    >
+    >    - $$
+    >      uv^ixy^iz\in A
+    >      $$
+    >
+    > - $$
+    >   |vy|>0
+    >   $$
+    >
+    > - $$
+    >   |vxy|\le p
+    >   $$
+
+  - When `s` is being divided into `uvxyz`, condition 2 states that either `v` or `y` is not the empty string
+
+  - Condition 3 states that the pieces `v`, `x`, and `y` together have length at most `p`
+
+- Languages that are recognizable by deterministic pushdown automata are called deterministic context-free languages
+
+  - Relevant to practical applications like the design of parsers in programming languages
+
+- Conform to the basic principle of determinism: at each step of its computation, the DPDA has at most one way to proceed according to its transition function
+
+  - May read an input symbol without popping a stack symbol and vice versa
+  - Allow `ε` moves of two forms: **`ε`-input moves** corresponding to `δ(q, ε, x)` and **`ε`-stack moves** corresponding to `δ(q, a, ε)`
+    - Move may combine both forms, corresponding to `δ(q, ε, ε)`
+      - If a DPDA makes an `ε` move in a certain situation, it's prohibited from making a move in that same situation that involves processing a symbol other than `ε`
+
+- A **deterministic pushdown automata** is a 6-tuple `(Q, Σ, Γ, δ, q_0, F)`, where `Q`, `Σ`, `Γ`, and `F` are all finite sets and:
+
+  - `Q` is the set of states
+
+  - `Σ` is the input alphabet
+
+  - `Γ` is the stack alphabet
+
+  - The transition function is:
+
+    - $$
+      \delta:Q\times\Sigma_\varepsilon\times\Gamma_\varepsilon\rightarrow(Q\times\Gamma_\varepsilon)\cup\{\emptyset\}
+      $$
+
+  - The start state is:
+
+    - $$
+      q_0\in Q
+      $$
+
+  - The set of accept states is:
+
+    - $$
+      F\subseteq Q
+      $$
+
+  - The transition function must satisfy the following condition:
+
+    - For every `q ∈ Q`, `a ∈ Σ`, and `x ∈ Γ`, exactly one of the values  `δ(q, a, x)`, `δ(q, a, ε)`, `δ(q, ε, x)`, `δ(q, ε, ε)` is not the empty set
+    - It may output either a single move of the form `(r, y)`, or it may indicate not action by outputting the empty set
+    - Enforces nondeterminism by preventing the DPDA from having multiple moves in the same situation
+
+  - A DPDA has exactly one legal move in every situation where the stack is nonempty
+
+    - If the stack is empty a DPDA can move only if the transition function specifies a move that pops `ε`
+    - Otherwise, the DPDA has no legal move and it rejects without reading the rest of the input
+
+- The language of a DPDA is called a **deterministic context-free language**
+
+- > Every DPDA has an equivalent DPDA that always reads the entire input string
+
+- Properties of DCFLs
+
+  - > The class of DCFLs is closed under complementation
+
+    - Implies that some CFLs are not DCFLs => any CFL whose complement isn't a CFL isn't a DCFL
+
+  - > `A` is a DCFL if and only if `A⊣` is a DCFL
+
+- Deterministic Context-Free Grammars
+
+  - In defining DCFGs, we take a bottom-up approach, starting with a string of terminals and processing the derivation in reverse, employing a series of reduce steps until reaching the start variable
+
+    - Each **reduce step** is a reversed substitution, whereby the string of terminals and variables on the RHS of a rule is replaced by the variable on the corresponding LHS
+    - The string replaced is called the **reducing string**
+    - We call the entire reversed derivation a **reduction**
+
+  - If `u` and `v` are strings of variables and terminals, a **reduction from `u` to `v`** is a sequence
+
+    - $$
+      u=u_1\rightarrowtail u_2\rightarrowtail\ ...\ \rightarrowtail u_k=v
+      $$
+
+      - We say that `u` **is reducible** to `v`
+      - A **reduction from `u`** is a reduction from `u` to the start variable
+      - In a **leftmost reduction**, each reducing string is reduced only after all other reducing strings that lie entirely to its left
+        - Leftmost reduction is a rightmost derivation in reverse
+
+  - Let `w` be a string in the languages of CFG `G` and let `u_i` appear in a leftmost reduction of `w` 
+
+    - In a reduce step from `u_i` to `u_i+1`, say that the rule `T -> h` was applied in reverse
+    - We can write `u_i = xhy` and `u_i+1 = xTy`, where `h` is the reducing string, `x` is the part of `u_i` that appears leftward of `h`, and `y` is the part of `u_i` that appears rightward of `h`
+    - We call `h`, together with its reducing rule `T -> h`, a **handle** of `u_i`
+      - A handle of a string `u_i` that appears in a leftmost reduction of `w` is the occurrence of the reducing string in `u_i`, together with the reducing rule for `u_i` in this reduction
+    - A string that appears in a leftmost reduction of some string in `L(G)` is called a **valid string**
+      - Handles are only defined for valid strings
+      - Valid strings may have several handles if the grammar is ambiguous
+
+  - Handles play an important role in defining DCFGs because handles determine reductions => once we know the handle of a string, we know the next reduce step
+
+    - The initial part of a valid string, up to and including its handle, must be sufficient to determine the handle
+      - We don't need to read beyond the handle in order to identify the handle
+    - We say a handle `h` of a valid string `v = xhy` is a **forced handle** if `h` is the unique handle in every valid string `xhy_cap` where `y_cap` is in `Σ*`
+
+  - A **deterministic context-free grammar** is a context-free grammar such that every valid string has a forced handle
+
+  - The DK-test relies on the fact that for any CFG `G`, we can construct an associated DFA `DK` that can identify handles
+
+    - `DK` accepts its input `z` if:
+      - `z` is the prefix of some valid string `v = zy`
+      - `z` ends with a handle of `v`
+    - Each accept state of `DK` indicates the associated reducing rules
