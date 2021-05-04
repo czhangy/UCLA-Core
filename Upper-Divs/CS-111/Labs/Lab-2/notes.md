@@ -29,18 +29,18 @@
 ## Deliverables
 
 - Coding
-  - [ ] Implement round robin scheduling
-  - [ ] Return the average waiting time
-  - [ ] Return the average response time
+  - [x] Implement round robin scheduling
+  - [x] Return the average waiting time
+  - [x] Return the average response time
 
 - Documentation
-  - [ ] One sentence description of the program
-  - [ ] Explain how to build the program
-  - [ ] Show a test run of the program with an arbitrary quantum length, and the expected output
-  - [ ] Explain how to clean up all binary files generated
+  - [x] One sentence description of the program
+  - [x] Explain how to build the program
+  - [x] Show a test run of the program with an arbitrary quantum length, and the expected output
+  - [x] Explain how to clean up all binary files generated
 
 - Submission
-  - [ ] Use `git push` to push the final submission to the repository
+  - [x] Use `git push` to push the final submission to the repository
 
 
 
