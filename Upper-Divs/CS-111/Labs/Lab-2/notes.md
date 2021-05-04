@@ -36,7 +36,7 @@
 - Documentation
   - [ ] One sentence description of the program
   - [ ] Explain how to build the program
-  - [ ] Show a test run of the program with at least two additional arguments, and the expected output
+  - [ ] Show a test run of the program with an arbitrary quantum length, and the expected output
   - [ ] Explain how to clean up all binary files generated
 
 - Submission
@@ -46,4 +46,4 @@
 
 ## Relevant Links
 
-- **[Symbol and Function Lookup](https://elixir.bootlin.com/linux/latest/source)**
+- **[`tailq` Man Pages](https://man7.org/linux/man-pages/man3/tailq.3.html)**
