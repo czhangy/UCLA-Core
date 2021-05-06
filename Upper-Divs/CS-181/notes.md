@@ -623,6 +623,44 @@
 
 
 
+## Lecture 11: Deterministic PDAs
+
+- The intention of the definition of a DPDA is to ensure that at each stage in the computation, there is only one way to proceed
+
+- You can test if a PDA is deterministic by going through each state and testing if there are nondeterministic moves
+
+- FSLs are a subset of DCFLs which are a subset of CFLs, which are a subset of Non-CFLs
+
+  - Inherently ambiguous CFLs are a subset of CFLs, outside of the subset of DCFLs
+
+- Closure properties
+
+  - FSLs are closed under union, concatenation, Kleene operations, intersection, complementation, and reversal
+
+  - CFLs are closed under union, concatenation, Kleene operations, and reversal, but not under intersection or complementation
+
+  - DCFLs are closed under complementation, but are not under union, concatenation, Kleene operations, intersection, or reversal
+
+    - Reversal:
+
+      - $$
+        \Sigma=\{a,b,?,.\}
+        $$
+
+      - $$
+        L=\{a^ib^j?\ |\ j=i\}\cup\{a^ib^j.\ |\ j=2i\}
+        $$
+
+        - `L` is not a DCFL, but `L^R` is
+
+
+
+## Lecture 12: 
+
+- 
+
+
+
 ## Reading 1: Discrete Concepts
 
 - Mathematical Notions and Terminology
