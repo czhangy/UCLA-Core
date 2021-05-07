@@ -655,9 +655,21 @@
 
 
 
-## Lecture 12: 
+## Lecture 12: PDA Notation
 
-- 
+- Shorthand for PDA and DPDA state transition diagrams
+
+  - Consider PDA pseudocode:
+
+    - ```
+      If input = a and top = don't care, push x
+      If input = a and top = x, push y on top of x
+      	Two steps: a, x -> x and ε, ε -> y
+      	Shorthand: a, x -> yx
+      ```
+
+      - View of stack as a string, where the top of the stack is on the left
+      - Replace stack symbol with 0+ moves
 
 
 
