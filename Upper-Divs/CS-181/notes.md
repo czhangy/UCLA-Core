@@ -1931,3 +1931,111 @@
       - `z` is the prefix of some valid string `v = zy`
       - `z` ends with a handle of `v`
     - Each accept state of `DK` indicates the associated reducing rules
+
+
+
+## Reading 9: Turing Machines
+
+- Turing machines are similar to finite automaton, but with an unlimited and unrestricted memory
+
+  - Much more accurate model of a general purpose computer
+  - Can do everything a real computer can do
+  - Cannot solve certain problems, which are beyond the theoretical limits of computation
+  - Uses an infinite tape as its unlimited memory
+    - Has a tape head that can read and write symbols, while also moving around on the tape
+    - Initially contains only the input string, more information written onto the tape as needed
+  - Continues computation until it decides to produce an output
+    - If it doesn't enter an accepting or rejecting state, it will go on forever and never halt
+
+- Differences between Turing machines and finite automata
+
+  - A Turing machine can both write on the tape and read from it
+  - The read-write head can move both to the left and to the right
+  - The tape is infinite
+  - The special states for rejecting and accepting take effect immediately
+
+- Formal Definition of a Turing Machine
+
+  - `δ` takes the form:
+
+    - $$
+      Q\times\Gamma\rightarrow Q\times\Gamma\times\{L,R\}
+      $$
+
+      - If the machine is in a certain state `q` and the head is over a tape square containing the symbol `a` and if `δ(q, a) = (r, b, L)`, the machine writes the symbol `b` replacing the `a`, and goes to state `r`
+      - The third component is either `L` or `R`, indicating if the head moves to the left or right after writing
+
+  - A **Turing machine** is a 7-tuple, `(Q, Σ, Γ, δ, q_0, q_accept, q_reject)`, where `Q`, `Σ`, `Γ` are all finite sets and:
+
+    - `Q` is the state of sets
+
+    - `Σ` is the input alphabet, not containing the blank symbol `⊔`
+
+    - `Γ` is the tape alphabet, where `⊔` is in `Γ` and `Σ` is a subset of `Γ`
+
+    - The transition function is:
+
+      - $$
+        \delta:Q\times\Gamma\rightarrow Q\times\Gamma\times\{L,R\}
+        $$
+
+        
+
+    - The start state is:
+
+      - $$
+        q_o\in Q
+        $$
+
+    - The accept state is:
+
+      - $$
+        q_{accept}\in Q
+        $$
+
+    - The reject state is:
+
+      - $$
+        q_{reject}\in Q\\q_{reject}\in Q
+        $$
+
+  - Computation:
+
+    - Initially, `M` receives its input `w = w_1w_2 ... w_n` on the leftmost `n` squares of the tap, and the rest of the tap is blank
+      - Note that `Σ` doesn't contain the blank symbol, so the first blank appearing on the tape marks the end of the input
+      - `M` proceeds according to the rules described by the transition function
+        - If `M` ever tries to move left off the tape, the head stays in the same place
+      - Computation continues until `M` enters either the accept or reject states, at which point it halts
+        - If this never occurs, `M` goes on forever
+
+  - A **configuration** of a Turing machine is a setting of the machine's state, tape contents, and head location
+
+    - We write `uqv` where the current state is `q`, the current tape contents is `uv` and the head location is the first symbol of `v`
+    - `C_1` **yields** `C_2` if the Turing machine can legally go from `C_1` to `C_2` in a single step
+    - The **start configuration** of `M` on input `w` is the configuration `q_0w`, which indicates that the machine is in the start state `q_0` with its head at the leftmost position on the tape
+    - In an **accepting configuration**, the state of the configuration is `q_accept`
+    - In a **rejecting configuration**, the state of the configuration is `q_reject`
+      - These are both **halting configurations** and do not yield further configurations
+    - A Turing machine **accepts** input `w` if a sequence of configurations `C_1, C_2, ... , C_k` exists such that:
+      - `C_1` is the start configuration of `M` on input `w`
+      - Each `C_i` yields `C_i+1`
+      - `C_k` is an accepting configuration
+
+  - The collection of strings that `M` accepts is **the language of `M`**, or **the language recognized by `M`**, denoted `L(M)`
+
+  - Call a language **Turing-recognizable** if some Turing machine recognizes it
+
+  - When we start a Turing machine on an input, there are three outcomes: accept, reject, loop
+
+    - A **loop** means the machine doesn't halt
+    - The machine can fail to accept by rejecting or looping
+    - **Deciders** are machine that always make a decision to accept or reject
+      - A decider that recognizes some language is also said to **decide** that language
+      - We call a language **Turing-decidable** if some Turing machine decides it
+
+
+
+## Reading 10:
+
+- 
+
