@@ -22,14 +22,14 @@
 | Name                       |  Score  |
 | :------------------------- | :-----: |
 | 0. A Kernel Seedling       | 100/100 |
-| 1. Pipe Up                 |   ???   |
+| 1. Pipe Up                 | 100/100 |
 | 2. You Spin Me Round Robin |   ???   |
 | 3. ???                     |   ???   |
 | 4. ???                     |   ???   |
 
 ## Exams
 
-|  Exam   | Score |
-| :-----: | :---: |
-| Midterm |  ???  |
-|  Final  |  ???  |
+|  Exam   |   Score   |
+| :-----: | :-------: |
+| Midterm | 98.77/100 |
+|  Final  |    ???    |
