@@ -673,6 +673,34 @@
 
 
 
+## Lecture 13: Turing Machines
+
+- Turing Machine (TM) vs. other models
+  - Recognize recursive languages/recursively enumerable languages
+    - The difference between these relies on the definition of an accepted computation
+    - Recursively enumerable languages are anything that can be represented by a TM
+    - Recursive languages are a subset of recursively enumerable languages
+- TM computations: Accept, Reject, other...
+  - Single tape TM
+    - Can reach accept state, reject state, or loop infinitely
+    - Work tape that is indefinitely long
+    - Input alphabet and a work tape alphabet that contains both the input alphabet and the blank symbol
+  - Multi-tape TM
+    - Only one tape is special: the input tape
+    - Other tapes are controlled by a finite state diagram
+    - Exactly equivalent to single tape TMs
+  - Accepting TM computations:
+    - On input `w`, if TM, `M`, reaches `q_accept`, it halts and accepts input `w` (even if `M` doesn't read all of `w`)
+    - On input `w`, if `M` reaches `q_reject`, it halts and rejects input `w`
+    - If `M` never reaches either state, the `M` doesn't accept `w`
+    - TMs which halt (and accept or reject) for all inputs are called algorithms
+      - The family of languages represented by TMs which halt for all inputs is called "recursive"
+- Algorithms and the Family of Recursive Languages
+- Encodings of Problems as Strings/languages
+- Church-Turing Thesis
+
+
+
 ## Reading 1: Discrete Concepts
 
 - Mathematical Notions and Terminology
