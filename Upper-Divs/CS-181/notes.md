@@ -701,6 +701,29 @@
 
 
 
+## Lecture 14: Recursively Enumerable Languages
+
+- Every Turing Machine is a procedure, algorithms are subsets of procedures
+  - Algorithms are always halting
+  - Procedures may reject by looping infinitely
+- TM Models
+  - TM Algorithm
+    - Always halts and accepts or rejects
+    - Recursive/Decidable/Turing-decidable
+  - TM Procedure
+    - For a string accepted, it halts and accepts; for others, it halts and rejects or fails to halt
+    - Recursively enumerable
+
+- Church-Turing thesis - all formal models of computation equivalent to the TM model correspond to our mental notion of a computer => represent everything computable
+
+
+
+## Lecture 15: 
+
+- 
+
+
+
 ## Reading 1: Discrete Concepts
 
 - Mathematical Notions and Terminology
