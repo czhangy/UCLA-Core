@@ -36,7 +36,7 @@
 - Documentation
   - [x] One sentence description of the program
   - [x] Explain how to build the program
-  - [x] Show a test run of the program with an arbitrary quantum length, and the expected output
+  - [x] Show a test run of the program with an arbitrary quantum length and the expected output
   - [x] Explain how to clean up all binary files generated
 
 - Submission
