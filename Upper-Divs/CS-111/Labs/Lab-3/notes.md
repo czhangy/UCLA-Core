@@ -40,7 +40,7 @@
   - [x] Implement `hash_table_v1_add_entry`
   - [x] Implement `hash_table_v2_add_entry`
   - [x] Perform error checking
-  - [ ] Perform memory leak checking
+  - [x] Perform memory leak checking
 
 - Documentation
   - [x] One sentence description of the program
