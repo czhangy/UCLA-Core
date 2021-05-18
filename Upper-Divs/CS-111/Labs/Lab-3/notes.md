@@ -37,21 +37,21 @@
 ## Deliverables
 
 - Coding
-  - [ ] Implement `hash_table_v1_add_entry`
-  - [ ] Implement `hash_table_v2_add_entry`
-  - [ ] Perform error checking
+  - [x] Implement `hash_table_v1_add_entry`
+  - [x] Implement `hash_table_v2_add_entry`
+  - [x] Perform error checking
   - [ ] Perform memory leak checking
 
 - Documentation
-  - [ ] One sentence description of the program
-  - [ ] Explain how to build the program
-  - [ ] Show a test run of the program and the expected output
-  - [ ] Explain how to clean up all binary files generated
-  - [ ] Explain the `hash_table_v1_add_entry` implementation
-  - [ ] Explain the `hash_table_v2_add_entry` implementation
+  - [x] One sentence description of the program
+  - [x] Explain how to build the program
+  - [x] Show a test run of the program and the expected output
+  - [x] Explain how to clean up all binary files generated
+  - [x] Explain the `hash_table_v1_add_entry` implementation
+  - [x] Explain the `hash_table_v2_add_entry` implementation
 
 - Submission
-  - [ ] Use `git push` to push the final submission to the repository
+  - [x] Use `git push` to push the final submission to the repository
 
 
 
