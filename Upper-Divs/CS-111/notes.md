@@ -2659,7 +2659,155 @@
 
 
 
-## Lecture 13:
+## Lecture 13: Disks
+
+- Access speed depends on locality
+  - Sectors on same track can be read continuously
+  - Switching tracks needs repositioning of the arm
+    - Repositioning the are is expensive
+- You physically address a HDD using Cylinder-Head-Sector (CHS)
+  - Data has the following coordinates (multi-dimensional polar coordinates):
+    - Platter: which revolving platter (addressed as head) [`z`-axis]
+    - Track: which track lane on platter (historically cylinder) [`||r||`]
+    - Sector: which sector on track [`theta`]
+  - The historical CHS has an approximate 8GB limit of addressable space
+    - `(512 bytes/sector) x (63 sectors/track) x (255 heads (tracks/cylinder)) x (1024 cylinders)
+  - LBA (Logical Block Addressing) uses one number to address any block and is not limited to 8GB
+- Shingled Magnet Recording (SMR)
+  - The write head only writes in the center of a track and has unused padding
+  - You can't write to this padding without destroying neighboring tracks
+  - SMR however, allows you to write over the padding, if you do it sequentially
+  - Drive performance may suffer, but it's easier to increase capacity
+- HDDs have latencies dependent on the distance travelled
+  - Rotational delay: physically rotate the disk to get to the correct sector
+    - Typically 4-8ms (average delay is half of a full rotation)
+  - Seek time: moving the disk arm to get to the correct track
+    - Typically 0.5-2ms
+  - Transfer time: how long it takes to read bytes from the disk
+    - Typically the maximum transfer speed is 125MB/s
+- Calculating transfer rate
+  - The total time, `T`, is equal to rotational delay + seek time + transfer time
+  - The transfer rate, `R`, is equal to size of the transfer / `T`
+  - What is the transfer rate of:
+    - Large sequential accesses?
+    - Small random accesses?
+- We should use HDDs sequentially whenever possible
+- Logical mapping could place all sectors next to each other
+  - You may want to offset the sectors in different tracks so the head has time to settle
+    - Track skew allows the disk to be efficient with minimal head movement
+- You may want more flexibility than the default mapping
+  - Pros
+    - Simple to program
+    - Default mapping reduces seek time for sequential access
+  - Cons
+    - Filesystem can't inspect or try to optimize the mapping
+    - Trying to reverse the mapping is difficult
+      - Number of sectors per track changes
+      - Disk silently remaps bad sectors
+- A cache can significantly speed up disk transfers
+  - Disks have some internal memory (WD Red - 64MB) for caching
+  - Implement a read-ahead "track buffer"
+    - Read the entire contents of the track into memory during the rotational delay
+  - Write caching with volatile memory
+    - Write back: claim data is written to disk
+      - Fast, but there's data loss if there's a power failure
+      - Write through: acknowledge after data is physically written
+- We can schedule disk accesses
+  - We want to minimize the time the disk moves without reading or writing data
+  - FCFS: schedule requests in the order received
+    - Fair, but it has a high seek and rotation cost
+  - SSTF: shortest seek time first
+    - Handle the nearest cylinder/sector next
+      - Pro: reduces arm movement (seek time)
+      - Con: unfair, can starve some requests
+- Elevator (aka SCAN or C-SCAN) sweeps across the disk
+  - If a request comes in for a track already serviced this sweep, queue it for the next
+- Elevator (or SSTF) ignores rotation
+  - Shortest positioning time first (SPTF) is often the best strategy
+    - The OS and disk need to work together to implement this
+- Solid State Drives (SSD) are more modern
+  - Use transistors (like RAM) to store data rather than magnetic disks
+  - Pros:
+    - No moving parts or physical limitations
+    - Higher throughput and good random access
+    - More energy efficient
+    - Better space density
+  - Cons:
+    - More expensive
+    - Lower endurance (number of writes)
+    - More complicated to write drivers for
+- An SSD contains pages
+- SSDs using NAND Flash are much faster than HHDs
+  - Pages are typically 4KB
+  - Reading a page: 10 microseconds
+  - Writing a page: 100 microseconds
+  - Erasing a block: 1ms
+- NAND Flash programming uses pages and blocks
+  - You can only read complete pages and write to freshly erased pages
+  - Erasing is done per block (a block has 128 or 256 pages)
+    - An entire block needs to be erased before writing
+  - Writing is slow (may need to create a new block)
+- The OS can help speed up SSDs
+  - SSDs need to garbage collect blocks
+    - Move any pages that are still alive to a new block (may be overhead)
+  - The disk controller doesn't know what blocks are still alive
+    - SSD may think the disk is full, when a file could be deleted (not erased)
+  - The OS can use the TRIM command to inform the SSD a block is unused
+    - The SSD can freely erase the block without moving overhead
+- So far we've been talking about single devices
+  - Sometimes called Single Large Expensive Disk (SLED)
+    - Just one large disk for data
+      - Single point of failure
+  - There's also Redundant Array of Independent Disks (RAID)
+    - Data distributed on multiple disks
+      - Use redundancy to prevent data loss
+      - Use redundancy to increase throughput
+- RAID 0 is called a striped volume
+  - Data stripes (128KB and 256KB) are distributed over disls
+- RAID 0 is for performance only
+  - The data is stripped across all disks in the array (you can have more than 2)
+  - Pro: faster parallel access, roughly `N` times speed
+  - Con: any disk failure results in a data loss (more points of failure)
+- RAID 1 mirrors all data across all disks
+- RAID 1 is simple, but wasteful
+  - Every disk in the array has a mirrored copy of all the data
+  - Pros:
+    - Good reliability, as long as one disk remains, no data loss
+    - Good read perfromance
+  - Cons:
+    - High cost for redundancy (we can do better)
+    - Write performance is the same as a single disk
+- RAID 4 introduces parity
+  - Data stripes distributed over disks with a dedicated parity disk (p = parity)
+  - Parity stores xor of copies 1-3, any one copy can be reconstructed
+
+- RAID 4 can use the parity drive to recover
+  - With parity, we can use `1 - 1/N` of the available space
+    - Requires at least 3 drives
+  - Pros:
+    - We can `(N - 1)` times performance (removing parity disk)
+    - We can replace a failed disk and rebuild
+  - Con: Write performance can suffer, every write must write to parity disk
+- RAID 5 distributes parity across all disks
+  - Data stripes distributed over disks and each disk takes turns with parity blocks
+- RAID 5 is an improved RAID 4
+  - It has all the sam pros as RAID 4
+  - Write performance is improved, no longer a bottleneck on a single parity drive
+- RAID 6 adds another parity block per stripe
+- RAID 6 can recover from 2 simultaneous drive failures
+  - Due to the extra parity, we can use `1 - 2/N` of the available space
+    - Requires at least 4 drives
+  - Write performance is slightly less than RAID 5, due to another parity calculation
+- Disks enable persistence
+  - We explored two kinds of disks: SSDs and HDDs
+    - Magnetic disks have poor random access (need to be scheduled)
+    - Shortest Positioning Time First (SPTF) is the best scheduling for throughput
+    - SSDs are more like RAM, except accessed in pages and blocks
+    - SSDs also need to work with the OS for best performance (TRIM)
+    - Use RAID to tolerate failures and improve performance using multiple disks
+
+
+
+## Lecture 14:
 
 - 
-
