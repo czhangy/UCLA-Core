@@ -718,9 +718,47 @@
 
 
 
-## Lecture 15: 
+## Lecture 15: TM Analysis
 
-- 
+- Static analysis:
+  - Does a given DFA accept `{}`?
+  - Does a given DFA accept an infinite set?
+  - Does a given DFA accept a given string?
+- Dynamic analysis/interpreter:
+  - TM could interpret a DFA diagram by the Church-Turing Thesis
+  - TM could interpret an NFA diagram (search interpretation)
+  - Note: this is different from saying a DFA is a special case of a TM: compile-time vs. runtime
+  - Same for PDA, using its work tape to simulate the stack => definitely dyanmic
+- What about semantics of TM?
+  - Can a TM simulate a TM? Or is that something we can disprove using proof by contradiction
+    - Yes, we can predict what `(M, w)` will do, but in the most general case, we can only do this by simulating the computation step-by-step
+
+
+
+## Lecture 16: TM Theory
+
+- We can try to determine what a given TM would do on a given input, however, in the most general case, the best we can do is simulate its behavior with the UTM and watch what happens
+- CS Theory preceded CS practice
+  - Math preceded CST, which preceded computers
+  - Math = closed forms, infinite series and sequences, recursions: set of formulas that is finite = fixed set of formulas that solve an infinite set of problems
+  - Used to say "computable" = recursion = "recursive"
+    - Then Turing and others showed that there were problems that were "computable" in some sense, but not "recursive", such as the language HP => leads to naming of "recursively enumerable"
+  - Turing Recognizer vs. Turing Decider vs. Turing Enumerator
+- Let `L_R` be a recursive (decidable) language over `{0, 1}`, let `M` be a decider for `L_R` (aka algorithm = always-halting Turing machine), we can create an enumerator
+  - We can create a TM that generates `{0, 1}*` by writing words `0`, `1`, `00`, etc. onto a work tape sequentially
+  - After each word, we parse that program and let the decider read the current word
+  - Eventually it will return Accept or Reject and halt
+  - If it accepts, we copy the word to the special output tape of the enumerator
+  - Then, we let the generator for `{0, 1}*` produce the next word and repeat the process indefinitely
+- Suppose `L_1` and `L_2` are recursive, prove by construction that `L_1 ∩ L_2` is recursive
+  - Let `M_1` be a TM Decider for `L_1` => same for `L_2`
+  - Contruct `M` for `L_1 ∩ L_2`:
+    - Use UTM to simulate `M_1` on a given input `w`
+    - Because `M_1` is an algorithm, it will eventually halt and accept or reject
+    - If `M_1` halts and rejects, `M` halts and rejects
+    - Else, use UTM to simulate `M_2` on `w`
+      - If `M_2` halts and rejects, `M` halts and rejects
+      - Else, `M` halts and accepts
 
 
 
