@@ -2810,4 +2810,271 @@
 
 ## Lecture 14: Filesystems
 
+- POSIX filesystem
+
+  - Special symbols:
+    - `.` - current directory
+    - `..` - parent directory
+    - `~` - user's home directory (`$HOME`)
+  - Relative paths are calculated from current working directory (`$PWD`)
+
+- You can access files sequentially or randomly
+
+  - Sequential access
+    - Each read advances the position inside the file
+    - Writes are appended and the position set to the end afterwards
+  - Random access
+    - Records can be read/written to the file in any order
+    - A specific position is required for each operation
+
+- POSIX filesystem
+
+  - ```c
+    int open(const char *pathname, int flags, mode_t mode);
+    // flags can specify which operations: O_RDWR, O_WRONLY, O_RDWR
+    // also: O_APPEND moves the position to the end of the file initially
+    
+    off_t lseek(int fd, off_t offset, int whence);
+    // lseek changes the position to the offset
+    // whence can be one of: SEEK_SET, SEEK_CUR, SEEK_END
+    //	set makes the offset absolute, cur and end are both relative
+    ```
+
+- Accessing directory API
+
+  - ```c
+    DIR *opendir(char *path); // open directory
+    struct dirent *readdir(DIR *dir); // get next item
+    int closedir(DIR *dir); // close directory
+    
+    void print_directory_contents(char *path) {
+      DIR *dir = opendir(path);
+      struct dirent *item;
+      while (item = readdir(dir)) {
+        printf("- %s\n", item->d_name);
+      }
+      closedir(path);
+    }
+    ```
+
+- File tables are stored in the Process Control Block (PCB)
+
+- Each process contains a file table in its PCB
+
+  - A file descriptor is an index in the table
+  - Each item points to a system-wide global open file table
+  - The GOF table holds information about the seek position and flags
+    - It also points to a VNode (supports read/write/etc.)
+  - A VNode (virtual node) holds information about the file
+    - VNodes can represent regular files, pipes, network sockets, etc.
+
+- Remember what happens in a fork
+
+  - PCB is copied on fork
+  - Specifically for us, the local open file table gets inherited
+  - Both PCBs point to the same GOF table entry
+
+- Both processes point to the same GOF entry
+
+- There are some gotchas for this sharing
+
+  - Current position in the file is shared between both processes
+  - Seek in one process leads to seek in all other processes using the same GOF entry
+  - Opening the same file in both processes after forking creates multiple GOF entries
+
+- How many LOF and GOF entries exist? What is the relationship?
+
+  - ```c
+    open("todo.txt", O_RDONLY);
+    fork();
+    open("b.txt", O_RDONLY);
+    ```
+
+    - Assume there are no previously opened files (not even the standard ones)
+
+  - There are 2 LOF entries each, and 3 GOF entries
+
+- How do we store files? Contiguous allocation?
+
+- Contiguous allocation is fast, if there are no modifications
+
+  - Space efficient: only start block and # of blocks need to be stored
+
+  - Fast random access:
+
+    - $$
+      \text{Block}=\left\lfloor\frac{\text{Offset}}{\text{Block Size}}\right\rfloor
+      $$
+
+  - Files cannot grow easily
+
+    - Internal fragmentation (may not fill a block)
+    - External fragmentation when files are deleted or truncated
+
+- What about storing like a free list of pages? Linked allocation
+
+- Linked allocation has slow random access
+
+  - Space efficient: only start block needs to be stored
+    - Blocks need to store a pointer to the next block (block is slightly smaller)
+  - Files can grow/shrink
+    - No external fragmentation
+    - Internal fragmentation
+  - How can we increase random access speed? We need to walk each block
+    - Each block may be located far away (it will never be cached)
+
+- File allocation table moves the list to a separate table
+
+- File Allocation Table (FAT) is similar to linked allocation
+
+  - Files can grow/shrink
+    - No external fragmentation
+    - internal fragmentation
+  - Fast random access: FAT can be held in memory/cache
+    - FAT size is linear to disk size: can become very large
+  - How can we further increase random access speed?
+
+- Indexed allocation maps each block directly
+
+- For indexed allocation, each file needs an index block
+
+  - Files can still grow/shrink
+    - No external fragmentation
+    - Internal fragmentation
+  - Fast random access
+  - File size limited by the maximum size of the index block (fit in one block)
+
+- Indexed allocation problem
+
+  - Assume this scenario:
+    - An index block stores pointers to data blocks only (no meta information)
+    - A disk block is 8KB in size
+    - A pointer to a block is 4B
+  - What is the maximum size of a file managed by this index block?
+
+- Indexed allocation solution
+
+  - $$
+    \text{# of pointers}=\left(\frac{8\text{KB}}{4\text{B}}\right)\left(\frac{2^{13}\text{B}}{2^2\text{B}}\right)=2^{11}
+    $$
+
+  - $$
+    \text{# of addressable blocks}=\text{# of pointers}
+    $$
+
+  - $$
+    \text{Total of bytes}=2^{11}\times 2^{13}=2^{24}=16\text{MB}
+    $$
+
+- An inode describes a file system object (files and directories)
+
+- Linux inodes aim to be efficient for small files, and support large ones
+
+  - UNIX inodes hold metadata and pointers to blocks
+  - Smaller files only use direct pointers
+  - Larger files have additional index nodes with pointers to additional blocks
+  - Very small files can have its contents directly inside the inode
+
+- inode problem
+
+  - Assume this scenario:
+    - An index block stores 12 direct pointers, one single, double, and triple indirect pointer each
+    - A disk block is 8KB in size
+    - A pointer to a block is 4B
+    - Indirect blocks consist of direct pointers only
+  - What is the maximum size of a file managed by this index block?
+
+- inode solution
+
+  - $$
+    \text{# of pointers per indirect table}=\frac{2^{13}}{2^2}=2^{11}
+    $$
+
+  - $$
+    \text{# addressable blocks}=12+2^{11}+(2^{11})^2+(2^{11})^3\approx (2^{11})^3=2^{33}
+    $$
+
+  - $$
+    \text{Total of bytes}=2^{33}\times 2^{13}=2^{46}=64\text{TB}
+    $$
+
+- Hard links are pointers to inodes
+
+  - A directory entry (aka filename) is called a hard link
+  - A hard link points to one inode
+
+- Multiple hard links can point to the same inode
+
+  - Deleting a file only removes a hard link (the file can be hard linked somewhere else)
+  - POSIX has the `unlink` call rather than a delete call
+
+- Soft links are paths to another file
+
+  - When resolving the file, the filesystem is redirected somewhere else, so:
+    - Soft link targets do not need to exist
+    - Soft link targets can be deleted without notice of the soft link
+    - Unresolvable soft links lead to an exception
+
+- Filesystem example problem
+
+  - ```bash
+    touch todo.txt
+    ln todo.txt b.txt
+    ln -s todo.txt c.txt
+    mv todo.txt d.txt
+    rm b.txt
+    ```
+
+- In UNIX, everything is file
+
+  - Directories are files of type "directory"
+  - Additional types are "regular file", "block device" (HDDs, SSDs), "pipe", "socket", etc.
+  - Directory inodes do not store pointers to data blocks but rather filenames and pointers to inodes
+
+- What data is stored in an inode
+
+  - Filename => no, names are stored in directories
+  - Containing directory name => no, file can be in multiple directories
+  - File size => yes
+  - File type => yes
+  - \# of soft links to file => no, they are unknown
+  - Location of soft links => no, they are unknown
+  - \# of hard links to file => yes, to know when to erase the file, check `stat`
+  - Location of hard links => no, they are unknown to the node
+  - Access rights => yes
+  - Timestamps => yes
+  - File contents => sometimes
+  - Ordered list of data blocks => yes, by definition
+
+- Filesystem caches speed up writing to disks
+
+  - Writing data to the disk is slow, we can use a cache to speed it up
+  - File blocks are cached in main memory in the filesystem cache
+    - Reference blocks are likely to be reference again (temporal locality)
+    - Logically near blocks are likely to be referenced (spatial locality)
+  - A kernel thread (or daemon) writes changes periodically to disk
+  - `flush` and `sync` system calls trigger a permanent write
+
+- Journaling filesystem
+
+  - Deleting a file on a UNIX filesystem involves three steps:
+    - Removing its directory entry
+    - Releasing the inode to the pool of free inodes
+    - Returning all disk blocks to the pool of free disk blocks
+  - Crashes could occur between any steps, leading to a storage leak
+  - The journal contains operations in progress, so if a crash occurs we can recover
+
+- Filesystems enable persistence
+
+  - They describe how files are stored on disks:
+    - API-wise, you can open files and change the position to read/write at
+    - Each process has a local open file and there's a global open file table
+    - There's multiple allocation strategies: contiguous, linked, FAT, indexed
+    - Linux uses a hybrid inode approach
+    - Everything is file on UNIX, names in a directory can be hard or soft links
+
+
+
+## Lecture 15:
+
 - 
