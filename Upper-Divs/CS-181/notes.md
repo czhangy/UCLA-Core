@@ -720,6 +720,10 @@
 
 ## Lecture 15: TM Analysis
 
+- Turing machines decide a language if its an algorithm
+- Turing machines recognize a language if its a procedure
+  - Procedures are the superset and algorithms are a proper subset
+- There are languages that cannot be represented with any model people have created
 - Static analysis:
   - Does a given DFA accept `{}`?
   - Does a given DFA accept an infinite set?
@@ -728,7 +732,7 @@
   - TM could interpret a DFA diagram by the Church-Turing Thesis
   - TM could interpret an NFA diagram (search interpretation)
   - Note: this is different from saying a DFA is a special case of a TM: compile-time vs. runtime
-  - Same for PDA, using its work tape to simulate the stack => definitely dyanmic
+  - Same for PDA, using its work tape to simulate the stack => definitely dynamic
 - What about semantics of TM?
   - Can a TM simulate a TM? Or is that something we can disprove using proof by contradiction
     - Yes, we can predict what `(M, w)` will do, but in the most general case, we can only do this by simulating the computation step-by-step
@@ -752,7 +756,7 @@
   - Then, we let the generator for `{0, 1}*` produce the next word and repeat the process indefinitely
 - Suppose `L_1` and `L_2` are recursive, prove by construction that `L_1 ∩ L_2` is recursive
   - Let `M_1` be a TM Decider for `L_1` => same for `L_2`
-  - Contruct `M` for `L_1 ∩ L_2`:
+  - Construct `M` for `L_1 ∩ L_2`:
     - Use UTM to simulate `M_1` on a given input `w`
     - Because `M_1` is an algorithm, it will eventually halt and accept or reject
     - If `M_1` halts and rejects, `M` halts and rejects
