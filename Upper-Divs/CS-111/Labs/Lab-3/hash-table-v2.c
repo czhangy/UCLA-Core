@@ -5,6 +5,7 @@
 #include <string.h>
 #include <sys/queue.h>
 #include <pthread.h>
+#include <errno.h>
 
 struct list_entry
 {
@@ -36,7 +37,8 @@ struct hash_table_v2 *hash_table_v2_create()
 	{
 		struct hash_table_entry *entry = &hash_table->entries[i];
 		// Init each mutex
-		pthread_mutex_init(&(entry->mutex), NULL);
+		if (pthread_mutex_init(&(entry->mutex), NULL))
+			exit(errno);
 		SLIST_INIT(&entry->list_head);
 	}
 	return hash_table;
@@ -119,7 +121,8 @@ void hash_table_v2_destroy(struct hash_table_v2 *hash_table)
 	{
 		struct hash_table_entry *entry = &hash_table->entries[i];
 		// Clean up each mutex
-		pthread_mutex_destroy(&(entry->mutex));
+		if (pthread_mutex_destroy(&(entry->mutex)))
+			exit(errno);
 		struct list_head *list_head = &entry->list_head;
 		struct list_entry *list_entry = NULL;
 		while (!SLIST_EMPTY(list_head))

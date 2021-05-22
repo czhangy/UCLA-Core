@@ -5,6 +5,7 @@
 #include <string.h>
 #include <sys/queue.h>
 #include <pthread.h>
+#include <errno.h>
 
 struct list_entry {
 	const char *key;
@@ -28,7 +29,9 @@ struct hash_table_v1 *hash_table_v1_create()
 {
 	struct hash_table_v1 *hash_table = calloc(1, sizeof(struct hash_table_v1));
 	assert(hash_table != NULL);
-	pthread_mutex_init(&(hash_table->mutex), NULL);
+	// Init the mutex, checking for errors
+	if (pthread_mutex_init(&(hash_table->mutex), NULL))
+		exit(errno);
 	for (size_t i = 0; i < HASH_TABLE_CAPACITY; ++i) {
 		struct hash_table_entry *entry = &hash_table->entries[i];
 		SLIST_INIT(&entry->list_head);
@@ -50,9 +53,7 @@ static struct list_entry *get_list_entry(struct hash_table_v1 *hash_table,
                                          struct list_head *list_head)
 {
 	assert(key != NULL);
-
 	struct list_entry *entry = NULL;
-	
 	SLIST_FOREACH(entry, list_head, pointers) {
 	  if (strcmp(entry->key, key) == 0) {
 	    return entry;
@@ -116,6 +117,8 @@ void hash_table_v1_destroy(struct hash_table_v1 *hash_table)
 			free(list_entry);
 		}
 	}
-	pthread_mutex_destroy(&(hash_table->mutex));
+	// Clean up the mutex, accounting for errors
+	if (pthread_mutex_destroy(&(hash_table->mutex)))
+		exit(errno);
 	free(hash_table);
 }
