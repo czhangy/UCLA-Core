@@ -30,7 +30,7 @@ Hash table v2: 868,164 usec
   - 0 missing
 ```
 
-Where time is measured in microseconds, and `Generation` is the time it takes to generate the hash table, `Hash table base` is the time taken to run the base hash table, `Hash table v1` is the time taken to run hash table v1, and `Hash table v2` is the time taken to run hash table v2. Below each value is the number of values missing during runtime, which should be 0 if the program is free of data races. `Hash table v2` should take noticeably less time than both `Hash table base` and `Hash table v1`. Exact times will change between tests.
+Where time is measured in microseconds, and `Generation` is the time it takes to generate the hash table, `Hash table base` is the time taken to run the base hash table, `Hash table v1` is the time taken to run hash table v1, and `Hash table v2` is the time taken to run hash table v2. Below each value is the number of values missing during runtime, which should be 0 if the program is free of data races. `Hash table v1` should take longer than `Hash table base`, while `Hash table v2` should take noticeably less time than both `Hash table base` and `Hash table v1`. Exact times will change between tests.
 
 ## First Implementation
 
@@ -45,7 +45,7 @@ The following 2 calls were executed:
 ./hash-table-tester -t 4 -s 100000
 ```
 
-Despite the difference in thread usage, both tests executed in approximately the same time. This time (around 2.5s) was slower than the base implementation. This is because all the work of adding new hash table entries is still being done sequentially, since the entire `hash_table_v1_add_entry` function is protected by a mutex. This results in the multithreading implementation having next to no real improvements over the base implementation. Since locking mutexes also has overhead, the multithreading is actually harmful to the performance of the program. Since only one thread was able to enter that function at a given time, increasing or decreasing the number of threads didn't have any impact either.
+Despite the difference in thread usage, both tests executed in approximately the same time. This time (around 2.5s) was slower than the base implementation (around 2s). This is because all the work of adding new hash table entries is still being done sequentially, since the entire `hash_table_v1_add_entry` function is protected by a mutex. This results in the multithreading implementation having next to no real improvements over the base implementation. Since locking mutexes also has overhead, the multithreading is actually harmful to the performance of the program. Since only one thread was able to enter that function at a given time, increasing or decreasing the number of threads didn't have any impact either.
 
 ## Second Implementation
 
