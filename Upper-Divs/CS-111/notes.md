@@ -3075,6 +3075,137 @@
 
 
 
-## Lecture 15:
+## Lecture 15: Sockets
+
+- Sockets are another form of IPC
+
+  - We've seen pipes, shared memory, and signals
+  - These forms of IPC assume that the processes are on the same physical machine
+  - Sockets enable IPC between physical machines, typically over the network
+
+- Servers follow four steps to use sockets
+
+  - These are all system calls, and have the usual C wrappers:
+    - `socket` - create the socket
+    - `bind` - attach the socket to some location (a file, IP:port, etc.)
+    - `listen` - indicate you're accepting connections, and set the queue limit
+    - `accept` - return the next incoming connection for you to handle
+
+- Clients follow two steps to use sockets
+
+  - Clients have a much easier time, they use one socket per connection
+    - `socket` - create the socket
+    - `connect` - connect to some location, the socket can now send/receive data
+
+- The `socket` system call sets the protocol and type of socket
+
+  - ```c
+    int socket(int domain, int type, int protocol);
+    ```
+
+  - `domain` is the general protocol, further specified with `protocol` (mostly unused)
+
+    - `AF_UNIX` is for local communication (on the same physical machine)
+    - `AF_INET` is for IPv4 protocol using your network interface
+    - `AF_INET6` is for IPv6 protocol using your network interface
+
+  - `type` is (usually) one of two options: stream or datagram sockets
+
+- Stream sockets use TCP
+
+  - All data sent by a client appears in the same order on the server
+  - Forms a persistent connection between client and server
+  - Reliable, but may be slow
+
+- Datagram sockets use UDP
+
+  - Sends messages between the client and server
+  - No persistent connection between client and server
+  - Fast, but messages may be reordered or dropped
+
+- The `bind` system call sets a socket to an address
+
+  - ```c
+    int bind(int socket, const struct sockaddr *address,
+             socklen_t address_len);
+    ```
+
+  - `socket` is the file descriptor returned from the `socket` system call
+
+  - There's different `sockaddr` structures for different protocols
+
+    - `struct sockaddr_un` for local communication (just a path)
+    - `struct sockadd_in` for IPv4, a IPv4 address (e.g. `8.8.8.8`)
+    - `struct sockaddr_in6` for IPv6, a IPv6 address (e.g. `2001:4860:4860::8888`)
+
+- The `listen` system call blocks until there's a connection
+
+  - ```c
+    int accept(int socket, struct sockaddr *restrict address,
+               socklen_t *restrict address_len);
+    ```
+
+  - `socket` is still the file descriptor returned from the `socket` system call
+
+  - `address` and `address_len` are locations to write the connecting address
+
+    - Acts as an optional return value, set both to `NULL` to ignore
+
+- The `connect` system call allows a client to connect to an address
+
+  - ```c
+    int connect(int sockfd, const struct sockaddr *addr,
+                socklen_t addrlen);
+    ```
+
+  - `sockfd` is the file descriptor returned by the `socket` system call
+
+    - The client would need to be using the same protocol and type as the server
+
+  - `addr` and `addrlen` is the address to connect to, exactly like `bind`
+
+  - If this call succeeds, then `sockfd` may be used as a normal file descriptor
+
+- Our example server sends `"Hello there!"` to every client and disconnects
+
+  - Please see `examples/lecture-20` in your `cs111` repository
+    - Relevant source files: `client.c` and `server.c`
+  - We use a local socket just for demonstration, but you could use IPv4 or IPv6
+    - We use `example.sock` in the current directory as out socket address
+  - Our server uses signals to clean up and terminate from our infinite `accept` loop
+
+- Instead of `read`/`write`, there's also `send`/`recv` system calls
+
+  - These system calls are basically the same thing, except they have `flag`s
+  - Some examples are:
+    - `MSG_OOB` - send/receive out-of-band data
+    - `MSG_PEEK` - look at data without reading
+    - `MSG_DONTROUTE` - send data without routing packets
+  - Except for maybe `MSG_PEEK`, you don't need to know these
+  - `sento`/`recvfrom` take an additional address
+    - The kernel ignores the address for stream sockets (there's a connection)
+
+- Sockets form a basis for distributed systems
+
+  - You can use a remote procedure call (RPC) to run a function on another machine
+    - Corresponds to sending a request, and receiving a reply
+  - RPC can be done asynchronously, your process sends a request and doesn't block
+    - You can continue working in other threads to keep the process running
+  - You can also have distributed file systems, the data can reside on another server
+    - NFS is a protocol designed to appear as a file system, but uses a network
+
+- Sockets are IPC across physical machines
+
+  - We can now create servers and clients, but there's much more to learn
+    - There's networking and distributed systems courses
+  - However, today we learned the basics:
+    - Sockets require an address (e.g. local and IPv4/IPv6)
+    - There are two types of sockets: stream and datagram
+    - Servers need to bind to an address, listen, and accept connections
+    - Clients need to connect to an address
+
+
+
+# Lecture 16:
 
 - 
