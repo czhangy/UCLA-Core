@@ -782,7 +782,16 @@
     - Which rule to apply (backwards)
     - The possible reducing strings in a step can overlap
   - Leftmost reduction:
-    - Each reducing string is replaced only after all other reducing strings entirely to the left in that reduction have been replaced
+    - Each reducing string is replaced only after all other reducing strings *entirely* to the left in that reduction have been replaced
+- Not all infinities are equal
+  - Any set which can be put in a 1:1 correspondence with the integers is called "countably infinite"
+  - No set can be put in a 1:1 correspondence with its own power set
+
+
+
+## Lecture 18:
+
+- 
 
 
 
