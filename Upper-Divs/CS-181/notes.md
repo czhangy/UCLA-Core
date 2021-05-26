@@ -766,6 +766,26 @@
 
 
 
+## Lecture 17: CFG Reductions
+
+- Reductions in CFGs: given `Σ`, CFG `G`
+  - Let the language represented by `G` be `L = L(G)`
+  - If there exists `xhy` and `xTy` and `G` contains a rule `T -> h`, then we say "`xhy` reduces to `xTy`" or we write "`xhy >-> xTy`" in one step
+  - For any two sentential forms `α` and `β`:
+    - `α >-> β` (one reduction step)
+    - `α >->* β` (zero or more reduction steps)
+    - The string replaced is called the "reducing string"
+- Reductions are "harder"
+  - Recall in derivations, we have two choices: which variable to replace and which rule to apply
+  - In reductions:
+    - Which string `h` to replace with a variable
+    - Which rule to apply (backwards)
+    - The possible reducing strings in a step can overlap
+  - Leftmost reduction:
+    - Each reducing string is replaced only after all other reducing strings entirely to the left in that reduction have been replaced
+
+
+
 ## Reading 1: Discrete Concepts
 
 - Mathematical Notions and Terminology
