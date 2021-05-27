@@ -3206,6 +3206,172 @@
 
 
 
-# Lecture 16:
+## Lecture 16: Virtual Machines
 
-- 
+- Virtual machines abstract an entire machine
+  - Goal: run multiple OSes on a single machine
+    - Each OS believes they're the only one running
+  - We used it for our labs to make sure we all had the same environment
+    - It was a full Linux install with all the software you needed
+- The host has direct control over the hardware
+  - The hypervisor or virtual machine manager (VMM) controls virtual machines
+    - Creation, management, isolation (which hardware is it able to access)
+  - There are two kinds of hypervisors: type 1 and type 2
+    - Type 1: bare metal hypervisor, it runs directly on the host's hardware
+      - Requires special hardware support
+    - Type 2: hosted hypervisor, it simulates a hypervisor and runs as an application
+      - Slower, but does not require any special hardware
+  - A guest sees its own virtual copy of the host
+- Virtual machines are not emulation
+  - Emulation is typically used to translate one ISA to another
+    - e.g. x86-64 to ARM/RISC-V
+  - Our guest OS executes instructions directly using the same ISA
+    - Otherwise, translating instructions is typically slow
+  - It's ok for some uses, such as an NES emulator
+  - A VM could use emulation to run a VM for a different ISA
+    - Performance would suffer greatly
+- VMs enable pause and play
+  - Much like our kernel can pause a process, a hypervisor can pause an OS
+  - The hypervisor needs to context switch between VMs
+    - It'll save the current state and restore it later
+  - We could also move it around, exactly like a process
+- VMs provide protection through isolation
+  - The guests are isolated from each other and the host
+  - The hypervisor and set limits on: CPU time, memory, network bandwidth, etc.
+    - A compromised guest only has access to its own virtualized hardware
+  - You can easily roll back the infected VM, or remove it
+- VMs also help consolidation
+  - In data centers, there's many servers running, often not making use of all resources
+    - Servers with different purposes could be sharing the same hardware
+  - Instead of having lightly used physical systems, make them VMs
+    - Run as many on a single machine as possible
+- A Virtual CPU (VCPU) is the key abstraction
+  - For processes, part of the process control block (PCB) acted as a virtual CPU
+    - It doesn't virtualize all parts of the CPU, just enough for user-mode processes
+  - The VCPU is a data structure that stores the state of the CPU
+    - The hypervisor saves this when the guest isn't running
+  - When the VM resumes, like the PCB, it loads the data and resumes
+- The guest still uses user and kernel modes
+  - There are no changes to the guest OSes
+    - A Linux kernel still uses privileged instructions
+  - Recall on x86-64, user mode is ring 3, kernel mode is ring 0
+    - A hardware hypervisor (type 1) is ring -1, letting it control the guest
+  - For type 2 hypervisors, the host has to create a virtual kernel and user mode
+- One strategy is to trap-and-emulate
+  - For type 2 hypervisors, the guest runs on the host in user mode
+    - Any privileged instructions generate a trap (wrong mode)
+  - The hypervisor should explicitly handle this error
+    - Emulate (or simulate) the operation for the guest and resume it
+  - This will slow down the otherwise native execution
+- Trap-and-emulate doesn't always work
+  - Some CPUs are not clear between privileged and non-privileged instructions
+    - This includes x86-64, VMs didn't exist in the 1970s
+  - One example is the `popf` instruction, it loads the flags register from the stack
+    - It behaves differently for both kernel and user mode
+  - It doesn't generate a trap, so you can't trap-and-emulate
+    - These special instructions need another approach
+- Special instructions need binary translation
+  - If the guest VCPU is in user mode, we can run instructions natively
+    - In kernel mode, the hypervisor inspects every instruction before execution
+  - Special instructions need to be translated to instructions with the same effect
+    - Regular instructions can run natively
+  - The kernel uses a CPU instruction to switch from user to kernel mode
+    - The hypervisor can handle that using normal trap-and-emulate
+  - Overall performance for type 2 hypervisors suffer, but they're adequate
+
+- One more hardware rescue
+  - In 2005, Intel introduced virtualization as VT-x and in 2006, AMD did as AMD-V
+    - Intel's codename Vanderpool, published as Virtual Machine Extensions (VMX)
+    - AMD's codename Pacifica, published as Secure Virtual Machine (SVM)
+  - This added the concept of ring -1, or hypervisor mode
+  - The host kernel claims the hypervisor, and is the only one able to access it
+    - It can set the isolation for the guests and what hardware to virtualize
+- Virtualized scheduling
+  - if there is only one CPU on the physical machine, the guest will not know
+    - The host could still present multiple VCPUs to the guest
+  - We now need to map the VCPUs to physical CPUs, or schedule them like processes
+    - Like a normal kernel, there will also be hypervisor threads
+- One approach is CPU assignment
+  - If there are more physical cores on the host than all VCPUs, we can map 1:1
+    - The host can continue using the spare physical cores
+  - If we have to share, things get more complicated (called overcommitting)
+    - At equal numbers, we can still map 1:1, the hypervisor threads don't run often
+  - We have to use a scheduling algorithm, like we used for processes
+- CPU overcommitment causes additional problems
+  - The guest OS runs too unpredictably for soft real-time tasks
+    - It may be context switched out when the user process says not to
+  - For example, consider a real-time round robin time slice of 10ms
+    - The guest will not have a consistent slice of 10ms, it may be much higher
+  - This may make processes miss deadlines they wouldn't have running on the host
+    - In this case, virtualization has different observable behavior
+- Virtualized memory management gets a lot more complex
+  - Recall: VM allows each process to think it has the entire address space
+  - Now the guest kernel thinks it's managing the entire physical address space
+    - We have to virtualize that too
+  - The problem gets even worse if memory is overcommitted as well
+- Nested page tables enable VM for guest kernels
+  - The guest thinks it controls physical memory, and does page table management
+  - The hypervisor maintains a nested page table that retranslates for the guest
+    - It translates the guest's page table to the real physical page table
+  - For overcommitted memory, the hypervisor can provide double-paging
+    - The hypervisor does its own page replacement algorithm
+      - However, the guest may know its memory access patterns better
+- Guests could share pages if they're duplicates
+  - Similar to copy-on-write pages, we can get memory saves by sharing pages
+    - This time, instead of sharing between processes, share between guests
+  - The hypervisor can do duplicate detection by hashing the contents of pages
+    - If two hashes are the same, check they're the same byte-for-byte
+  - If they're the same, we can share them until one of the guests try to write
+    - Then we again do copy-on-write as before
+- The hypervisor provides virtualized I/O devices
+  - The hypervisor can multiplex one device to multiple VMs
+    - The hypervisor could also emulate devices that don't physically exist
+  - The hypervisor could also map one physical device to a virtual device on VM
+    - The VM has exclusive access to the device, but hypervisor still translates
+  - There is a hardware solution to remove the hypervisor during runtime - IOMMU
+    - The hypervisor maps the devices VM exclusively to the guest
+      - The VM now actually has exclusive control over the device
+        - This allows complex GPUs to work at native speeds in VMs
+- VMs boot from a virtualized disk
+  - You create a disk image that has all the contents of a physical disk
+    - It contains partitions and each partition has a filesystem
+  - Usually, it's one big file (but some formats allow you to split it up)
+    - The guest kernel sees it has a normal disk, that it has full control of
+  - The disk image is all you need for the VM, makes it easy to move
+    - The `ova` file you downloaded is basically a disk image and guest settings
+- VMs enable live migration
+  - You can migrate a VM from one physical machine to another
+  - Users using the guest can't tell that the guest moved physical machines
+    - Usually, it's a long process: you have to tell the users
+  - This is how cloud providers try to balance the load
+    - They move VMs off of overloaded machines
+- Live migration in eight easy steps
+  - The source hypervisor connects to the destination hypervisor
+  - The destination creates a configuration for a new guest
+  - The source sends all read-only memory pages to the destination
+  - The source sends all read-write pages (marking them as clean)
+  - Any pages that were modified during the previous step (if any) are sent and marked as clean
+  - If there were few pages that were dirty in the previous two steps, the source freezes the guest, sends the final state and any final dirty pages
+  - The destination acknowledges receipt and begins execution of the guest
+  - The source terminates the guest
+- VMs could be used to isolate an application
+  - Assume your application uses a dynamic library (back to lecture 3)
+    - An ABI change would cause your application to no longer work
+      - Even more subtle, the library's behavior could change
+  - You may want to freeze your dependencies to deploy it in production
+    - Create a VM for it with all the libraries it needs
+- Containers, like Docker, aim to be faster
+  - The hypervisor sets limits on: CPU time, memory, network bandwidth, etc.
+    - What if the kernel supported this directly, without virtualization?
+  - Linux control groups (`cgroups`) support hypervisor-like limits for processes
+    - Isolate a process to a namespace
+  - You can set other resources a namespace can access (mount points, IPC, etc.)
+  - Containers are lighter-weight than full VMs, they use a normal kernel
+- VMs virtualize a physical machine
+  - They allow multiple OSes to share the same hardware
+    - VMs provide isolation, the hypervisor allocates resources
+    - Type 2 hypervisors are slower due to trap-and-emulate and binary translation
+    - Type 1 hypervisors are supported by hardware, IOMMU speeds up devices
+    - Hypervisors may overcommit resources and need to physically move VM
+    - Containers aim to have the benefits of VMs, without the overhead
+
