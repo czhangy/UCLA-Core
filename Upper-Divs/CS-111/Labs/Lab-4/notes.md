@@ -79,7 +79,7 @@
   - [x] Explain how to unmount the filesystem and clean up the filesystem
 
 - Submission
-  - [ ] Use `git push` to push the final submission to the repository
+  - [x] Use `git push` to push the final submission to the repository
 
 
 
