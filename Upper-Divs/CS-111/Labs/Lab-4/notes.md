@@ -67,7 +67,7 @@
   - [x] Fill in the fields in `write_block_group_descriptor_table`
   - [x] Write `write_block_bitmap`
   - [x] Write `write_inode_bitmap`
-  - [x] Fill in the fields in `write_inode_table`
+  - [x] Write `write_inode_table`
   - [x] Write `write_root_dir_block`
   - [x] Write `write_hello_world_file_block`
   - [x] Perform error checking using `dumpe2fs cs111-base.img` and `fsck.ext2 cs111-base.img`
