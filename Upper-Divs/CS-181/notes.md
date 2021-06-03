@@ -789,12 +789,6 @@
 
 
 
-## Lecture 18:
-
-- 
-
-
-
 ## Reading 1: Discrete Concepts
 
 - Mathematical Notions and Terminology
@@ -2166,10 +2160,4 @@
     - **Deciders** are machine that always make a decision to accept or reject
       - A decider that recognizes some language is also said to **decide** that language
       - We call a language **Turing-decidable** if some Turing machine decides it
-
-
-
-## Reading 10:
-
-- 
 
