@@ -3375,3 +3375,136 @@
     - Hypervisors may overcommit resources and need to physically move VM
     - Containers aim to have the benefits of VMs, without the overhead
 
+
+
+## Lecture 17: Course Recap
+
+- There are 4 major concepts in this course
+  - You'll learn how the following applies to OSes
+    - Virtualization
+    - Concurrency
+    - Persistence
+    - Security (out of scope, somewhat touched on in VMs)
+- Kernel interfaces operate between CPU mode boundaries
+  - The lessons from the lecture:
+    - Code running in kernel mode is part of your kernel
+    - Different kernel architectures shift how much code runs in kernel mode
+    - System calls are the interface between user and kernel mode
+    - Everything involved to define a simple `"Hello world"` (in 178 bytes)
+      - Difference between API and ABI
+      - How to explore system calls
+- Operating systems provide the foundation for libraries
+  - We learned:
+    - Dynamic libraries and a comparison to static libraries
+      - How to manipulate a dynamic loader
+    - Example of issues from ABI changes without API changes
+    - Standard file descriptor conventions for UNIX
+- The OS creates and runs processes
+  - The OS has to:
+    - Load a program and create a process with context
+    - Maintain process control blocks, including state
+    - Switch between running processes using a context switch
+    - UNIX kernels start and `init` process
+    - UNIX processes have to maintain a parent and child relationship
+- We used system calls to create processes
+  - You should be comfortable with:
+    - `execve`
+    - `fork`
+    - `wait`
+  - This includes understanding processes and their relationships
+- We explored basic IPC in an OS
+  - Some basic IPC includes:
+    - `read` and `write` through file descriptors (could be a regular file)
+    - Redirecting file descriptors for communication
+    - Pipes (which you'll explore)
+    - Signals
+    - Shared Memory
+- Scheduling involves some trade-offs
+  - We looked at a few different algorithms
+    - First Come First Served (FCFS) is the most basic scheduling algorithm
+    - Shortest Job First (SJF) is a tweak that reduces waiting time
+    - Shortest Remaining Time First (SRTF) uses SJF ideas with preemptions
+    - SRTF optimizes lowest waiting time (or turnaround time)
+    - Round-robin (RR) optimizes fairness and response time
+- Scheduling gets even more complex
+  - There are more solutions and more issues:
+    - Introducing priority also introduces priority inversion
+    - Some processes need good interactivity, others not so much
+    - Multiprocessors may require per-CPU queues
+    - Real-time requires predictability
+    - Completely Fair Scheduler (CFS) tries to model the ideal fairness
+- Page tables translate virtual to physical addresses
+  - The MMU is the hardware that uses page tables, which may:
+    - Be a single large table (wasteful, even for 32-bit machines)
+    - Be a multi-level to save space for sparse allocations
+    - Use the kernel to allocate pages from a free list
+    - Use a TLB to speed up memory accesses
+- Page replacement algorithms aim to reduce page faults
+  - We saw the following:
+    - Optimal (good for comparison, but not realistic)
+    - Random (actually works surprisingly well, avoids the worst case)
+    - FIFO (easy to implement, but Belady's anomaly)
+    - LRU (gets close to optimal but expensive to implement)
+    - Clock (a decent approximation of LRU)
+- Both processes and (kernel) threads enable parallelization
+  - We explored threads and related them to something we already know (processes)
+    - Threads are lighter weight, and share memory by default
+    - Each process can have multiple (kernel) threads
+    - Most implementations use one-to-one user-to-kernel thread mapping
+    - The OS has to manage what happens during a fork, or signals
+    - We now have synchronization issues
+- We want critical sections to protect against data races
+  - We should know what data races are, and how to prevent them:
+    - Mutex or spinlocks are the most straightforward locks
+    - We need hardware support to implement locks
+    - We need some kernel support for wake up notifications
+    - If we know we have a lot of readers, we should use a read-write lock
+- We explored more advanced locking
+  - Before we did mutual exclusion, now we can ensure order
+    - Semaphores are an atomic value that can be used for signaling
+    - Condition variables are clearer for complex condition signaling
+    - Locking granularity matters, you found out in Lab 3
+    - You must prevent deadlocks
+- The kernel has to implement it's own memory allocations
+  - The concepts are the same for user space memory allocation (the kernel just gives them more contiguous virtual memory pages):
+    - There's static and dynamic allocations
+    - For dynamic allocations, fragmentation is a big concern
+    - Dynamic allocation returns blocks of memory
+      - Fragmentation between blocks is external
+      - Fragmentation within a block is internal
+    - There's three general allocation strategies for different sized allocations
+      - Best fit
+      - Worst fit
+      - First fit
+    - Buddy allocator is a real world restricted implementation
+    - Slab allocator takes advantage of fixed size objects to reduce fragmentation
+- Disks enable persistence
+  - We explored two kinds of disks: SSDs and HDDs
+    - Magnetic disks have poor random access (need to be scheduled)
+    - Shortest Positioning Time First (SPTF) is the best scheduling for throughput
+    - SSDs are more like RAM, except accessed in pages and blocks
+    - SSDs also need to work with the OS for best performance (TRIM)
+    - Use RAID to tolerate failures and improve performance using multiple disks
+- Filesystem enable persistence
+  - They describe how files are stored on disks
+    - API-wise you can open files, and change the position to read/write at
+    - Each process has a local open file and there's a global open file table
+    - There's multiple allocation strategies: contiguous, linked, FAT, indexed
+    - Linux uses a hybrid inode approach
+    - Everything is file on UNIX, names in a directory can be hard or soft links
+- Sockets are IPC across physical machines
+  - We can now create servers and clients, but there's much more to learn
+    - There's networking and distributed systems courses
+  - However, we learned the basics:
+    - Sockets require an address (e.g. local and IPv4/IPv6)
+    - There are two types of sockets: stream and datagram
+    - Servers need to bind to an address, listen, and accept connections
+    - Clients need to connect to an address
+- Virtual machines virtualize a physical machine
+  - They allow multiple OSes to share the same hardware
+    - Virtual machines provide isolation, the hypervisor allocates resources
+    - Type 2 hypervisors are slower due to trap-and-emulate and binary translation
+    - Type 1 hypervisors are supported by hardware, IOMMU speeds up devices
+    - Hypervisors may overcommit resources and need to physically move VM
+    - Containers aim to have the benefits of VM, without the overhead
+
