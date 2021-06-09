@@ -2,7 +2,7 @@
 
 # Campbell - Spring '21
 
-## Overall: IP | Raw Percentage: IP
+## Overall: IP | Raw Percentage: 98.3
 
 ## Grading
 
@@ -22,5 +22,5 @@
 |  6   |  27/25  |
 |  7   |  18/18  |
 |  8   |  12/12  |
-|  9   |   ???   |
+|  9   |   8/8   |
 
