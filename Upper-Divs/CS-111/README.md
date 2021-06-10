@@ -25,7 +25,7 @@
 | 1. Pipe Up                 | 100/100 |
 | 2. You Spin Me Round Robin | 100/100 |
 | 3. Hash Hash Hash          |   ???   |
-| 4. Hey! I'm Filing Here    |   ???   |
+| 4. Hey! I'm Filing Here    | 100/100 |
 
 ## Exams
 
