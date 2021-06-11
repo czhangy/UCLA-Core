@@ -29,7 +29,7 @@
 
 ## Exams
 
-|  Exam   |  Score   |
-| :-----: | :------: |
-| Midterm | 98.4/100 |
-|  Final  |   ???    |
+|  Exam   |   Score   |
+| :-----: | :-------: |
+| Midterm | 98.4/100  |
+|  Final  | 131.5/150 |
