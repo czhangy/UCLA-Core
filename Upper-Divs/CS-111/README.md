@@ -2,7 +2,7 @@
 
 # Eyolfson - Spring '21
 
-## Overall: IP | Raw Percentage: IP
+## Overall: A+ | Raw Percentage: 95.9%
 
 ## Grading
 
@@ -24,7 +24,7 @@
 | 0. A Kernel Seedling       | 100/100 |
 | 1. Pipe Up                 | 100/100 |
 | 2. You Spin Me Round Robin | 100/100 |
-| 3. Hash Hash Hash          |   ???   |
+| 3. Hash Hash Hash          | 100/100 |
 | 4. Hey! I'm Filing Here    | 100/100 |
 
 ## Exams
