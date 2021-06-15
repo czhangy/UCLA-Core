@@ -20,4 +20,4 @@
 | COM SCI M151B | ??? | ??? |
 | COM SCI M152A | ??? | ??? |
 | COM SCI 180 | Fall '20 | A |
-| COM SCI 181 | Spring '21 | IP |
+| COM SCI 181 | Spring '21 | A |
