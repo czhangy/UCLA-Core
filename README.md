@@ -13,7 +13,7 @@
 ## Upper Division Courses
 | Course | Term | Grade |
 |:---:|:---:|:---:|
-| COM SCI 111 | Spring '21 | IP |
+| COM SCI 111 | Spring '21 | A+ |
 | COM SCI 118 | ??? | ??? |
 | COM SCI 130 | ??? | ??? |
 | COM SCI 131 | Winter '21 | A |
