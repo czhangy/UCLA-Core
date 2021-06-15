@@ -9,4 +9,4 @@
 | COM SCI M151B - Computer Systems Architecture                |    ???     |     ???     |  ???  |
 | COM SCI M152A - Introductory Digital Design Laboratory       |    ???     |     ???     |  ???  |
 | COM SCI 180 - Introduction to Algorithms and Complexity      |  Fall '20  | Sarrafzadeh |   A   |
-| COM SCI 181 - Introduction to Formal Languages and Automata Theory | Spring '21 |  Campbell   |  IP   |
+| COM SCI 181 - Introduction to Formal Languages and Automata Theory | Spring '21 |  Campbell   |   A   |
