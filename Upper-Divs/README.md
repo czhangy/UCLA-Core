@@ -2,7 +2,7 @@
 
 | Course                                                       |    Term    |  Professor  | Grade |
 | :----------------------------------------------------------- | :--------: | :---------: | :---: |
-| COM SCI 111 - Operating Systems Principles                   | Spring '21 |  Eyolfson   |  IP   |
+| COM SCI 111 - Operating Systems Principles                   | Spring '21 |  Eyolfson   |  A+   |
 | COM SCI 118 - Computer Network Fundamentals                  |    ???     |     ???     |  ???  |
 | COM SCI 130 - Software Engineering                           |    ???     |     ???     |  ???  |
 | COM SCI 131 - Programming Languages                          | Winter '21 |   Eggert    |   A   |
