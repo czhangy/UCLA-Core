@@ -2,17 +2,21 @@
 
 [TOC]
 
-## Lecture 1: FGPAs
+## Lecture 1: FGPA and Verilog Basics
 
 - An FGPA is an integrated circuit designed to be configured by the consumer after manufacturing
+
 - Field-Programmable Gate Arrays
+
   - Logic blocks
     - To implement combinational and sequential logic
   - Interconnect
     - Wires to connect inputs and outputs to logic blocks
   - I/O blocks
     - Special logic blocks at periphery of device for external connections
+
 - FGPA Design Fundamentals
+
   - Step 1 - Design
     - Know what it is that you want to implement
     - Module-level diagrams and interactions between modules
@@ -50,7 +54,9 @@
       - It contains everything there is about how to configure the cells and connecting them
     - Done by program BITGEN on ISE
     - Now, you have a "compiled" FPGA design
+
 - Tools of Trade
+
   - Text editor of choice
   - Simulator
     - ISE Webpack provides ISIM
@@ -60,25 +66,120 @@
     - Alternatively, use Synplify Pro (evaluation version)
   - Map, Place-and-Route
     - ISE Webpack
+
 - Verilog
-  - Historically, Verilog
+
+  - Overview
+
+    - Resemblance to C: case sensitive, same style comments, operators, etc.
+    - Two standards: Verilog-1995, Verilog-2001, both supported by ISE
+    - Easy to write, and easy to make mistakes
+
+  - Behavioral vs. Synthesizable code
+
+    - Historically Verilog has always served two functions:
+      - Describe your digital logic design in a high-level way instead of using schematics (synthesizable code)
+      - Model elements that interact with your design (behavioral models/testbenches)
+    - You should **always** have a clear conscience of whether you are writing behavioral or synthesizable code
+    - Better yet, know what your synthesizable code translates to in **physical hardware**
+
   - Two types of variables:
+
     - Wire: hot store (combinational logic)
+      - Models basic wire that holds transient values
+      - Only wires can be used on the LHS of continuous assign statement
+      - Input/output port signals default to wire
     - Register: store previous values (sequential logic)
+      - Anything that stores a value
+      - Can appear in both combinational and sequential circuits
+      - Only regs can be used on the LHS of non-continuous assign statement
+
   - Bitwise operations:
+
     - `~a` - complement
     - `a & b` - and
     - `a | b` - or
     - `a ^ b` - exclusive or
     - `a ~^ b` - exclusive not
+
   - Logical operations:
+
     - `a && b` - and
     - `a || b` - or
+
   - Blocking vs. Non-blocking
+
     - `a <= 4` - "parallel" during runtime (non-blocking)
       - Still determinant behavior
       - Helps to think about what the values are before and after a given time
+      - Assignments deferred until all right hand sides has been evaluated, closer to actual hardware register behavior
       - Good for sequential logic
     - `a = 4` - "sequential" during runtime (blocking)
+      - Assignment immediate, happens first
       - Good for combinational logic
+
+  - ```verilog
+    module top(a, b, ci, s, co);
+    	input a, b, ci;
+      output s, co;
+    	reg g, p, co;
+    	assign s = a ^ b ^ ci;
+    	always @* begin
+    		g = a & b;
+    		p = a | b;
+        co = g | (p & ci);
+    	end
+    endmodule
+    ```
+
+  - Assignment
+
+    - ```verilog
+      wire a;
+      reg b;
+      ```
+
+      - Can only store `0`s or `1`s
+
+    - ```verilog
+      reg[4:0] reg = 16;
+      reg[4:0] reg = 'b10000;
+      reg[4:0] reg = 'h10;
+      ```
+
+      - Must use a radix to store other values
+
+  - Module Instantiation
+
+    - ```verilog
+      module half_adder(a, b, x, y);
+      	input a, b;
+      	output x, y;
+      	assign x = a & b;
+      	assign y = a ^ b;
+      endmodule
+      
+      module full_adder(a, b, ci, s, co);
+        input a, b, ci;
+        output s, co;
+        wire g, p, pc;
+        half_adder h1(.a(a), .b(b), .x(g), .y(p));
+        half_adder h2(.a(p), .b(ci), .x(pc), .y(s));
+        assign co = pc | g;
+      endmodule
+      ```
+
+  - Clock
+
+    - ```verilog
+      always #10
+        clk = ~clk
+      end
+      ```
+
+
+
+## Lecture 2
+
+- 
 
