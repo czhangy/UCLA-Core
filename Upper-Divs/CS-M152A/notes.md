@@ -2,7 +2,83 @@
 
 [TOC]
 
-## Lecture 1:
+## Lecture 1: FGPAs
 
-- 
+- An FGPA is an integrated circuit designed to be configured by the consumer after manufacturing
+- Field-Programmable Gate Arrays
+  - Logic blocks
+    - To implement combinational and sequential logic
+  - Interconnect
+    - Wires to connect inputs and outputs to logic blocks
+  - I/O blocks
+    - Special logic blocks at periphery of device for external connections
+- FGPA Design Fundamentals
+  - Step 1 - Design
+    - Know what it is that you want to implement
+    - Module-level diagrams and interactions between modules
+    - Understand how your FGPA will interact with the physical world
+    - Plan **everything** before writing a single line of code
+  - Step 2 - Implementation
+    - Translate your plan to source code
+    - Express each module in HDL source code
+    - Connect the modules in hierarchal order like building LEGO blocks
+      - Should end up with a single top-level file
+    - Use any text editor
+  - Step 3 - Simulation
+    - Simulation is the single most important debugging tool you will ever use in FGPA design
+    - You will have access to real-time debugging tools (chipScope), but it's easier to find/fix bugs in simulation
+  - Step 4 - Logic Synthesis
+    - Once the bugs are out a logic synthesis tool analyzes the design and generates a netlist with common cells available to the FPGA target
+    - The netlist should be functionally equivalent to the original source code
+    - We will use ISE's XST to synthesize the project
+  - Step 5 - Technology Mapping
+    - The synthesized netlist is mapped to the device-specific libraries
+    - The result is another netlist that's closer to the final target device
+    - On ISE, this is performed by NGDBUILD
+  - Step 6 - Cell Placement
+    - The cells instantiated by final netlist are placed in the FGPA layout, i.e. each cell is assigned a location on the physical device
+    - Can be a time-consuming process depending on the size of the design and complexity of timing and physical constraints
+    - On ISE, this process is done by the program MAP
+  - Step 7 - Route
+    - Often referred to as "Place-and-Route" in combination with cell placement
+    - In this process, the placement tool determines how to connect ("route") the cells in the device to match the netlist
+    - Can be a time-consuming process depending on the size of the design and complexity of timing and physical constraints
+    - Done by program PAR on ISE
+  - Step 8 - Bitstream Generation
+    - A placed and routed design can be used to produce a programming file to program the FPGA
+    - The programming file is called a "bitstream"
+      - It contains everything there is about how to configure the cells and connecting them
+    - Done by program BITGEN on ISE
+    - Now, you have a "compiled" FPGA design
+- Tools of Trade
+  - Text editor of choice
+  - Simulator
+    - ISE Webpack provides ISIM
+    - Alternatively, use free Modelsim PE
+  - Synthesis
+    - ISE Webpack provides XST
+    - Alternatively, use Synplify Pro (evaluation version)
+  - Map, Place-and-Route
+    - ISE Webpack
+- Verilog
+  - Historically, Verilog
+  - Two types of variables:
+    - Wire: hot store (combinational logic)
+    - Register: store previous values (sequential logic)
+  - Bitwise operations:
+    - `~a` - complement
+    - `a & b` - and
+    - `a | b` - or
+    - `a ^ b` - exclusive or
+    - `a ~^ b` - exclusive not
+  - Logical operations:
+    - `a && b` - and
+    - `a || b` - or
+  - Blocking vs. Non-blocking
+    - `a <= 4` - "parallel" during runtime (non-blocking)
+      - Still determinant behavior
+      - Helps to think about what the values are before and after a given time
+      - Good for sequential logic
+    - `a = 4` - "sequential" during runtime (blocking)
+      - Good for combinational logic
 
