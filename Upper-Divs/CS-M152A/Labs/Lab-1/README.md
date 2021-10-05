@@ -6,21 +6,9 @@
 
 ## Requirements
 
-- 
+- Translate and demo the following commands in the UART console
 
-## Deliverables
-
-- Coding
-  - [ ] Implement the `PUSH` command
-  - [ ] Implement the `ADD` command
-  - [ ] Implement the `MULT` command
-  - [ ] Implement the `SEND` command
-
-- Demo
-
-  - [ ] Demo the UART console of the following commands
-
-    ```
+  - ```
     PUSH R0 0x4
     PUSH R0 0x0
     PUSH R1 0x3
@@ -32,8 +20,14 @@
     SEND R3
     ```
 
-  - [ ] Testbench code
+- Complete workshop 1
 
+- Complete workshop 2
+
+## Deliverables
+
+- Demo
+  - [ ] Translate and demo the UART console of the following commands
   - [ ] Workshop 2
 
 - Submission
