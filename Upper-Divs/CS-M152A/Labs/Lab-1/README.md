@@ -22,15 +22,23 @@
 
 - Complete workshop 1
 
+  - Read, understand, and answer questions about the code's clock divider
+  - Read, understand, and answer questions about the code's button debouncing
+  - Read, understand, and answer questions about the code's register file
+
 - Complete workshop 2
+
+  - Clean up the UART simulation output
+  - Modify the testbench to make use of `seq.code` to load instructions
+  - Design instructions that can print out the Fibonacci series on the UART
 
 ## Deliverables
 
 - Demo
   - [ ] Translate and demo the UART console of the following commands
-  - [ ] Workshop 2
+  - [ ] Complete and demo the contents of Workshop 2
 
 - Submission
-  - [ ] Read the implementation code and finish workshop 1
+  - [ ] Read the implementation code and finish Workshop 1
   - [ ] Include results in the report
 
