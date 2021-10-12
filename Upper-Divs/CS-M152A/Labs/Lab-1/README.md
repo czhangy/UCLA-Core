@@ -6,7 +6,7 @@
 
 ## Requirements
 
-- Translate and demo the following commands in the UART console
+- Translate and demo the following commands in the UART console:
 
   - ```
     PUSH R0 0x4
@@ -35,10 +35,11 @@
 ## Deliverables
 
 - Demo
-  - [ ] Translate and demo the UART console of the following commands
-  - [ ] Complete and demo the contents of Workshop 2
+  - [x] Translate and demo the UART console output of the given commands
+  - [x] Complete and demo the contents of Workshop 2
 
 - Submission
-  - [ ] Read the implementation code and finish Workshop 1
+  - [x] Read the implementation code and finish Workshop 1
   - [ ] Include results in the report
+  - [ ] Submit a paper and electronic copy of the report
 
