@@ -40,6 +40,7 @@
 
 - Submission
   - [x] Read the implementation code and finish Workshop 1
-  - [ ] Include results in the report
-  - [ ] Submit a paper and electronic copy of the report
+  - [ ] Submit a cleaned and zipped ISE project file
+  - [ ] Submit a paper copy of the report
+  - [ ] Submit an electronic copy of the report
 
