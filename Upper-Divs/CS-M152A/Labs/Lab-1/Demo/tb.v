@@ -35,8 +35,9 @@ module tb;
       numLines = instructions[0];
       // Iterate through lines
       for (i = 1; i <= numLines; i = i + 1) begin
-      // Run current line
-      tskRunInst(instructions[i]);
+         // Run current line
+         tskRunInst(instructions[i]);
+      end
       
       // tskRunPUSH(0,4);
       // tskRunPUSH(0,0);
