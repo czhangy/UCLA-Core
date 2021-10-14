@@ -15,41 +15,37 @@ module model_uart(/*AUTOARG*/
    parameter name    = "UART0";
    
    reg [7:0] rxData;
+   reg [31:0] fullUART;
    event     evBit;
    event     evByte;
    event     evTxBit;
    event     evTxByte;
    reg       TX;
-   
-   reg [1:0] counter;
-   reg [23:0] bytes;
 
    initial
      begin
         TX = 1'b1;
-		counter = 2'b0;
      end
    
-   always @ (negedge RX)
-     begin
-		bytes[23:0] <= {bytes[15:0], rxData[7:0]};
-        rxData[7:0] = 8'h0;
-        #(0.5*bittime);
-		
-        repeat (8)
-          begin
-             #bittime ->evBit;
-             //rxData[7:0] = {rxData[6:0],RX};
-             rxData[7:0] = {RX,rxData[7:1]};
-          end
-        ->evByte;
-		if (counter == 3) begin
-			$display ("%d %s Received (%s%s%s%s)", $stime, name, bytes[23:16], bytes[15:8], bytes[7:0], rxData);
-			bytes <= 24'b0;
-		end
-		
-		counter <= counter + 1;
-	 end
+   always @ (negedge RX) begin
+      #(0.5*bittime);
+      repeat (8) begin
+         #bittime ->evBit;
+         rxData[7:0] = {RX,rxData[7:1]};
+      end
+      ->evByte;
+      // At line feed
+      if (rxData == 10) begin
+         // Print hex digits
+         $display ("%d %s Received %02x (%s)", $stime, name, fullUART, fullUART);
+      end else begin
+         // Not at carriage return
+         if (rxData != 13) begin
+            // Shift fullUART
+            fullUART[31:0] = {fullUART[23:0], rxData};
+         end
+      end
+   end
 
    task tskRxData;
       output [7:0] data;
