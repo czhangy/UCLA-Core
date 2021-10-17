@@ -7,10 +7,9 @@ module tb;
    reg       btnS;
    reg       btnR;
    
-   reg [7:0] instruction;
+   reg [7:0] instructions;
    
    integer   i;
-   integer   line;
    integer   numLines;
    
    /*AUTOWIRE*/
@@ -27,20 +26,20 @@ module tb;
       clk = 0;
       btnR = 1;
       btnS = 0;
-		line = 0;
       #1000 btnR = 0;
       #1500000;
       
       // Get file contents
-		$readmemb("seq.code", instructions);
+      $readmemb("seq.code", instructions);
       // Use first line to get # of instructions
-		numLines = instructions[0];
+      numLines = instructions[0];
       // Iterate through lines
       for (i = 1; i <= numLines; i = i + 1) begin
          // Run current line
          tskRunInst(instructions[i]);
+      end
       
-		// tskRunPUSH(0,4);
+      // tskRunPUSH(0,4);
       // tskRunPUSH(0,0);
       // tskRunPUSH(1,3);
       // tskRunMULT(0,1,2);
