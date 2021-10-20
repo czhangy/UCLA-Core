@@ -40,7 +40,10 @@
 
 - Submission
   - [x] Read the implementation code and finish Workshop 1
-  - [ ] Submit a cleaned and zipped ISE project file
-  - [ ] Submit a paper copy of the report
-  - [ ] Submit an electronic copy of the report
+  - [x] Submit a cleaned and zipped ISE project file
+  - [x] Submit an electronic copy of the report
+
+## Relevant Links
+
+- [**UART Protocol**](https://www.analog.com/en/analog-dialogue/articles/uart-a-hardware-communication-protocol.html)
 
