@@ -41,7 +41,7 @@
   - [x] Module that counts leading zeroes and extracts leading bits
   - [x] Module that rounds properly
   - [x] Top module that connects modules together
-  - [ ] Testbench that covers edge cases
+  - [x] Testbench that covers edge cases
 - Demo
   - [ ] Demo the floating point converter using the testbench
 - Submission
