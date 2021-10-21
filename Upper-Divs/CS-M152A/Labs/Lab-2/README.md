@@ -6,7 +6,7 @@
 
 ## Requirements
 
-- Top module
+- Top module (`FPCVT`)
   - Take an input `D[11:0]`, which is a linear encoding in two's complement representation
   - Output `S`, the sign bit, `E[2:0]`, the exponent, and `F[3:0]`, the significand
   - Use compression to convert between the inputted linear encoding and the outputted floating-point representation
@@ -43,7 +43,7 @@
   - [x] Top module that connects modules together
   - [x] Testbench that covers edge cases
 - Demo
-  - [ ] Demo the floating point converter using the testbench
+  - [x] Demo the floating point converter using the testbench
 - Submission
   - [ ] Submit a cleaned and zipped ISE project file
   - [ ] Submit a paper copy of the report
