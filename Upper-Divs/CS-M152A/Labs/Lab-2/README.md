@@ -46,5 +46,4 @@
   - [x] Demo the floating point converter using the testbench
 - Submission
   - [ ] Submit a cleaned and zipped ISE project file
-  - [ ] Submit a paper copy of the report
   - [ ] Submit an electronic copy of the report
