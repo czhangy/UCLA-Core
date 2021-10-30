@@ -52,7 +52,7 @@ module stopwatch(
 	);
 
 	// Initialize counter
-	counter m2 (
+	counter cntr (
 		.clk_1hz(clk_1hz),
 		.clk_2hz(clk_2hz),
 		.ADJ(ADJ),
