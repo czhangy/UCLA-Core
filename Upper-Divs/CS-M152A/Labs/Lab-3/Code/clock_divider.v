@@ -18,23 +18,20 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module clock_divider(clk, rst, clk_2hz, clk_1hz, clk_fst, clk_blnk);
-
-	// Inputs
-	input clk; // 10 ns
-	input rst;
-	
-	// Outputs
-	output reg clk_2hz; // 50,000,000 clk cycles
-	output reg clk_1hz; // 100,000,000 clk cycles
-	output reg clk_fst; // 400,000 clk cycles (250 Hz)
-	output reg clk_blnk; // 75,000,000 clk cycles (1.5 Hz)
+module clock_divider(
+	input clk, // 100MHz
+	input rst,
+	output reg clk_2hz, // 50,000,000 clock cycles
+	output reg clk_1hz, // 100,000,000 clock cycles
+	output reg clk_fst, // 400,000 clock cycles (250 Hz)
+	output reg clk_blnk // 75,000,000 clock cycles (1.5 Hz)
+);
 	
 	// Counters
-	reg [24:0] counter_2hz = 0; // counts to 25,000,000
-	reg [25:0] counter_1hz = 0; // counts to 50,000,000 
-	reg [17:0] counter_fst = 0; // counts to 200,000
-	reg [25:0] counter_blnk = 0; // counts to 37,500,000
+	reg [31:0] counter_2hz = 0; // counts to 25,000,000
+	reg [31:0] counter_1hz = 0; // counts to 50,000,000 
+	reg [31:0] counter_fst = 0; // counts to 200,000
+	reg [31:0] counter_blnk = 0; // counts to 37,500,000
 	
 	always @(posedge clk or posedge rst) begin
 		// Check reset
