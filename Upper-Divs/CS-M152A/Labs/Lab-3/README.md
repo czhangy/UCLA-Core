@@ -31,15 +31,20 @@
     - [x] A `> 1Hz` clock used for blinking the adjustment mode
   - [x] Connect the counter to the seven-segment display
   - [x] Debouncer
-    - [ ] The switches and buttons must be debounced, sampling them at a lower frequency than their noise
+    - [x] The switches and buttons must be debounced, sampling them at a lower frequency than their noise
   - [x] Metastability
     - [x] The signals of the switches and buttons must be held stable when being sampled
     - [x] Accounting for the inputs' asynchronous nature
-  - [ ] UCF
-    - [ ] Create a UCF file for the counter
-    - [ ] Implement `LOC` constraints
-  - [ ] Testbench
-
+  - [x] UCF
+    - [x] Create a UCF file for the counter
+  - [x] Testbench
+    - [x] Test normal mode
+    - [x] Test minute adjustment mode
+    - [x] Test second adjustment mode
+    - [x] Test normal mode after adjustment mode
+    - [x] Test pause
+    - [x] Test reset
+  
 - Demo
   - [ ] Explain the FSM design and diagram
   - [ ] Explanation of the counter
