@@ -54,9 +54,9 @@ module counter(
 	
 	// Fast clock increase
 	always @(posedge clk_2hz) begin
-		if (ADJ && ~pause) begin
+		if (adj && ~pause) begin
 			// Make the minutes update faster
-			if (SEL) begin
+			if (sel) begin
 				// Update 1s place
 				if (minutes_ones == MAX_ONES) begin
 					minutes_ones <= 0;
@@ -89,7 +89,7 @@ module counter(
 
 	// Regular clock increase
 	always @(posedge clk_1hz) begin
-		if (~ADJ && ~pause) begin
+		if (~adj && ~pause) begin
 			// Update seconds (1s place)
 			if (seconds_ones == MAX_ONES) begin
 				seconds_ones = 0;
