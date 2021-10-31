@@ -26,6 +26,9 @@ module clock_divider(
 	output reg clk_fst, // 400,000 clock cycles (250 Hz)
 	output reg clk_blnk // 75,000,000 clock cycles (1.5 Hz)
 );
+
+	// Get constant
+	`include "stopwatch_definitions.v"
 	
 	// Counters
 	reg [31:0] counter_2hz = 0; // counts to 25,000,000
@@ -53,19 +56,19 @@ module clock_divider(
 			counter_fst <= counter_fst + 1;
 			counter_blnk <= counter_blnk + 1;
 			// Check counters
-			if (counter_2hz >= 25000000) begin
+			if (counter_2hz >= TWO_HZ_COUNT) begin
 				counter_2hz <= 0;
 				clk_2hz <= ~clk_2hz;
 			end
-			if (counter_1hz >= 50000000) begin
+			if (counter_1hz >= ONE_HZ_COUNT) begin
 				counter_1hz <= 0;
 				clk_1hz = ~clk_1hz;
 			end
-			if (counter_fst >= 200000) begin
+			if (counter_fst >= FAST_COUNT) begin
 				counter_fst <= 0;
 				clk_fst = ~clk_fst;
 			end
-			if (counter_blnk >= 37500000) begin
+			if (counter_blnk >= BLINK_COUNT) begin
 				counter_blnk <= 0;
 				clk_blnk = ~clk_blnk;
 			end

@@ -14,3 +14,10 @@ parameter ST_OFF = 7'b1111111;
 // Limits
 parameter MAX_ONES = 9;
 parameter MAX_TENS = 5;
+
+// Counters
+parameter TWO_HZ_COUNT = 25000000;
+parameter ONE_HZ_COUNT = 50000000;
+parameter FAST_COUNT = 200000;
+parameter BLINK_COUNT = 37500000;
+parameter DB_COUNT = 65535;
