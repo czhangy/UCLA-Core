@@ -41,7 +41,7 @@ module stopwatch(
 	wire adj;
 	wire rst;
 	wire pause;
-	
+
 	wire [3:0] display_state_0;
 	wire [3:0] display_state_1;
 	wire [3:0] display_state_2;
@@ -83,16 +83,17 @@ module stopwatch(
 	);
 
 	// Initialize counter
-	counter cntr (
+	counter decade_counter (
 		.clk_1hz(clk_1hz),
 		.clk_2hz(clk_2hz),
-		.ADJ(ADJ),
-		.SEL(SEL),
-		.RESET(RESET),
-		.display_state_0(display_state_0),
-		.display_state_1(display_state_1),
-		.display_state_2(display_state_2),
-		.display_state_3(display_state_3)
+		.sel(sel),
+		.adj(adj),
+		.rst(rst),
+		.pause(pause),
+		.minutes_tens(minutes_tens),
+		.minutes_ones(minutes_ones),
+		.seconds_tens(seconds_tens),
+		.seconds_ones(seconds_ones)
 	);
 
 	// Connect to seven-segment display
