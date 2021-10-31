@@ -51,7 +51,7 @@ module debouncer(
 	// Handle debouncing
 	always @(posedge clk) begin
 		// Check for changing signal
-		if (signal == temp_signal) begin
+		if (cur_signal == temp_signal) begin
 			counter <= 0;
 		// If signal has changed
 		end else begin
