@@ -56,7 +56,7 @@ module counter(
 	always @(posedge clk_2hz) begin
 		if (adj && ~pause) begin
 			// Make the minutes update faster
-			if (sel) begin
+			if (~sel) begin
 				// Update 1s place
 				if (minutes_ones == MAX_ONES) begin
 					minutes_ones <= 0;

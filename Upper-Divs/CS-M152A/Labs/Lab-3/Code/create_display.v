@@ -62,7 +62,7 @@ module create_display(
 		end else if (digit == 2) begin
 			digit <= digit + 1;
 			cathode <= seconds_tens_cathode;
-			anode = SECONDS_TENS_DIGIT;
+			anode <= SECONDS_TENS_DIGIT;
 			// Check for blinking
 			if (adj && sel && clk_blnk) begin
 				cathode <= ST_OFF;
@@ -71,7 +71,7 @@ module create_display(
 		end else if (digit == 3) begin
 			digit <= 0;
 			cathode <= seconds_ones_cathode;
-			anode = SECONDS_ONES_DIGIT;
+			anode <= SECONDS_ONES_DIGIT;
 			// Check for blinking
 			if (adj && sel && clk_blnk) begin
 				cathode <= ST_OFF;
