@@ -19,8 +19,10 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module clock_divider(
+	// Input
 	input clk, // 100MHz
 	input rst,
+	// Output
 	output reg clk_2hz, // 50,000,000 clock cycles
 	output reg clk_1hz, // 100,000,000 clock cycles
 	output reg clk_fst, // 400,000 clock cycles (250 Hz)
