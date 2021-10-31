@@ -29,12 +29,12 @@
     - [x] A `1Hz` clock used to increment the counter
     - [x] A fast clock (`50 - 700Hz`) used to multiplex the seven-segment display
     - [x] A `> 1Hz` clock used for blinking the adjustment mode
-  - [ ] Connect the counter to the seven-segment display
-  - [ ] Debouncer
+  - [x] Connect the counter to the seven-segment display
+  - [x] Debouncer
     - [ ] The switches and buttons must be debounced, sampling them at a lower frequency than their noise
-  - [ ] Metastability
-    - [ ] The signals of the switches and buttons must be held stable when being sampled
-    - [ ] Accounting for the inputs' asynchronous nature
+  - [x] Metastability
+    - [x] The signals of the switches and buttons must be held stable when being sampled
+    - [x] Accounting for the inputs' asynchronous nature
   - [ ] UCF
     - [ ] Create a UCF file for the counter
     - [ ] Implement `LOC` constraints
