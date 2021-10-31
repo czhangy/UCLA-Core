@@ -53,7 +53,7 @@ module create_display(
 		end else if (digit == 1) begin
 			digit <= digit + 1;
 			cathode <= minutes_ones_cathode;
-			anode = MINUTES_ONES_DIGIT;
+			anode <= MINUTES_ONES_DIGIT;
 			// Check for blinking
 			if (adj && ~sel && clk_blnk) begin
 				cathode <= ST_OFF;
