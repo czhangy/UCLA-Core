@@ -27,7 +27,7 @@ module clock_divider(
 	output reg clk_blnk // 75,000,000 clock cycles (1.5 Hz)
 );
 
-	// Get constant
+	// Get constants
 	`include "stopwatch_definitions.v"
 	
 	// Counters
