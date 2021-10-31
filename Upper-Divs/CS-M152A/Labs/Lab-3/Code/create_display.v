@@ -49,9 +49,8 @@ module create_display(
 			if (adj && ~sel && clk_blnk) begin
 				cathode <= ST_OFF;
 			end
-		end
 		// Handle minutes ones place
-		if (digit == 1) begin
+		end else if (digit == 1) begin
 			digit <= digit + 1;
 			cathode <= minutes_ones_cathode;
 			anode = MINUTES_ONES_DIGIT;
@@ -59,9 +58,8 @@ module create_display(
 			if (adj && ~sel && clk_blnk) begin
 				cathode <= ST_OFF;
 			end
-		end
 		// Handle seconds tens place
-		if (digit == 2) begin
+		end else if (digit == 2) begin
 			digit <= digit + 1;
 			cathode <= seconds_tens_cathode;
 			anode = SECONDS_TENS_DIGIT;
@@ -69,10 +67,9 @@ module create_display(
 			if (adj && sel && clk_blnk) begin
 				cathode <= ST_OFF;
 			end
-		end
 		// Handle seconds ones place
-		if (digit == 3) begin
-			digit <= digit + 1;
+		end else if (digit == 3) begin
+			digit <= 0;
 			cathode <= seconds_ones_cathode;
 			anode = SECONDS_ONES_DIGIT;
 			// Check for blinking
@@ -80,7 +77,6 @@ module create_display(
 				cathode <= ST_OFF;
 			end
 		end
-		
 	end
 
 endmodule
