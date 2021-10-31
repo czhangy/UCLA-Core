@@ -41,11 +41,18 @@ module stopwatch(
 	wire adj;
 	wire rst;
 	wire pause;
-
-	wire [3:0] display_state_0;
-	wire [3:0] display_state_1;
-	wire [3:0] display_state_2;
-	wire [3:0] display_state_3;
+	
+	// FSM states
+	wire [3:0] minutes_tens;
+	wire [3:0] minutes_ones;
+	wire [3:0] seconds_tens;
+	wire [3:0] seconds_ones;
+	
+	// Cathode values
+	wire [6:0] minutes_tens_cathode;
+	wire [6:0] minutes_ones_cathode;
+	wire [6:0] seconds_tens_cathode;
+	wire [6:0] seconds_ones_cathode;
 
 	// Divide master clock into 4 signals
 	clock_divider clk_div (
@@ -56,7 +63,7 @@ module stopwatch(
 		.clk_fst(clk_fst),
 		.clk_blnk(clk_blnk)
 	);
-
+	
 	// Debounce input signals
 	debouncer sel_debouncer (
 		.clk(clk),
@@ -95,34 +102,26 @@ module stopwatch(
 		.seconds_tens(seconds_tens),
 		.seconds_ones(seconds_ones)
 	);
-
-	// Connect to seven-segment display
-	ssd m3 (
-		.display_state(display_state_3),
-		.clk_blnk(clk_blnk),
-		.ADJ(ADJ),
-		.ssd(ssd_3)
-	);
-
-	ssd m4 (
-		.display_state(display_state_2),
-		.clk_blnk(clk_blnk),
-		.ADJ(ADJ),
-		.ssd(ssd_2)
-	);
-
-	ssd m5 (
-		.display_state(display_state_1),
-		.clk_blnk(clk_blnk),
-		.ADJ(ADJ),
-		.ssd(ssd_1)
+	
+	// Get cathode values
+	get_cathode translate_minutes_tens (
+		.display_state(minutes_tens),
+		.cathode(minutes_tens_cathode)
 	);
 	
-	ssd m6 (
-		.display_state(display_state_0),
-		.clk_blnk(clk_blnk),
-		.ADJ(ADJ),
-		.ssd(ssd_0)
+	get_cathode translate_minutes_ones (
+		.display_state(minutes_ones),
+		.cathode(minutes_ones_cathode)
 	);
-
+	
+	get_cathode translate_seconds_tens (
+		.display_state(seconds_tens),
+		.cathode(seconds_tens_cathode)
+	);
+	
+	get_cathode translate_seconds_ones (
+		.display_state(seconds_ones),
+		.cathode(seconds_ones_cathode)
+	);
+	
 endmodule
