@@ -28,9 +28,9 @@ module debouncer(
 	
 	// Get constants
 	`include "stopwatch_definitions.v"
-    
+
 	// Register to track if the signal is consistenly held
-	reg [15:0] counter;
+	reg [15:0] counter = 0;
 	
 	// Registers for metastability
 	reg store;
@@ -59,7 +59,7 @@ module debouncer(
 			counter <= counter + 1;
 			// Once signal is constant, flip it
 			if (counter == DB_COUNT) begin
-				cur_signal <= ~signal_f;
+				cur_signal <= temp_signal;
 			end
 		end
 	end
