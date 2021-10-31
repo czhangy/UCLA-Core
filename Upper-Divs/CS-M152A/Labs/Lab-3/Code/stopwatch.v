@@ -124,4 +124,18 @@ module stopwatch(
 		.cathode(seconds_ones_cathode)
 	);
 	
+	// Set the display
+	create_display display (
+		.clk_fst(clk_fst),
+		.clk_blnk(clk_blnk),
+		.sel(sel),
+		.adj(adj),
+		.minutes_tens_cathode(minutes_tens_cathode),
+		.minutes_ones_cathode(minutes_ones_cathode),
+		.seconds_tens_cathode(seconds_tens_cathode),
+		.seconds_ones_cathode(seconds_ones_cathode),
+		.cathode(cathode),
+		.anode(anode)
+	);
+	
 endmodule
