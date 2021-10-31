@@ -21,16 +21,16 @@
 ## Deliverables
 
 - Coding
-  - [ ] The decade counter
-    - [ ] A seconds counter that increments every second
-    - [ ] Every 60 seconds, the seconds counter will reach the maximum value of `59`, reset to `00`, and increment the minutes counter on the next clock cycle
-  - [ ] The clock divider
-    - [ ] A `2Hz` clock used in adjustment mode
-    - [ ] A `1Hz` clock used to increment the counter
-    - [ ] A fast clock (`50 - 700Hz`) used to multiplex the seven-segment display
-    - [ ] A `> 1Hz` clock used for blinking the adjustment mode
+  - [x] The decade counter
+    - [x] A seconds counter that increments every second
+    - [x] Every 60 seconds, the seconds counter will reach the maximum value of `59`, reset to `00`, and increment the minutes counter on the next clock cycle
+  - [x] The clock divider
+    - [x] A `2Hz` clock used in adjustment mode
+    - [x] A `1Hz` clock used to increment the counter
+    - [x] A fast clock (`50 - 700Hz`) used to multiplex the seven-segment display
+    - [x] A `> 1Hz` clock used for blinking the adjustment mode
   - [ ] Connect the counter to the seven-segment display
-  - [ ] Debouncing
+  - [ ] Debouncer
     - [ ] The switches and buttons must be debounced, sampling them at a lower frequency than their noise
   - [ ] Metastability
     - [ ] The signals of the switches and buttons must be held stable when being sampled
