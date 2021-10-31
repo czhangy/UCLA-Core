@@ -35,7 +35,13 @@ module stopwatch(
 	wire clk_1hz;
 	wire clk_fst;
 	wire clk_blnk;
-
+	
+	// Debounced input signals
+	wire sel;
+	wire adj;
+	wire rst;
+	wire pause;
+	
 	wire [3:0] display_state_0;
 	wire [3:0] display_state_1;
 	wire [3:0] display_state_2;
@@ -49,6 +55,31 @@ module stopwatch(
 		.clk_1hz(clk_1hz),
 		.clk_fst(clk_fst),
 		.clk_blnk(clk_blnk)
+	);
+
+	// Debounce input signals
+	debouncer sel_debouncer (
+		.clk(clk),
+		.signal_i(SEL),
+		.signal_f(sel)
+	);
+	
+	debouncer adj_debouncer (
+		.clk(clk),
+		.signal_i(ADJ),
+		.signal_f(adj)
+	);
+	
+	debouncer rst_debouncer (
+		.clk(clk),
+		.signal_i(RESET),
+		.signal_f(rst)
+	);
+	
+	debouncer pause_debouncer (
+		.clk(clk),
+		.signal_i(PAUSE),
+		.signal_f(pause)
 	);
 
 	// Initialize counter
