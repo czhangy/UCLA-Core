@@ -25,7 +25,10 @@ module debouncer(
 	// Outputs
 	output signal_f
 );
-
+	
+	// Get constants
+	`include "stopwatch_definitions.v"
+    
 	// Register to track if the signal is consistenly held
 	reg [15:0] counter;
 	
