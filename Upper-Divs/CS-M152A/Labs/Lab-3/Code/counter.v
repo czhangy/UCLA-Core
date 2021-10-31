@@ -27,10 +27,10 @@ module counter(
 	input rst,
 	input pause,
 	// Outputs
-	output reg minutes_tens,
-	output reg minutes_ones,
-	output reg seconds_tens,
-	output reg seconds_ones
+	output reg [3:0] minutes_tens,
+	output reg [3:0] minutes_ones,
+	output reg [3:0] seconds_tens,
+	output reg [3:0] seconds_ones
 );
 	
 	// Get constants
