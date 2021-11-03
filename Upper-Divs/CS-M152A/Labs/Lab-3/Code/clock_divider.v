@@ -64,15 +64,15 @@ module clock_divider(
 			end
 			if (counter_1hz >= ONE_HZ_COUNT) begin
 				counter_1hz <= 0;
-				clk_1hz = ~clk_1hz;
+				clk_1hz <= ~clk_1hz;
 			end
 			if (counter_fst >= FAST_COUNT) begin
 				counter_fst <= 0;
-				clk_fst = ~clk_fst;
+				clk_fst <= ~clk_fst;
 			end
 			if (counter_blnk >= BLINK_COUNT) begin
 				counter_blnk <= 0;
-				clk_blnk = ~clk_blnk;
+				clk_blnk <= ~clk_blnk;
 			end
 		end
 	end
