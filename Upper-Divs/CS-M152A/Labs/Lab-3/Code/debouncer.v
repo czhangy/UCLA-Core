@@ -38,7 +38,7 @@ module debouncer(
 	reg cur_signal;
 	
 	// Handle metastability
-	always @(posedge clk) begin
+	always @(*) begin
 		// Store input for metastability
 		store <= signal_i;
 	end
@@ -56,10 +56,11 @@ module debouncer(
 		// If signal has changed
 		end else begin
 			// Count
-			counter <= counter + 1;
+			counter <= counter + 1'b1;
 			// Once signal is constant, flip it
 			if (counter == DB_COUNT) begin
 				cur_signal <= temp_signal;
+				counter <= 0;
 			end
 		end
 	end
