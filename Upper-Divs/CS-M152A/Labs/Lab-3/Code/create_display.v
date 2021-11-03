@@ -37,12 +37,12 @@ module create_display(
 	`include "stopwatch_definitions.v"
 
 	// Specify which digit
-	reg digit = 0;
+	reg [1:0] digit = 0;
 	
 	always @(posedge clk_fst) begin
 		// Handle minutes tens place
 		if (digit == 0) begin
-			digit <= digit + 1;
+			digit <= digit + 1'b1;
 			cathode <= minutes_tens_cathode;
 			anode <= MINUTES_TENS_DIGIT;
 			// Check for blinking
@@ -51,7 +51,7 @@ module create_display(
 			end
 		// Handle minutes ones place
 		end else if (digit == 1) begin
-			digit <= digit + 1;
+			digit <= digit + 1'b1;
 			cathode <= minutes_ones_cathode;
 			anode <= MINUTES_ONES_DIGIT;
 			// Check for blinking
@@ -60,7 +60,7 @@ module create_display(
 			end
 		// Handle seconds tens place
 		end else if (digit == 2) begin
-			digit <= digit + 1;
+			digit <= digit + 1'b1;
 			cathode <= seconds_tens_cathode;
 			anode <= SECONDS_TENS_DIGIT;
 			// Check for blinking
