@@ -45,7 +45,7 @@ module counter(
 	end
 	
 	// Fast clock increase
-	always @(posedge clk_2hz or posedge rst) begin
+	always @(posedge clk_2hz or posedge clk_1hz or posedge rst) begin
 		if (rst) begin
 			// Reset clock
 			minutes_tens <= 0;
