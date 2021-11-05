@@ -46,12 +46,12 @@
     - [x] Test reset
   
 - Demo
-  - [ ] Explain the FSM design and diagram
-  - [ ] Explanation of the counter
-  - [ ] Explanation of the 4 clocks
-  - [ ] Explanation of the button debouncing
-  - [ ] Explanation of the seven-second display
-  - [ ] Explanation of the testbench and simulation results
+  - [x] Explain the FSM design and diagram
+  - [x] Explanation of the counter
+  - [x] Explanation of the 4 clocks
+  - [x] Explanation of the button debouncing
+  - [x] Explanation of the seven-second display
+  - [x] Explanation of the testbench and simulation results
   - [x] Demo on the Nexys 3 board
   
 - Submission
