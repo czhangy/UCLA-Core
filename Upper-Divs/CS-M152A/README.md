@@ -16,11 +16,11 @@
 
 ## Labs
 
-| Lab                                           | Score |
-| :-------------------------------------------- | :---: |
-| Lab 0: Introduction to Verilog and Xilinx ISE |  ???  |
-| Lab 1: Sequencer                              |  ???  |
-| Lab 2: Floating Point Conversion              |  ???  |
-| Lab 3: Stopwatch                              |  ???  |
-| Lab 4: Creative Project                       |  ???  |
+| Lab                                           |  Score  |
+| :-------------------------------------------- | :-----: |
+| Lab 0: Introduction to Verilog and Xilinx ISE | 100/100 |
+| Lab 1: Sequencer                              | 100/100 |
+| Lab 2: Floating Point Conversion              |   ???   |
+| Lab 3: Stopwatch                              |   ???   |
+| Lab 4: Creative Project                       |   ???   |
 
