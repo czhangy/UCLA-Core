@@ -56,7 +56,7 @@ module debouncer(
 		// If signal has changed
 		end else begin
 			// Count
-			counter <= counter + 1'b1;
+			counter <= counter + 1;
 			// Once signal is constant, flip it
 			if (counter == DB_COUNT) begin
 				cur_signal <= temp_signal;
