@@ -29,7 +29,7 @@ module clock_divider(
 	// Get constants
 	`include "battleship_definitions.v"
 	
-	// Counter
+	// Counters
 	reg [31:0] ssd_counter = 0; // counts to 200,000
 	reg [31:0] vga_counter = 0; // counts to 2
 	
