@@ -42,21 +42,10 @@ module battleship(
 
 	// Debounced input signals
 	wire rst;
-	wire btnC;
-	wire btnL;
-	wire btnR;
-	wire btnU;
-	wire btnD;
-	wire sw0;
-	wire sw1;
-	wire sw2;
-	wire sw3;
-	wire sw4;
-	wire sw5;
-	wire sw6;
-	wire sw7;
+	wire btnC, btnL, btnR, btnU, btnD;
+	wire sw0, sw1, sw2, sw3, sw4, sw5, sw6, sw7;
 	
-	// Divided clock signal
+	// Divided clock signals
 	wire clk_ssd;
 	wire clk_vga;
 	
