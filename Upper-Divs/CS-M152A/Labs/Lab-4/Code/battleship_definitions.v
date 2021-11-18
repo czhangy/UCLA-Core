@@ -19,14 +19,14 @@ parameter P2_LEFT = 4'b1101;
 parameter P2_RIGHT = 4'b1110;
 
 // VGA values
-parameter HPIXELS = 1160;	// horizontal pixels per line
-parameter VLINES = 1024; 	// vertical lines per frame
-parameter HPULSE = 96; 		// hsync pulse length
-parameter VPULSE = 2; 		// vsync pulse length
-parameter HBP = 140; 		// end of horizontal back porch
-parameter HFP = 1140; 		// beginning of horizontal front porch
-parameter VBP = 12; 		// end of vertical back porch
-parameter VFP = 1012; 		// beginning of vertical front porch
+parameter HPIXELS = 1160;	// Horizontal pixels per line
+parameter VLINES = 1024; 	// Vertical lines per frame
+parameter HPULSE = 96; 		// Hsync pulse length
+parameter VPULSE = 2; 		// Vsync pulse length
+parameter HBP = 140; 		// End of horizontal back porch
+parameter HFP = 1140; 		// Beginning of horizontal front porch
+parameter VBP = 12; 		// End of vertical back porch
+parameter VFP = 1012; 		// Beginning of vertical front porch
 
 // Array codes
 parameter ARR_BLANK = 0;
