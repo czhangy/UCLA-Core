@@ -29,7 +29,9 @@ module vga(
 	output reg [2:0] green, // green VGA output
 	output reg [1:0] blue	// blue VGA output
 );
-	
+
+	// Get constants
+	`include "battleship_definitions.v"
 
 	// Registers for storing the horizontal & vertical counters
 	reg [10:0] 	h_counter;
