@@ -5,7 +5,11 @@ parameter DB_COUNT = 65535;
 parameter CLK_SSD_COUNT = 200000;
 parameter CLK_VGA_COUNT = 2;
 
-// SSD values
+// Clock divider bits
+parameter SSD_BIT = 16;
+parameter VGA_BIT = 1;
+
+// SSD cathodes
 parameter ST_000 = 7'b1000000;
 parameter ST_001 = 7'b1111001;
 parameter ST_010 = 7'b0100100;
@@ -13,12 +17,14 @@ parameter ST_011 = 7'b0110000;
 parameter ST_100 = 7'b0011001;
 parameter ST_101 = 7'b0010010;
 parameter ST_OFF = 7'b1111111;
+
+// SSD anodes
 parameter P1_LEFT = 4'b0111;
 parameter P1_RIGHT = 4'b1011;
 parameter P2_LEFT = 4'b1101;
 parameter P2_RIGHT = 4'b1110;
 
-// VGA values
+// VGA constants
 parameter HPIXELS = 800;
 parameter VLINES = 521;
 parameter HPULSE = 96;
