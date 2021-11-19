@@ -66,7 +66,6 @@ module battleship(
 	// Game boards
 
 	// Debounce all inputs
-	debouncer db_rst(.clk(clk), .signal_i(RST), .signal_f(rst));
 	debouncer db_btnC(.clk(clk), .signal_i(BTNC), .signal_f(btnC));
 	debouncer db_btnL(.clk(clk), .signal_i(BTNL), .signal_f(btnL));
 	debouncer db_btnR(.clk(clk), .signal_i(BTNR), .signal_f(btnR));
@@ -80,11 +79,14 @@ module battleship(
 	debouncer db_sw5(.clk(clk), .signal_i(SW5), .signal_f(sw5));
 	debouncer db_sw6(.clk(clk), .signal_i(SW6), .signal_f(sw6));
 	debouncer db_sw7(.clk(clk), .signal_i(SW7), .signal_f(sw7));
+
+	// Check for reset
+    assign rst = btnC && sw0 && sw1 && sw2 && sw3 && sw4 && sw5 && sw6 && sw7;
 	
 	// Divide the master clock signal
 	clock_divider clk_div(
 		.clk(clk),
-		.rst(btnC),
+		.rst(rst),
 		.clk_ssd(clk_ssd),
 		.clk_vga(clk_vga)
 	);
@@ -101,7 +103,7 @@ module battleship(
 	// Handle VGA
 	vga vga_display(
 		.clk_vga(clk_vga),
-		.rst(btnC),
+		.rst(rst),
 		.hsync(hsync),
 		.vsync(vsync),
 		.red(red),
