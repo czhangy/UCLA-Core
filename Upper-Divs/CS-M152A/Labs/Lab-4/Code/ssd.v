@@ -20,9 +20,9 @@
 //////////////////////////////////////////////////////////////////////////////////
 module ssd(
 	// Inputs
-	input clk_fst,
-	input [3:0] p1_state,
-	input [3:0] p2_state,
+	input clk_ssd,
+	input [3:0] p1_ships,
+	input [3:0] p2_ships,
 	// Outputs
 	output reg [6:0] cathode,
 	output reg [3:0] anode
@@ -39,11 +39,11 @@ module ssd(
 	reg [1:0] digit = 0;
 	
 	// Translate states to cathodes
-	get_cathode p1 (.display_state(p1_state), .cathode(p1_cathode));
-	get_cathode p2 (.display_state(p2_state), .cathode(p2_cathode));
+	get_cathode p1(.display_state(p1_ships), .cathode(p1_cathode));
+	get_cathode p2(.display_state(p2_ships), .cathode(p2_cathode));
 
 	// Display on SSD
-	always @(posedge clk_fst) begin
+	always @(posedge clk_ssd) begin
 		// Handle P1's left digit
 		if (digit == 0) begin
 			digit <= digit + 1;
