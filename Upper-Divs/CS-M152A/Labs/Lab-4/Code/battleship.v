@@ -21,7 +21,6 @@
 module battleship(
 	// Inputs
 	input clk,
-	input RST,
 	input BTNC,
 	input BTNL,
 	input BTNR,
@@ -37,7 +36,12 @@ module battleship(
 	input SW7,
 	// Outputs
 	output [6:0] cathode,
-	output [3:0] anode
+	output [3:0] anode,
+	output hsync,
+	output vsync,
+	output [2:0] red,
+	output [2:0] green,
+	output [1:0] blue
 );
 
 	// Debounced input signals
@@ -72,6 +76,18 @@ module battleship(
 	debouncer db_sw7 (.clk(clk), .signal_i(SW7), .signal_f(sw7));
 	
 	// Divide the master clock signal
-	clock_divider clk_div (.clk(clk), .clk_ssd(clk_ssd), .clk_vga(clk_vga));
+	clock_divider clk_div (.clk(clk), .rst(btnC), .clk_vga(clk_vga), .clk_ssd(clk_ssd));
+	
+	assign cathode = 7'b0000000;
+	assign anode = 4'b1011;
+	
+	// Handle VGA
+	vga vga_display(.clk_vga(clk_vga),
+					.rst(btnC),
+					.hsync(hsync),
+					.vsync(vsync),
+					.red(red),
+					.green(green),
+					.blue(blue));
 
 endmodule
