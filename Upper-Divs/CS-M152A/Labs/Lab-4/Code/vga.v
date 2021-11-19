@@ -26,8 +26,8 @@ module vga(
 	output hsync,			// Horizontal sync out
 	output vsync,			// Vertical sync out
 	output reg [2:0] red,	// Red VGA output
-	output reg [2:0] green, // green VGA output
-	output reg [1:0] blue	// blue VGA output
+	output reg [2:0] green, // Green VGA output
+	output reg [1:0] blue	// Blue VGA output
 );
 
 	// Get constants
@@ -67,51 +67,79 @@ module vga(
 
 	always @(*) begin
 		// Set row
-		if (ROW_0_MIN <= v_counter && v_counter <= ROW_0_MAX)
+		if (v_counter < HEADER)
+			row = OUT_OF_BOUNDS;
+		else if (v_counter <= HEADER + BLOCK_SIZE)
 			row = 0;
-		else if (ROW_1_MIN <= v_counter && v_counter <= ROW_1_MAX)
+		else if (v_counter <= HEADER + BLOCK_SIZE * 2)
 			row = 1;
-		else if (ROW_2_MIN <= v_counter && v_counter <= ROW_2_MAX)
+		else if (v_counter <= HEADER + BLOCK_SIZE * 3)
 			row = 2;
-		else if (ROW_3_MIN <= v_counter && v_counter <= ROW_3_MAX)
+		else if (v_counter <= HEADER + BLOCK_SIZE * 4)
 			row = 3;
-		else if (ROW_4_MIN <= v_counter && v_counter <= ROW_4_MAX)
+		else if (v_counter <= HEADER + BLOCK_SIZE * 5)
 			row = 4;
-		else if (ROW_5_MIN <= v_counter && v_counter <= ROW_5_MAX)
+		else if (v_counter <= HEADER + BLOCK_SIZE * 6)
 			row = 5;
-		else if (ROW_6_MIN <= v_counter && v_counter <= ROW_6_MAX)
+		else if (v_counter <= HEADER + BLOCK_SIZE * 7)
 			row = 6;
-		else if (ROW_7_MIN <= v_counter && v_counter <= ROW_7_MAX)
+		else if (v_counter <= HEADER + BLOCK_SIZE * 8)
 			row = 7;
-		else if (ROW_8_MIN <= v_counter && v_counter <= ROW_8_MAX)
+		else if (v_counter <= HEADER + BLOCK_SIZE * 9)
 			row = 8;
-		else if (ROW_9_MIN <= v_counter && v_counter <= ROW_9_MAX)
+		else if (v_counter <= HEADER + BLOCK_SIZE * 10)
 			row = 9;
 		else
-			row = 10;
+			row = OUT_OF_BOUNDS;
 		// Set column
-		if (COL_0_MIN <= h_counter && h_counter <= COL_0_MAX)
+		if (h_counter < MARGIN)
+			col = OUT_OF_BOUNDS;
+		else if (h_counter <= MARGIN + BLOCK_SIZE)
 			col = 0;
-		else if (COL_1_MIN <= h_counter && h_counter <= COL_1_MAX)
+		else if (h_counter <= MARGIN + BLOCK_SIZE * 2)
 			col = 1;
-		else if (COL_2_MIN <= h_counter && h_counter <= COL_2_MAX)
+		else if (h_counter <= MARGIN + BLOCK_SIZE * 3)
 			col = 2;
-		else if (COL_3_MIN <= h_counter && h_counter <= COL_3_MAX)
+		else if (h_counter <= MARGIN + BLOCK_SIZE * 4)
 			col = 3;
-		else if (COL_4_MIN <= h_counter && h_counter <= COL_4_MAX)
+		else if (h_counter <= MARGIN + BLOCK_SIZE * 5)
 			col = 4;
-		else if (COL_5_MIN <= h_counter && h_counter <= COL_5_MAX)
+		else if (h_counter <= MARGIN + BLOCK_SIZE * 6)
 			col = 5;
-		else if (COL_6_MIN <= h_counter && h_counter <= COL_6_MAX)
+		else if (h_counter <= MARGIN + BLOCK_SIZE * 7)
 			col = 6;
-		else if (COL_7_MIN <= h_counter && h_counter <= COL_7_MAX)
+		else if (h_counter <= MARGIN + BLOCK_SIZE * 8)
 			col = 7;
-		else if (COL_8_MIN <= h_counter && h_counter <= COL_8_MAX)
+		else if (h_counter <= MARGIN + BLOCK_SIZE * 9)
 			col = 8;
-		else if (COL_9_MIN <= h_counter && h_counter <= COL_9_MAX)
-			col = 9;
+		else if (h_counter <= MARGIN + BLOCK_SIZE * 10)
+			col = 9; 
 		else
-			col = 10;
+			col = OUT_OF_BOUNDS;
+		// Check if we're within vertical active video range
+		if (v_counter >= VBP && v_counter < VFP) begin
+			if (v_counter < HEADER) begin
+				red = R_BLANK;
+				green = G_BLANK;
+				blue = B_BLANK;
+			end else begin
+				if (h_counter >= HBP && h_counter < HBP + 640) begin
+					red = R_SHIP;
+					green = G_SHIP;
+					blue = B_SHIP;
+				// Outside active horizontal range so display black
+				end else begin
+					red = 0;
+					green = 0;
+					blue = 0;
+				end
+			end
+		// Outside active vertical range so display black
+		end else begin
+			red = 0;
+			green = 0;
+			blue = 0;
+		end
 	end
-
+	
 endmodule
