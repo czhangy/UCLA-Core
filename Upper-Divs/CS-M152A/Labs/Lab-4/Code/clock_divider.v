@@ -27,6 +27,9 @@ module clock_divider(
 	output clk_vga
 );
 
+	// Get constants
+	`include "battleship_definitions.v"
+
 	// 17-bit counter variable
 	reg [16:0] counter;
 
