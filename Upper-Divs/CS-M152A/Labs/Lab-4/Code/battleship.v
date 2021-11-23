@@ -61,11 +61,11 @@ module battleship(
 	wire [6:0] p2_cathode;
 
 	// Initialize score
-	wire [2:0] p1_ships;
-	wire [2:0] p2_ships;
+	reg [2:0] p1_ships;
+	reg [2:0] p2_ships;
 	initial begin
-		assign p1_ships = 5;
-		assign p2_ships = 5;
+		p1_ships = 5;
+		p2_ships = 5;
 	end
 	
 	// Initialize game boards
@@ -77,11 +77,11 @@ module battleship(
 			p1_board[i +: 3] = 0;
 			p2_board[i +: 3] = 0;
 		end
-		for (i = 0; i < 100; i = i + 1) begin
+		for (i = 0; i < 10; i = i + 1) begin
 			if ((i + 1) % 10 != 0)
-				$display("%d ", p1_board[i +: 3]);
+				$write("%d ", p1_board[i +: 3]);
 			else
-				$display("%d\n", p1_board[i +: 3]);
+				$display("%d", p1_board[i +: 3]);
 		end
 	end
 
