@@ -20,14 +20,16 @@
 //////////////////////////////////////////////////////////////////////////////////
 module vga(
 	// Inputs
-	input clk_vga,			// VGA clock: 25MHz
-	input rst,				// Asynchronous reset
+	input clk_vga,
+	input rst,
+	input integer p1_board,
+	input integer p2_board,
 	// Outputs
-	output hsync,			// Horizontal sync out
-	output vsync,			// Vertical sync out
-	output reg [2:0] red,	// Red VGA output
-	output reg [2:0] green, // Green VGA output
-	output reg [1:0] blue	// Blue VGA output
+	output hsync,
+	output vsync,
+	output reg [2:0] red,
+	output reg [2:0] green,
+	output reg [1:0] blue
 );
 
 	// Get constants
@@ -116,6 +118,7 @@ module vga(
 			col = 9; 
 		else
 			col = OUT_OF_BOUNDS;
+
 		// Check if we're within vertical active video range
 		if (v_counter >= VBP && v_counter < VFP) begin
 			if (v_counter < HEADER) begin
