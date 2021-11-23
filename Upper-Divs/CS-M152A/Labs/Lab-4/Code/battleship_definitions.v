@@ -43,24 +43,12 @@ parameter ARR_HIT = 4;
 parameter ARR_MISS = 5;
 
 // Game board colors
-parameter R_BLANK = 3'b000; 		// Cyan
-parameter G_BLANK = 3'b111;
-parameter B_BLANK = 2'b11;
-parameter R_SHIP = 3'b111; 			// White
-parameter G_SHIP = 3'b111;
-parameter B_SHIP = 2'b11;
-parameter R_ACTIVE_SHIP = 3'b000; 	// Green
-parameter G_ACTIVE_SHIP = 3'b111;
-parameter B_ACTIVE_SHIP = 2'b00;
-parameter R_OVERLAP_SHIP = 3'b111; 	// Red
-parameter G_OVERLAP_SHIP = 3'b000;
-parameter B_OVERLAP_SHIP = 2'b00;
-parameter R_HIT = 3'b111; 			// Magenta
-parameter G_HIT = 3'b000;
-parameter B_HIT = 2'b11;
-parameter R_MISS = 3'b111; 			// Yellow
-parameter G_MISS = 3'b111;
-parameter B_MISS = 2'b00;
+parameter BLANK = 8'b00011111; 		    // Cyan
+parameter SHIP = 8'b11111111; 	        // White
+parameter ACTIVE_SHIP = 3'b00011100; 	// Green
+parameter OVERLAP_SHIP = 3'b11100000; 	// Red
+parameter HIT = 3'b11100011; 			// Magenta
+parameter MISS = 3'b11111100; 			// Yellow
 
 // Game board bounds
 parameter BOARD_SIZE = 300;
