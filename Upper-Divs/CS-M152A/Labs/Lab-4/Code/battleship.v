@@ -71,16 +71,16 @@ module battleship(
 	reg [BOARD_SIZE - 1:0] p1_board;
 	reg [BOARD_SIZE - 1:0] p2_board;
 	initial begin
-		for (i = 0; i < 100; i = i + 3) begin
+		for (i = 0; i < BOARD_SIZE; i = i + 3) begin
 			p1_board[i +: 3] = 0;
 			p2_board[i +: 3] = 0;
 		end
-		for (i = 0; i < 100; i = i + 1) begin
-			if ((i + 1) % 10 != 0)
-				$write("%d ", p1_board[i +: 3]);
-			else
-				$display("%d", p1_board[i +: 3]);
-		end
+	end
+	
+	// Track player turn
+	reg turn;
+	initial begin
+		turn = 0;
 	end
 
 	// Debounce all inputs
@@ -122,6 +122,7 @@ module battleship(
 	vga vga_display(
 		.clk_vga(clk_vga),
 		.rst(rst),
+		.player_turn(turn),
 		.p1_board(p1_board),
 		.p2_board(p2_board),
 		.hsync(hsync),
