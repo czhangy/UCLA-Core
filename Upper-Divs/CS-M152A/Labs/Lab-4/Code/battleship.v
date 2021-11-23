@@ -39,9 +39,7 @@ module battleship(
 	output [3:0] anode,
 	output hsync,
 	output vsync,
-	output [2:0] red,
-	output [2:0] green,
-	output [1:0] blue
+	output [7:0] rgb
 );
 
 	// Get constants
@@ -128,9 +126,7 @@ module battleship(
 		.p2_board(p2_board),
 		.hsync(hsync),
 		.vsync(vsync),
-		.red(red),
-		.green(green),
-		.blue(blue)
+		.rgb(rgb)
 	);
 
 endmodule
