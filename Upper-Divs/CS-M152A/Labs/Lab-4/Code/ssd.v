@@ -21,8 +21,8 @@
 module ssd(
 	// Inputs
 	input clk_ssd,
-	input [3:0] p1_ships,
-	input [3:0] p2_ships,
+	input [2:0] p1_ships,
+	input [2:0] p2_ships,
 	// Outputs
 	output reg [6:0] cathode,
 	output reg [3:0] anode
