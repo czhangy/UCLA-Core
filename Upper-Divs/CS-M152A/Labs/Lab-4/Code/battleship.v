@@ -67,18 +67,18 @@ module battleship(
 	
 	// Initialize game boards
 	integer i;
-	integer p1_board [0:99];
-	integer p2_board [0:99];
+	reg [BOARD_SIZE - 1:0] p1_board;
+	reg [BOARD_SIZE - 1:0] p2_board;
 	initial begin
-		for (i = 0; i < 100; i = i + 1) begin
-			p1_board[i] = 0;
-			p2_board[i] = 0;
+		for (i = 0; i < 100; i = i + 3) begin
+			p1_board[i +: 3] = 0;
+			p2_board[i +: 3] = 0;
 		end
 		for (i = 0; i < 100; i = i + 1) begin
 			if ((i + 1) % 10 != 0)
-				$display("%d ", p1_board[i]);
+				$display("%d ", p1_board[i +: 3]);
 			else
-				$display("%d\n", p1_board[i]);
+				$display("%d\n", p1_board[i +: 3]);
 		end
 	end
 
@@ -121,6 +121,8 @@ module battleship(
 	vga vga_display(
 		.clk_vga(clk_vga),
 		.rst(rst),
+		.p1_board(p1_board),
+		.p2_board(p2_board),
 		.hsync(hsync),
 		.vsync(vsync),
 		.red(red),
