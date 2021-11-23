@@ -132,7 +132,7 @@ module vga(
 							(v_counter - HEADER - VBP) % BLOCK_SIZE == BLOCK_SIZE - 1 ||
 							(h_counter - MARGIN - HBP) % BLOCK_SIZE == 0 ||
 							(h_counter - MARGIN - HBP) % BLOCK_SIZE == BLOCK_SIZE - 1)
-						rgb = BLACK;					
+						rgb = BLACK;
 					else begin
 						case(p1_board[(row * 30) + (col * 3) +: 3])
 							ARR_BLANK : rgb = BLANK;
