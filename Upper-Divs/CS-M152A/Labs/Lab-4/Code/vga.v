@@ -27,9 +27,7 @@ module vga(
 	// Outputs
 	output hsync,
 	output vsync,
-	output reg [2:0] red,
-	output reg [2:0] green,
-	output reg [1:0] blue
+	output reg [7:0] rgb
 );
 
 	// Get constants
@@ -121,28 +119,18 @@ module vga(
 
 		// Check if we're within vertical active video range
 		if (v_counter >= VBP && v_counter < VFP) begin
-			if (v_counter < HEADER) begin
-				red = R_BLANK;
-				green = G_BLANK;
-				blue = B_BLANK;
-			end else begin
-				if (h_counter >= HBP && h_counter < HBP + 640) begin
-					red = R_SHIP;
-					green = G_SHIP;
-					blue = B_SHIP;
+			if (v_counter < HEADER)
+				rgb = BLANK;
+			else begin
+				if (h_counter >= HBP && h_counter < HBP + 640)
+					rgb = SHIP;
 				// Outside active horizontal range so display black
-				end else begin
-					red = 0;
-					green = 0;
-					blue = 0;
-				end
+				else
+					rgb = 0;
 			end
 		// Outside active vertical range so display black
-		end else begin
-			red = 0;
-			green = 0;
-			blue = 0;
-		end
+		end else
+			rgb = 0;
 	end
 	
 endmodule
