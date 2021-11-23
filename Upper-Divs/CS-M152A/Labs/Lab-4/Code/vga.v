@@ -127,12 +127,12 @@ module vga(
 				// Check if we're within horizontal active video range
 				if (h_counter >= HBP && h_counter < HFP) begin
 					if (col == OUT_OF_BOUNDS)
-						rgb = 0;
+						rgb = BLACK;
 					else if ((v_counter - HEADER - VBP) % BLOCK_SIZE == 0 ||
 							(v_counter - HEADER - VBP) % BLOCK_SIZE == BLOCK_SIZE - 1 ||
 							(h_counter - MARGIN - HBP) % BLOCK_SIZE == 0 ||
 							(h_counter - MARGIN - HBP) % BLOCK_SIZE == BLOCK_SIZE - 1)
-						rgb = 0;					
+						rgb = BLACK;					
 					else begin
 						case(p1_board[(row * 30) + (col * 3) +: 3])
 							ARR_BLANK : rgb = BLANK;
@@ -145,11 +145,11 @@ module vga(
 					end
 				// Outside active horizontal range so display black
 				end else
-					rgb = 0;
+					rgb = BLACK;
 			end
 		// Outside active vertical range so display black
 		end else
-			rgb = 0;
+			rgb = BLACK;
 	end
 	
 endmodule
