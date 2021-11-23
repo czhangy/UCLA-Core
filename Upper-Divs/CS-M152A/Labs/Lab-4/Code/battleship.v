@@ -44,6 +44,9 @@ module battleship(
 	output [1:0] blue
 );
 
+	// Get constants
+	`include "battleship_definitions.v"
+	
 	// Debounced input signals
 	wire rst;
 	wire btnC, btnL, btnR, btnU, btnD;
