@@ -77,7 +77,7 @@ module battleship(
 			p1_board[i +: 3] = 0;
 			p2_board[i +: 3] = 0;
 		end
-		for (i = 0; i < 10; i = i + 1) begin
+		for (i = 0; i < 100; i = i + 1) begin
 			if ((i + 1) % 10 != 0)
 				$write("%d ", p1_board[i +: 3]);
 			else
