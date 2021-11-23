@@ -63,6 +63,7 @@ parameter G_MISS = 3'b111;
 parameter B_MISS = 2'b00;
 
 // Game board bounds
+parameter BOARD_SIZE = 300;
 parameter HEADER = 80;
 parameter MARGIN = 120;
 parameter BLOCK_SIZE = 40;
