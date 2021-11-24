@@ -128,10 +128,10 @@ module vga(
 				if (h_counter >= HBP && h_counter < HFP) begin
 					if (col == OUT_OF_BOUNDS)
 						rgb = BLACK;
-					else if ((v_counter - HEADER - VBP) % BLOCK_SIZE == 0 ||
-							(v_counter - HEADER - VBP) % BLOCK_SIZE == BLOCK_SIZE - 1 ||
-							(h_counter - MARGIN - HBP) % BLOCK_SIZE == 0 ||
-							(h_counter - MARGIN - HBP) % BLOCK_SIZE == BLOCK_SIZE - 1)
+					else if ((v_counter - HEADER - VBP) % BLOCK_SIZE == TOP_BORDER ||
+							(v_counter - HEADER - VBP) % BLOCK_SIZE == BOTTOM_BORDER ||
+							(h_counter - MARGIN - HBP) % BLOCK_SIZE == LEFT_BORDER ||
+							(h_counter - MARGIN - HBP) % BLOCK_SIZE == RIGHT_BORDER)
 						rgb = BLACK;
 					else begin
 						case(p1_board[(row * 30) + (col * 3) +: 3])
