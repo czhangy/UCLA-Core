@@ -17,7 +17,7 @@
 | COM SCI 118 | ??? | ??? |
 | COM SCI 130 | ??? | ??? |
 | COM SCI 131 | Winter '21 | A |
-| COM SCI M151B | ??? | ??? |
+| COM SCI M151B | Winter '22 | PL |
 | COM SCI M152A | Fall '21 |  IP   |
 | COM SCI 180 | Fall '20 | A |
 | COM SCI 181 | Spring '21 | A |
