@@ -53,7 +53,11 @@ parameter MISS = 8'b11111100; 			// Yellow
 
 // Game board bounds
 parameter BOARD_SIZE = 300;
+parameter OUT_OF_BOUNDS = 10;
 parameter HEADER = 80;
 parameter MARGIN = 120;
 parameter BLOCK_SIZE = 40;
-parameter OUT_OF_BOUNDS = 10;
+parameter TOP_BORDER = 0;
+parameter LEFT_BORDER = 0
+parameter BOTTOM_BORDER = BLOCK_SIZE - 1;
+parameter RIGHT_BORDER = BLOCK_SIZE - 1;
