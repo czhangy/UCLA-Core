@@ -223,7 +223,7 @@ module game_logic(
 				end
 			end
 
-		//Game mode -- strike
+		// Game mode -- strike
 		end else begin
 			row = {sw7, sw6, sw5, sw4};
 			col = {sw3, sw2, sw1, sw0};

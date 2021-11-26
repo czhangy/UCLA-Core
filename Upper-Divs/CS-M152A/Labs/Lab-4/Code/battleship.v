@@ -58,23 +58,16 @@ module battleship(
 	wire [6:0] p1_cathode;
 	wire [6:0] p2_cathode;
 
+	// Game boards
+	wire [BOARD_SIZE - 1:0] p1_board;
+	wire [BOARD_SIZE - 1:0] p2_board;
+
 	// Initialize score
 	reg [2:0] p1_ships;
 	reg [2:0] p2_ships;
 	initial begin
 		p1_ships = 5;
 		p2_ships = 5;
-	end
-	
-	// Initialize game boards
-	integer i;
-	reg [BOARD_SIZE - 1:0] p1_board;
-	reg [BOARD_SIZE - 1:0] p2_board;
-	initial begin
-		for (i = 0; i < BOARD_SIZE; i = i + 3) begin
-			p1_board[i +: 3] = ARR_BLANK;
-			p2_board[i +: 3] = ARR_BLANK;
-		end
 	end
 	
 	// Track player turn (0 is p1, 1 is p2)
