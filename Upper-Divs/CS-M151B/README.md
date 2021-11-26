@@ -1,4 +1,4 @@
-# COM SCI M151B - Computer Systems Architecture
+# CS M151B - Computer Systems Architecture
 
 # Reinman - Winter '22
 
