@@ -1,0 +1,69 @@
+INFO:root: 2021-03-05 18:03:14.055057: Juzang constructed
+INFO:root: 2021-03-05 18:03:14.055860: Juzang initialized
+INFO:root: 2021-03-05 18:04:03.587466: Juzang received command: "AT Riley +787114.6661486626 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-05 18:04:03.587667: Received "AT Riley +787114.6661486626 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997" from Riley
+INFO:root: 2021-03-05 18:04:03.588311: Juzang propagated "AT Riley +787114.6661486626 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997" to Riley
+INFO:root: 2021-03-05 18:04:03.588533: Juzang closed connection to Riley
+INFO:root: 2021-03-05 18:04:03.589250: Juzang propagated "AT Riley +787114.6661486626 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997" to Campbell
+INFO:root: 2021-03-05 18:04:03.589547: Juzang closed connection to Campbell
+INFO:root: 2021-03-05 18:04:03.590746: Juzang propagated "AT Riley +787114.6661486626 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997" to Bernard
+INFO:root: 2021-03-05 18:04:03.591406: Juzang closed connection to Bernard
+INFO:root: 2021-03-05 18:04:03.591691: Juzang replied with: "AT Riley +787114.6661486626 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-05 18:04:03.591893: Client disconnected
+INFO:root: 2021-03-05 18:04:03.592231: Juzang received command: "AT Riley +787114.6661486626 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-05 18:04:03.592400: Propagation from Riley already received
+INFO:root: 2021-03-05 18:04:03.592527: Client disconnected
+INFO:root: 2021-03-05 18:04:03.593088: Juzang received command: "AT Riley +787114.6661486626 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-05 18:04:03.593244: Propagation from Riley already received
+INFO:root: 2021-03-05 18:04:03.593373: Client disconnected
+INFO:root: 2021-03-05 18:04:03.594679: Juzang received command: "AT Riley +787114.6661486626 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-05 18:04:03.594851: Propagation from Riley already received
+INFO:root: 2021-03-05 18:04:03.594986: Client disconnected
+INFO:root: 2021-03-05 18:04:03.595426: Juzang received command: "AT Riley +787114.6661486626 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-05 18:04:03.595594: Propagation from Riley already received
+INFO:root: 2021-03-05 18:04:03.595732: Client disconnected
+INFO:root: 2021-03-05 18:08:13.294695: Juzang received command: "AT Riley +787364.3736057281 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-05 18:08:13.294892: Propagation from Riley already received
+INFO:root: 2021-03-05 18:08:13.294996: Client disconnected
+INFO:root: 2021-03-05 18:09:43.564353: Juzang received command: "AT Riley +787454.6430163383 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-05 18:09:43.564548: Propagation from Riley already received
+INFO:root: 2021-03-05 18:09:43.564666: Client disconnected
+INFO:root: 2021-03-05 18:10:18.454692: Juzang received command: "AT Riley +787489.5327677727 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-05 18:10:18.454856: Propagation from Riley already received
+INFO:root: 2021-03-05 18:10:18.454936: Client disconnected
+INFO:root: 2021-03-05 18:18:20.511456: Juzang received command: "AT Riley +787971.5902044773 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-05 18:18:20.511655: Propagation from Riley already received
+INFO:root: 2021-03-05 18:18:20.511738: Client disconnected
+INFO:root: 2021-03-05 18:25:30.809049: Juzang received command: "AT Riley +788401.8879563808 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-05 18:25:30.809217: Propagation from Riley already received
+INFO:root: 2021-03-05 18:25:30.809304: Client disconnected
+INFO:root: 2021-03-05 18:33:44.005437: Juzang received command: "AT Riley +788895.0842347145 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-05 18:33:44.005636: Propagation from Riley already received
+INFO:root: 2021-03-05 18:33:44.005731: Client disconnected
+INFO:root: 2021-03-05 18:34:05.548198: Juzang received command: "AT Riley +788916.6267910004 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-05 18:34:05.548391: Propagation from Riley already received
+INFO:root: 2021-03-05 18:34:05.548475: Client disconnected
+INFO:root: 2021-03-06 17:56:27.662159: Juzang constructed
+INFO:root: 2021-03-06 17:56:27.662936: Juzang initialized
+INFO:root: 2021-03-06 17:57:15.078775: Juzang received command: "AT Riley +873106.1576054096 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-06 17:57:15.078954: Received "AT Riley +873106.1576054096 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997" from Riley
+INFO:root: 2021-03-06 17:57:15.079537: Juzang propagated "AT Riley +873106.1576054096 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997" to Riley
+INFO:root: 2021-03-06 17:57:15.079748: Juzang closed connection to Riley
+INFO:root: 2021-03-06 17:57:15.080286: Juzang propagated "AT Riley +873106.1576054096 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997" to Campbell
+INFO:root: 2021-03-06 17:57:15.080609: Juzang closed connection to Campbell
+INFO:root: 2021-03-06 17:57:15.081286: Juzang propagated "AT Riley +873106.1576054096 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997" to Bernard
+INFO:root: 2021-03-06 17:57:15.082178: Juzang closed connection to Bernard
+INFO:root: 2021-03-06 17:57:15.082277: Juzang replied with: "AT Riley +873106.1576054096 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-06 17:57:15.082401: Client disconnected
+INFO:root: 2021-03-06 17:57:15.082917: Juzang received command: "AT Riley +873106.1576054096 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-06 17:57:15.083015: Message from Riley already received
+INFO:root: 2021-03-06 17:57:15.083091: Client disconnected
+INFO:root: 2021-03-06 17:57:15.083221: Juzang received command: "AT Riley +873106.1576054096 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-06 17:57:15.083336: Message from Riley already received
+INFO:root: 2021-03-06 17:57:15.083427: Client disconnected
+INFO:root: 2021-03-06 17:57:15.086787: Juzang received command: "AT Riley +873106.1576054096 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-06 17:57:15.086897: Message from Riley already received
+INFO:root: 2021-03-06 17:57:15.086974: Client disconnected
+INFO:root: 2021-03-06 17:57:15.088103: Juzang received command: "AT Riley +873106.1576054096 kiwi.cs.ucla.edu +34.068930-118.445127 1614209128.918963997"
+INFO:root: 2021-03-06 17:57:15.088208: Message from Riley already received
+INFO:root: 2021-03-06 17:57:15.088286: Client disconnected
