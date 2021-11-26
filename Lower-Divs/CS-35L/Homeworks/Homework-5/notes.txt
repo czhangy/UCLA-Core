@@ -1,0 +1,90 @@
+- First looked over the randall.c and Makefile to get bearings
+- Added a check recipe to the Makefile, using a simple if-then-else structure 
+  and a call to randall with the value 100 to check if the output is the
+  correct number of bytes
+- Used make to compile the randall program and run it with make check to test
+  expected behavior
+- Moved all handling of nbytes into a new file called options.c
+	- Created a handleOptions() function and copied code that processed
+	  arguments from randall.c's main() into it
+	- Modified the return 1 for invalid inputs to a return -1 as an error
+	  flag
+	- Made the function return nbytes to be used in randall's main()
+	- Included errno.h for error handling, stdbool.h for bool type, stdio.h for
+          I/O, and stdlib.h for strtoll() function
+- Created an options.h file
+- Replaced moved code in randall.c with the handleOptions() function and 
+  included options.h file
+	- Added if statement to check for a possible -1 returned from
+          handleOptions(), as that should kill the program
+- Moved the writebytes() function into a new file called output.c
+	- Included limits.h for CHAR_BIT constant, stdbool.h for bool type, and
+          stdio.h for I/O
+- Created an output.h file
+- Removed writebytes() declaration from randall.c and included output.h file
+- Moved the hardware_rand64_init(), hardware_rand64(), and 
+  hardware_rand64_fini() functions into a new file called rand64-hw.c
+	- Included immintrin.h for the _rdrand64_step() function
+- Created a rand64-hw.h file
+- Removed all specified functions from randall.c and included rand64-hw.c file
+- Moved the software_rand64_init(), software_rand64(), and 
+  software_rand64_fini() functions into a new file called rand64-sw.c
+	- Included stdio.h for the FILE type and stdlib.h for abort()
+- Created a rand64-sw.h file
+- Removed all specified functions from randall.c and included rand64-sw.c file
+- Removed all libraries from randall.c except cpuid.h, errno.h, stdio.h, and
+  stdbool.h
+- Modified Makefile so that it compiles all .c files by replacing $@.c with *.c
+  in the randall recipe
+- Included getopt.h and string.h in the options.c file for access to getopt() and
+  string library
+- Implemented option processing using boolean flags for the -i and -o flags in
+  combination with getopt() and related variables
+        - Picked up possible arguments with iOpt and oOpt string variables
+	- Defaulted these variables to "rdrand" and "stdio", respectively
+	- Caught errors by adding checks for "?" return value, setting valid to
+	  false
+	- Used ":" to set default values when necessary
+	- Modified condtions to correct for calls such as -io and -oi
+- Modified checker in options.c for nbytes value so that it checks the last value
+  of argv rather than a hard coded index
+- Updated the error message displayed when handleOptions() returns with -1 to
+  reflect updated usage
+- Added checks to pull out args from -i and -o uses
+  	- Added 2 pointers to each handleOptions() declaration and invocation to
+	  access modified values
+	- rdrand changes inputVal to 1, mrand48_r to 2, and / to 3
+	- Checks arg of -o for a value, if the arg is an int, outputVal is set to it
+	  	 - Included ctype.h for isdigit()
+	- Initialized all required variables with default values
+- Added check in randall.c for rdrand
+  	- Ends program with error message if rdrand was used and hardware method
+	  unavailable
+- Duplicated do-while loop in randall.c to use for mrand48_r call
+  	- Used time(NULL) to generate a random seed and srand48_r to convert the seed
+	  to a drand48_data struct to pass into mrand48_r
+- Modified init functions so that they take a string parameter
+  	- Used to pass a file path in case the /F arg appears
+	- Added a check before the initialize() call to change path from /dev/random
+- Reorganized program so that all information gets passed through a struct rather than
+  multiple variables
+- Passed the path from /F using dynamic allocation and a pointer to a string located
+  in the struct flagState
+- Implemented a check to run initialize() with custom path if called upon
+- Modified do-while loops to open files and place into buffer
+  	- Implement KiB buffer outputs to use write()
+- -o flag fails in combination with -i /F format
+     	- Due to early freeing of malloc'd data
+	- Freeing the data later causes an abort() that I cannot solve
+	- Opted to have -i /F functionality rather than fix
+- Memory leak occurs upon -i /F format
+  	- Spent 3 hours debugging this, found no solution through valgrind
+
+Time
+-----------
+time ./randall 50000 >/dev/null took 24.370s to run
+time ./randall 50000 | cat >dev/null took 23.175s to run
+time ./randall 50000 >rand.data took 23.005s to run
+time ./randall -i mrand48_r 50000 >rand.data took 0.005s to run
+time ./randall -i /dev/urandom 50000 >rand.data took 0.005s to run
+time ./randall -o 2 50000 >rand.data took 23.111s to run
