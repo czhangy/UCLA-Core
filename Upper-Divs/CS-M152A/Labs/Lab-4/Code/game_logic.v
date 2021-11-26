@@ -34,8 +34,8 @@ module game_logic(
 	input sw6,
 	input sw7,
 	// Outputs
-	output [BOARD_SIZE - 1:0] p1_board,
-	output [BOARD_SIZE - 1:0] p2_board,
+	output reg [BOARD_SIZE - 1:0] p1_board,
+	output reg [BOARD_SIZE - 1:0] p2_board,
 	output [2:0] p1_ships,
 	output [2:0] p2_ships,
 	output mode,
@@ -47,8 +47,6 @@ module game_logic(
 	
 	// Initialize game boards
 	integer i;
-	reg [BOARD_SIZE - 1:0] p1_board;
-	reg [BOARD_SIZE - 1:0] p2_board;
 	initial begin
 		for (i = 0; i < BOARD_SIZE; i = i + 3) begin
 			p1_board[i +: 3] = ARR_BLANK;
@@ -74,18 +72,17 @@ module game_logic(
 		for (i = 0; i < ship_size; i = i + 1) begin
 			// Initial placement is horizontal
 			if (sw0 == 0) begin
-				ship_coords[i*8 +: 4] = 0;
-				ship_coords[(i*8) + 4 +: 4] = i;
-			
+				ship_coords[i * 8 +: 4] = 0;
+				ship_coords[(i * 8) + 4 +: 4] = i;
 			// Initial placement is vertical
 			end else begin
-				ship_coords[i*8 +: 4] = i;
-				ship_coords[(i*8) + 4 +: 4] = 0;
+				ship_coords[i * 8 +: 4] = i;
+				ship_coords[(i * 8) + 4 +: 4] = 0;
 			end
 		end
 		for (i = 0; i < ship_size; i = i + 1) begin
-			row = ship_coords[i*8 +: 4];
-			col = ship_coords[(i*8) + 4 +: 4];
+			row = ship_coords[i * 8 +: 4];
+			col = ship_coords[(i * 8) + 4 +: 4];
 			p1_board[(row * 30) + (col * 3) +: 3] = ARR_ACTIVE_SHIP;
 		end
 	end
@@ -120,49 +117,48 @@ module game_logic(
 				
 				// Add coordinates to ship coordinate list
 				for (i = 0; i < ship_size; i = i + 1) begin
-					row = ship_coords[i*8 +: 4];
-					col = ship_coords[(i*8) + 4 +: 4];
-					
+					row = ship_coords[i * 8 +: 4];
+					col = ship_coords[(i * 8) + 4 +: 4];					
 					// Player 1 ship length 5
 					if (ships_placed == 1) begin
-						all_ship_coords[(i*8) +: 4] = row;
-						all_ship_coords[(i*8) + 4 +: 4] = col;
+						all_ship_coords[(i * 8) +: 4] = row;
+						all_ship_coords[(i * 8) + 4 +: 4] = col;
 					// Player 1 ship length 4
 					end else if (ships_placed == 2) begin
-						all_ship_coords[(5*8) + (i*8) +: 4] = row;
-						all_ship_coords[(5*8) + (i*8) + 4 +: 4] = col;
+						all_ship_coords[(5 * 8) + (i * 8) +: 4] = row;
+						all_ship_coords[(5 * 8) + (i * 8) + 4 +: 4] = col;
 					// Player 1 ship length 3 (1)
 					end else if (ships_placed == 3) begin
-						all_ship_coords[(9*8) + (i*8) +: 4] = row;
-						all_ship_coords[(9*8) + (i*8) + 4 +: 4] = col;
+						all_ship_coords[(9 * 8) + (i * 8) +: 4] = row;
+						all_ship_coords[(9 * 8) + (i * 8) + 4 +: 4] = col;
 					// Player 1 ship length 3 (2)
 					end else if (ships_placed == 4) begin
-						all_ship_coords[(12*8) + (i*8) +: 4] = row;
-						all_ship_coords[(12*8) + (i*8) + 4 +: 4] = col;
+						all_ship_coords[(12 * 8) + (i * 8) +: 4] = row;
+						all_ship_coords[(12 * 8) + (i * 8) + 4 +: 4] = col;
 					// Player 1 ship length 2
 					end else if (ships_placed  == 5) begin
-						all_ship_coords[(15*8) + (i*8) +: 4] = row;
-						all_ship_coords[(15*8) + (i*8) + 4 +: 4] = col;
+						all_ship_coords[(15 * 8) + (i * 8) +: 4] = row;
+						all_ship_coords[(15 * 8) + (i * 8) + 4 +: 4] = col;
 					// Player 2 ship length 5
 					end else if (ships_placed == 6) begin
-						all_ship_coords[(17*8) + (i*8) +: 4] = row;
-						all_ship_coords[(17*8) + (i*8) + 4 +: 4] = col;
+						all_ship_coords[(17 * 8) + (i * 8) +: 4] = row;
+						all_ship_coords[(17 * 8) + (i * 8) + 4 +: 4] = col;
 					// Player 2 ship length 4
 					end else if (ships_placed == 7) begin
-						all_ship_coords[(22*8) + (i*8) +: 4] = row;
-						all_ship_coords[(22*8) + (i*8) + 4 +: 4] = col;
+						all_ship_coords[(22 * 8) + (i * 8) +: 4] = row;
+						all_ship_coords[(22 * 8) + (i * 8) + 4 +: 4] = col;
 					// Player 2 ship length 3 (1)
 					end else if (ships_placed == 8) begin
-						all_ship_coords[(26*8) + (i*8) +: 4] = row;
-						all_ship_coords[(26*8) + (i*8) + 4 +: 4] = col;
+						all_ship_coords[(26 * 8) + (i * 8) +: 4] = row;
+						all_ship_coords[(26 * 8) + (i * 8) + 4 +: 4] = col;
 					// Player 2 ship length 3 (2)
 					end else if (ships_placed == 9) begin
-						all_ship_coords[(29*8) + (i*8) +: 4] = row;
-						all_ship_coords[(29*8) + (i*8) + 4 +: 4] = col;
+						all_ship_coords[(29 * 8) + (i * 8) +: 4] = row;
+						all_ship_coords[(29 * 8) + (i * 8) + 4 +: 4] = col;
 					// Player 2 ship length 2
 					end else if (ships_placed  == 10) begin
-						all_ship_coords[(32*8) + (i*8) +: 4] = row;
-						all_ship_coords[(32*8) + (i*8) + 4 +: 4] = col;
+						all_ship_coords[(32 * 8) + (i * 8) +: 4] = row;
+						all_ship_coords[(32 * 8) + (i * 8) + 4 +: 4] = col;
 					end
 				end
 				
@@ -173,34 +169,28 @@ module game_logic(
 					
 				// More ships left to place
 				end else begin
-				
 					// Length 5 ship (1 each)
 					if (ships_placed % 5 == 0)
-						ship_size = 5;
-						
+						ship_size = 5;						
 					// Length 4 ship (1 each)
 					else if (ships_placed % 5 == 1)
-						ship_size = 4;
-						
+						ship_size = 4;						
 					// Length 3 ship (2 each)
 					else if (ships_placed % 5 == 2 or ships_placed % 5 == 3)
-						ship_size = 3;
-						
+						ship_size = 3;						
 					// Length 2 ship (1 each)
 					else if (ships_placed % 5 == 4)
-						ship_size = 2;
-					
+						ship_size = 2;					
 					// Initial ship placement
 					for (i = 0; i < ship_size; i = i + 1) begin
 						// Initial placement is horizontal
 						if (sw0 == 0) begin
-							ship_coords[i*8 +: 4] = 0;
-							ship_coords[(i*8) + 4 +: 4] = i;
-						
+							ship_coords[i * 8 +: 4] = 0;
+							ship_coords[(i * 8) + 4 +: 4] = i;						
 						// Initial placement is vertical
 						end else begin
-							ship_coords[i*8 +: 4] = i;
-							ship_coords[(i*8) + 4 +: 4] = 0;
+							ship_coords[i * 8 +: 4] = i;
+							ship_coords[(i * 8) + 4 +: 4] = 0;
 						end
 						
 						// Place ship for Player 1
@@ -209,8 +199,7 @@ module game_logic(
 							if (spot_type == SHIP)
 								p1_board[(row * 30) + (col * 3) +: 3] = OVERLAP_SHIP;
 							else
-								p1_board[(row * 30) + (col * 3) +: 3] = ACTIVE_SHIP;
-						
+								p1_board[(row * 30) + (col * 3) +: 3] = ACTIVE_SHIP;						
 						// Place ship for Player 2						
 						end else begin
 							spot_type = p2_board[(row * 30) + (col * 3) +: 3];
@@ -235,8 +224,7 @@ module game_logic(
 					p2_board[(row * 30) + (col * 3) +: 3] = ARR_MISS;					
 				end else if (spot_type == ARR_SHIP) begin
 					p2_board[(row * 30) + (col * 3) +: 3] = ARR_HIT;
-				end
-				
+				end				
 			// Player 2 attacking Player 1
 			end else begin
 				spot_type = p1_board[(row * 30) + (col * 3) +: 3];
@@ -245,33 +233,27 @@ module game_logic(
 				end else if (spot_type == ARR_SHIP) begin
 					p1_board[(row * 30) + (col * 3) +: 3] = ARR_HIT;
 				end
-			end
-			
-			turn = ~turn;
-			
+			end			
+			turn = ~turn;			
 		end
 	end
 	
 	always @(posedge btnL) begin
 		// Placement mode -- move ship left
-		if (mode == 0) begin
-		
+		if (mode == 0) begin		
 			// Make sure the move is valid
-			if (ship_coords[0 +: 4] != 0) begin
-				
+			if (ship_coords[0 +: 4] != 0) begin				
 				// Remove the active ship
 				for (i = 0; i < ship_size; i = i + 1) begin
-					row = ship_coords[i*8 +: 4];
-					col = ship_coords[(i*8) + 4 +: 4];
-					
+					row = ship_coords[i * 8 +: 4];
+					col = ship_coords[(i * 8) + 4 +: 4];					
 					// Player 1
 					if (turn == 0) begin
 						spot_type = p1_board[(row * 30) + (col * 3) +: 3];
 						if (spot_type == ARR_ACTIVE_SHIP)
 							p1_board[(row * 30) + (col * 3) +: 3] = ARR_BLANK;
 						else if (spot_type == ARR_OVERLAP_SHIP)
-							p1_board[(row * 30) + (col * 3) +: 3] = ARR_SHIP;
-						
+							p1_board[(row * 30) + (col * 3) +: 3] = ARR_SHIP;						
 					// Player 2
 					end else begin
 						spot_type = p2_board[(row * 30) + (col * 3) +: 3];
@@ -279,30 +261,27 @@ module game_logic(
 							p2_board[(row * 30) + (col * 3) +: 3] = ARR_BLANK;
 						else if (spot_type == ARR_OVERLAP_SHIP)
 							p2_board[(row * 30) + (col * 3) +: 3] = ARR_SHIP;
-
 					end
 				end
 				
 				// Update the coordinates
 				for (i = 0; i < ship_size; i = i + 1) begin
-					row = ship_coords[i*8 +: 4];
+					row = ship_coords[i * 8 +: 4];
 					row = row - 1;
-					ship_coords[i*8 +: 4] = row;
+					ship_coords[i * 8 +: 4] = row;
 				end
 				
 				// Replace the active ship with new position
 				for (i = 0; i < ship_size; i = i + 1) begin
-					row = ship_coords[i*8 +: 4];
-					col = ship_coords[(i*8) + 4 +: 4];
-					
+					row = ship_coords[i * 8 +: 4];
+					col = ship_coords[(i * 8) + 4 +: 4];					
 					// Player 1
 					if (turn == 0) begin
 						spot_type = p1_board[(row * 30) + (col * 3) +: 3];
 						if (spot_type == ARR_BLANK)
 							p1_board[(row * 30) + (col * 3) +: 3] = ARR_ACTIVE_SHIP;
 						else if (spot_type == ARR_SHIP)
-							p1_board[(row * 30) + (col * 3) +: 3] = ARR_OVERLAP_SHIP;
-						
+							p1_board[(row * 30) + (col * 3) +: 3] = ARR_OVERLAP_SHIP;						
 					// Player 2
 					end else begin
 						spot_type = p2_board[(row * 30) + (col * 3) +: 3];
@@ -310,12 +289,11 @@ module game_logic(
 							p2_board[(row * 30) + (col * 3) +: 3] = ARR_ACTIVE_SHIP;
 						else if (spot_type == ARR_SHIP)
 							p2_board[(row * 30) + (col * 3) +: 3] = ARR_OVERLAP_SHIP;
-
 					end
 				end
 			end
 
-		//Game mode -- reset
+		// Game mode -- reset
 		end else begin
 			for (i = 0; i < BOARD_SIZE; i = i + 3) begin
 				p1_board[i +: 3] = ARR_BLANK;
@@ -325,12 +303,12 @@ module game_logic(
 			ships_placed = 0;
 			ship_size = 5;
 			for (i = 0; i < ship_size; i = i + 1) begin
-				ship_coords[i*8 +: 4] = 0;
-				ship_coords[(i*8) + 4 +: 4] = i;
+				ship_coords[i * 8 +: 4] = 0;
+				ship_coords[(i * 8) + 4 +: 4] = i;
 			end
 			for (i = 0; i < ship_size; i = i + 1) begin
-				row = ship_coords[i*8 +: 4];
-				col = ship_coords[(i*8) + 4 +: 4];
+				row = ship_coords[i * 8 +: 4];
+				col = ship_coords[(i * 8) + 4 +: 4];
 				p1_board[(row * 30) + (col * 3) +: 3] = ARR_ACTIVE_SHIP;
 			end
 		end
@@ -338,24 +316,20 @@ module game_logic(
 	
 	always @(posedge btnR) begin
 		// Placement mode -- move ship right
-		if (mode == 0) begin
-			
+		if (mode == 0) begin			
 			// Make sure the move is valid
-			if (ship_coords[(ship_size-1) * 8 +: 4] != 9) begin
-				
+			if (ship_coords[(ship_size - 1) * 8 +: 4] != 9) begin				
 				// Remove the active ship
 				for (i = 0; i < ship_size; i = i + 1) begin
-					row = ship_coords[i*8 +: 4];
-					col = ship_coords[(i*8) + 4 +: 4];
-					
+					row = ship_coords[i * 8 +: 4];
+					col = ship_coords[(i * 8) + 4 +: 4];					
 					// Player 1
 					if (turn == 0) begin
 						spot_type = p1_board[(row * 30) + (col * 3) +: 3];
 						if (spot_type == ARR_ACTIVE_SHIP)
 							p1_board[(row * 30) + (col * 3) +: 3] = ARR_BLANK;
 						else if (spot_type == ARR_OVERLAP_SHIP)
-							p1_board[(row * 30) + (col * 3) +: 3] = ARR_SHIP;
-						
+							p1_board[(row * 30) + (col * 3) +: 3] = ARR_SHIP;						
 					// Player 2
 					end else begin
 						spot_type = p2_board[(row * 30) + (col * 3) +: 3];
@@ -363,30 +337,27 @@ module game_logic(
 							p2_board[(row * 30) + (col * 3) +: 3] = ARR_BLANK;
 						else if (spot_type == ARR_OVERLAP_SHIP)
 							p2_board[(row * 30) + (col * 3) +: 3] = ARR_SHIP;
-
 					end
 				end
 				
 				// Update the coordinates
 				for (i = 0; i < ship_size; i = i + 1) begin
-					row = ship_coords[i*8 +: 4];
+					row = ship_coords[i * 8 +: 4];
 					row = row + 1;
-					ship_coords[i*8 +: 4] = row;
+					ship_coords[i * 8 +: 4] = row;
 				end
 				
 				// Replace the active ship with new position
 				for (i = 0; i < ship_size; i = i + 1) begin
-					row = ship_coords[i*8 +: 4];
-					col = ship_coords[(i*8) + 4 +: 4];
-					
+					row = ship_coords[i * 8 +: 4];
+					col = ship_coords[(i * 8) + 4 +: 4];					
 					// Player 1
 					if (turn == 0) begin
 						spot_type = p1_board[(row * 30) + (col * 3) +: 3];
 						if (spot_type == ARR_BLANK)
 							p1_board[(row * 30) + (col * 3) +: 3] = ARR_ACTIVE_SHIP;
 						else if (spot_type == ARR_SHIP)
-							p1_board[(row * 30) + (col * 3) +: 3] = ARR_OVERLAP_SHIP;
-						
+							p1_board[(row * 30) + (col * 3) +: 3] = ARR_OVERLAP_SHIP;						
 					// Player 2
 					end else begin
 						spot_type = p2_board[(row * 30) + (col * 3) +: 3];
@@ -394,7 +365,6 @@ module game_logic(
 							p2_board[(row * 30) + (col * 3) +: 3] = ARR_ACTIVE_SHIP;
 						else if (spot_type == ARR_SHIP)
 							p2_board[(row * 30) + (col * 3) +: 3] = ARR_OVERLAP_SHIP;
-
 					end
 				end
 			end
@@ -403,24 +373,20 @@ module game_logic(
 	
 	always @(posedge btnU) begin
 		// Placement mode -- move ship up
-		if (mode == 0) begin
-			
+		if (mode == 0) begin			
 			// Make sure the move is valid
-			if (ship_coords[4 +: 4] != 0) begin
-				
+			if (ship_coords[4 +: 4] != 0) begin				
 				// Remove the active ship
 				for (i = 0; i < ship_size; i = i + 1) begin
-					row = ship_coords[i*8 +: 4];
-					col = ship_coords[(i*8) + 4 +: 4];
-					
+					row = ship_coords[i * 8 +: 4];
+					col = ship_coords[(i * 8) + 4 +: 4];					
 					// Player 1
 					if (turn == 0) begin
 						spot_type = p1_board[(row * 30) + (col * 3) +: 3];
 						if (spot_type == ARR_ACTIVE_SHIP)
 							p1_board[(row * 30) + (col * 3) +: 3] = ARR_BLANK;
 						else if (spot_type == ARR_OVERLAP_SHIP)
-							p1_board[(row * 30) + (col * 3) +: 3] = ARR_SHIP;
-						
+							p1_board[(row * 30) + (col * 3) +: 3] = ARR_SHIP;						
 					// Player 2
 					end else begin
 						spot_type = p2_board[(row * 30) + (col * 3) +: 3];
@@ -428,30 +394,27 @@ module game_logic(
 							p2_board[(row * 30) + (col * 3) +: 3] = ARR_BLANK;
 						else if (spot_type == ARR_OVERLAP_SHIP)
 							p2_board[(row * 30) + (col * 3) +: 3] = ARR_SHIP;
-
 					end
 				end
 				
 				// Update the coordinates
 				for (i = 0; i < ship_size; i = i + 1) begin
-					col = ship_coords[(i*8) + 4 +: 4];
+					col = ship_coords[(i * 8) + 4 +: 4];
 					col = col - 1;
-					ship_coords[(i*8) + 4 +: 4] = col;
+					ship_coords[(i * 8) + 4 +: 4] = col;
 				end
 				
 				// Replace the active ship with new position
 				for (i = 0; i < ship_size; i = i + 1) begin
-					row = ship_coords[i*8 +: 4];
-					col = ship_coords[(i*8) + 4 +: 4];
-					
+					row = ship_coords[i * 8 +: 4];
+					col = ship_coords[(i * 8) + 4 +: 4];					
 					// Player 1
 					if (turn == 0) begin
 						spot_type = p1_board[(row * 30) + (col * 3) +: 3];
 						if (spot_type == ARR_BLANK)
 							p1_board[(row * 30) + (col * 3) +: 3] = ARR_ACTIVE_SHIP;
 						else if (spot_type == ARR_SHIP)
-							p1_board[(row * 30) + (col * 3) +: 3] = ARR_OVERLAP_SHIP;
-						
+							p1_board[(row * 30) + (col * 3) +: 3] = ARR_OVERLAP_SHIP;						
 					// Player 2
 					end else begin
 						spot_type = p2_board[(row * 30) + (col * 3) +: 3];
@@ -468,24 +431,20 @@ module game_logic(
 	
 	always @(posedge btnD) begin
 		// Placement mode -- move ship down
-		if (mode == 0) begin
-			
+		if (mode == 0) begin			
 			// Make sure the move is valid
-			if (ship_coords[(ship_size-1) * 8 + 4 +: 4] != 9) begin
-				
+			if (ship_coords[(ship_size - 1) * 8 + 4 +: 4] != 9) begin			
 				// Remove the active ship
 				for (i = 0; i < ship_size; i = i + 1) begin
-					row = ship_coords[i*8 +: 4];
-					col = ship_coords[(i*8) + 4 +: 4];
-					
+					row = ship_coords[i * 8 +: 4];
+					col = ship_coords[(i * 8) + 4 +: 4];					
 					// Player 1
 					if (turn == 0) begin
 						spot_type = p1_board[(row * 30) + (col * 3) +: 3];
 						if (spot_type == ARR_ACTIVE_SHIP)
 							p1_board[(row * 30) + (col * 3) +: 3] = ARR_BLANK;
 						else if (spot_type == ARR_OVERLAP_SHIP)
-							p1_board[(row * 30) + (col * 3) +: 3] = ARR_SHIP;
-						
+							p1_board[(row * 30) + (col * 3) +: 3] = ARR_SHIP;						
 					// Player 2
 					end else begin
 						spot_type = p2_board[(row * 30) + (col * 3) +: 3];
@@ -493,30 +452,27 @@ module game_logic(
 							p2_board[(row * 30) + (col * 3) +: 3] = ARR_BLANK;
 						else if (spot_type == ARR_OVERLAP_SHIP)
 							p2_board[(row * 30) + (col * 3) +: 3] = ARR_SHIP;
-
 					end
 				end
 				
 				// Update the coordinates
 				for (i = 0; i < ship_size; i = i + 1) begin
-					col = ship_coords[(i*8) + 4 +: 4];
+					col = ship_coords[(i * 8) + 4 +: 4];
 					col = col + 1;
-					ship_coords[(i*8) + 4 +: 4] = col;
+					ship_coords[(i * 8) + 4 +: 4] = col;
 				end
 				
 				// Replace the active ship with new position
 				for (i = 0; i < ship_size; i = i + 1) begin
-					row = ship_coords[i*8 +: 4];
-					col = ship_coords[(i*8) + 4 +: 4];
-					
+					row = ship_coords[i * 8 +: 4];
+					col = ship_coords[(i * 8) + 4 +: 4];					
 					// Player 1
 					if (turn == 0) begin
 						spot_type = p1_board[(row * 30) + (col * 3) +: 3];
 						if (spot_type == ARR_BLANK)
 							p1_board[(row * 30) + (col * 3) +: 3] = ARR_ACTIVE_SHIP;
 						else if (spot_type == ARR_SHIP)
-							p1_board[(row * 30) + (col * 3) +: 3] = ARR_OVERLAP_SHIP;
-						
+							p1_board[(row * 30) + (col * 3) +: 3] = ARR_OVERLAP_SHIP;						
 					// Player 2
 					end else begin
 						spot_type = p2_board[(row * 30) + (col * 3) +: 3];
@@ -524,7 +480,6 @@ module game_logic(
 							p2_board[(row * 30) + (col * 3) +: 3] = ARR_ACTIVE_SHIP;
 						else if (spot_type == ARR_SHIP)
 							p2_board[(row * 30) + (col * 3) +: 3] = ARR_OVERLAP_SHIP;
-
 					end
 				end
 			end
@@ -536,17 +491,15 @@ module game_logic(
 		if (mode == 0) begin
 			// Remove the active ship
 			for (i = 0; i < ship_size; i = i + 1) begin
-				row = ship_coords[i*8 +: 4];
-				col = ship_coords[(i*8) + 4 +: 4];
-				
+				row = ship_coords[i * 8 +: 4];
+				col = ship_coords[(i * 8) + 4 +: 4];				
 				// Player 1
 				if (turn == 0) begin
 					spot_type = p1_board[(row * 30) + (col * 3) +: 3];
 					if (spot_type == ARR_ACTIVE_SHIP)
 						p1_board[(row * 30) + (col * 3) +: 3] = ARR_BLANK;
 					else if (spot_type == ARR_OVERLAP_SHIP)
-						p1_board[(row * 30) + (col * 3) +: 3] = ARR_SHIP;
-					
+						p1_board[(row * 30) + (col * 3) +: 3] = ARR_SHIP;					
 				// Player 2
 				end else begin
 					spot_type = p2_board[(row * 30) + (col * 3) +: 3];
@@ -554,7 +507,6 @@ module game_logic(
 						p2_board[(row * 30) + (col * 3) +: 3] = ARR_BLANK;
 					else if (spot_type == ARR_OVERLAP_SHIP)
 						p2_board[(row * 30) + (col * 3) +: 3] = ARR_SHIP;
-
 				end
 			end
 			
@@ -562,31 +514,27 @@ module game_logic(
 			row = ship_coords[0 +: 4];
 			col = ship_coords[4 +: 4];
 			// Shift upwards so there is room to rotate
-			if ((row + ship_size) > 10) begin
-				for (i = 0; i < ship_size; i = i + 1) begin
-					ship_coords[(i*8) +: 4] = 10 - ship_size;
-				end
+			if (row + ship_size > 10) begin
+				for (i = 0; i < ship_size; i = i + 1)
+					ship_coords[(i * 8) +: 4] = 10 - ship_size;
 				row = 10 - ship_size;
 			end
 			// Rotate row vertically
 			for (i = 0; i < ship_size; i = i + 1) begin
-				ship_coords[(i*8) +: 4] = row + i;
-				ship_coords[(i*8) + 4 +: 4] = col;
-			end
-			
+				ship_coords[(i * 8) +: 4] = row + i;
+				ship_coords[(i * 8) + 4 +: 4] = col;
+			end			
 			// Replace the active ship with new position
 			for (i = 0; i < ship_size; i = i + 1) begin
-				row = ship_coords[i*8 +: 4];
-				col = ship_coords[(i*8) + 4 +: 4];
-				
+				row = ship_coords[i * 8 +: 4];
+				col = ship_coords[(i * 8) + 4 +: 4];				
 				// Player 1
 				if (turn == 0) begin
 					spot_type = p1_board[(row * 30) + (col * 3) +: 3];
 					if (spot_type == ARR_BLANK)
 						p1_board[(row * 30) + (col * 3) +: 3] = ARR_ACTIVE_SHIP;
 					else if (spot_type == ARR_SHIP)
-						p1_board[(row * 30) + (col * 3) +: 3] = ARR_OVERLAP_SHIP;
-					
+						p1_board[(row * 30) + (col * 3) +: 3] = ARR_OVERLAP_SHIP;					
 				// Player 2
 				end else begin
 					spot_type = p2_board[(row * 30) + (col * 3) +: 3];
@@ -604,17 +552,15 @@ module game_logic(
 		if (mode == 0) begin
 			// Remove the active ship
 			for (i = 0; i < ship_size; i = i + 1) begin
-				row = ship_coords[i*8 +: 4];
-				col = ship_coords[(i*8) + 4 +: 4];
-				
+				row = ship_coords[i * 8 +: 4];
+				col = ship_coords[(i * 8) + 4 +: 4];				
 				// Player 1
 				if (turn == 0) begin
 					spot_type = p1_board[(row * 30) + (col * 3) +: 3];
 					if (spot_type == ARR_ACTIVE_SHIP)
 						p1_board[(row * 30) + (col * 3) +: 3] = ARR_BLANK;
 					else if (spot_type == ARR_OVERLAP_SHIP)
-						p1_board[(row * 30) + (col * 3) +: 3] = ARR_SHIP;
-					
+						p1_board[(row * 30) + (col * 3) +: 3] = ARR_SHIP;					
 				// Player 2
 				end else begin
 					spot_type = p2_board[(row * 30) + (col * 3) +: 3];
@@ -622,39 +568,34 @@ module game_logic(
 						p2_board[(row * 30) + (col * 3) +: 3] = ARR_BLANK;
 					else if (spot_type == ARR_OVERLAP_SHIP)
 						p2_board[(row * 30) + (col * 3) +: 3] = ARR_SHIP;
-
 				end
-			end
-			
+			end			
 			// Update the coordinates
 			row = ship_coords[0 +: 4];
 			col = ship_coords[4 +: 4];
 			// Shift upwards so there is room to rotate
-			if ((col + ship_size) > 10) begin
+			if (col + ship_size > 10) begin
 				for (i = 0; i < ship_size; i = i + 1) begin
-					ship_coords[(i*8) +: 4] = 10 - ship_size;
+					ship_coords[(i * 8) +: 4] = 10 - ship_size;
 				end
 				col = 10 - ship_size;
 			end
 			// Rotate column horizontally
 			for (i = 0; i < ship_size; i = i + 1) begin
-				ship_coords[(i*8) +: 4] = row;
-				ship_coords[(i*8) + 4 +: 4] = col + i;
-			end
-			
+				ship_coords[(i * 8) +: 4] = row;
+				ship_coords[(i * 8) + 4 +: 4] = col + i;
+			end			
 			// Replace the active ship with new position
 			for (i = 0; i < ship_size; i = i + 1) begin
-				row = ship_coords[i*8 +: 4];
-				col = ship_coords[(i*8) + 4 +: 4];
-				
+				row = ship_coords[i * 8 +: 4];
+				col = ship_coords[(i * 8) + 4 +: 4];				
 				// Player 1
 				if (turn == 0) begin
 					spot_type = p1_board[(row * 30) + (col * 3) +: 3];
 					if (spot_type == ARR_BLANK)
 						p1_board[(row * 30) + (col * 3) +: 3] = ARR_ACTIVE_SHIP;
 					else if (spot_type == ARR_SHIP)
-						p1_board[(row * 30) + (col * 3) +: 3] = ARR_OVERLAP_SHIP;
-					
+						p1_board[(row * 30) + (col * 3) +: 3] = ARR_OVERLAP_SHIP;					
 				// Player 2
 				end else begin
 					spot_type = p2_board[(row * 30) + (col * 3) +: 3];
@@ -662,7 +603,6 @@ module game_logic(
 						p2_board[(row * 30) + (col * 3) +: 3] = ARR_ACTIVE_SHIP;
 					else if (spot_type == ARR_SHIP)
 						p2_board[(row * 30) + (col * 3) +: 3] = ARR_OVERLAP_SHIP;
-
 				end
 			end
 		end
@@ -672,17 +612,14 @@ module game_logic(
 	always @(*) begin
 		ship_counter = 0;
 		p1_ship_counter = 0;
-		p2_ship_counter = 0;
-		
+		p2_ship_counter = 0;		
 		// Check for the ships that are hit
 		for (c_i = 0; c_i < 34; c_i = c_i + 1) begin
-			row = all_ship_coords[(c_i*8) +: 4];
-			col = all_ship_coords[(c_i*8) + 4 +: 4];
-			
+			row = all_ship_coords[(c_i * 8) +: 4];
+			col = all_ship_coords[(c_i * 8) + 4 +: 4];			
 			// Checking ships for Player 1
 			if (c_i < 17) begin
-				spot_type = p1_board[(row * 30) + (col * 3) +: 3];
-			
+				spot_type = p1_board[(row * 30) + (col * 3) +: 3];			
 				// Length 5 ship
 				if (c_i < 5 && spot_type == SHIP)
 					ship_counter[0] = 1'b1;
@@ -697,12 +634,10 @@ module game_logic(
 					ship_counter[3] = 1'b1;
 				// Length 2 ship
 				else if (spot_type == SHIP)
-					ship_counter[4] = 1'b1;
-			
+					ship_counter[4] = 1'b1;			
 			// Checking ships for Player 2
 			end else begin
-				spot_type = p2_board[(row * 30) + (col * 3) +: 3];
-			
+				spot_type = p2_board[(row * 30) + (col * 3) +: 3];			
 				// Length 5 ship
 				if ((c_i % 17) < 5 && spot_type == SHIP)
 					ship_counter[5] = 1'b1;
@@ -717,8 +652,7 @@ module game_logic(
 					ship_counter[8] = 1'b1;
 				// Length 2 ship
 				else if (spot_type == SHIP)
-					ship_counter[9] = 1'b1;
-				
+					ship_counter[9] = 1'b1;				
 			end
 		end
 		
@@ -738,8 +672,7 @@ module game_logic(
 			end else begin
 				p1_ships = 5;
 				p2_ships = ships_placed - 5;
-			end
-			
+			end			
 		// Game mode
 		end else begin
 			p1_ships = p1_ship_counter;
