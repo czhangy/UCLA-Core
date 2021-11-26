@@ -1,0 +1,4 @@
+1. >
+    The value of i is: 7
+
+2. e): This ordering is most effective at negating any spatial locality present.
