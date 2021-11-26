@@ -1,0 +1,45 @@
+- Installed Node.js 14.15.0 from https://nodejs.org/en/
+- Create a React app calld my-app using npx create-react-app my-app
+- Delete the contents of my-app/src
+- Create files index.css and index.js in my-app/src
+- Add given code to files using notepad --> able to run through 
+  localhost after running npm start
+- Passed data from Board to Square using value prop within renderSquare
+  function --> caused values to show up on board
+- Added click functionality to button within Square by adding 
+  attributes to the button tag in Square --> interactive board
+- Added X's appearing on click by adding a constructor to Square 
+  to allow it to use state
+- Added a constructor to the Board to allow it to maintain a 
+  shared state
+- Modified the return value of renderSquare to reference the 
+  array in the state of Board
+- Modified the return value of renderSquare to pass down the 
+  onClick function to square
+- Modified Square so that it no longer keeps its own state and 
+  instead communicates to Board
+- Added the handleClick function to Board to define what Board 
+  should do upon click --> allows us to click again without crashes
+- Square component is replaced by a function component
+- Added turn functionality through modifying handleClick and the 
+  default state of Board --> X's and O's can take turns now
+- Changed status through modifying Board's render function 
+  to display correct turn
+- Copied calculateWinner helper function into file
+- Used calculateWinner in Board's render function to check 
+  for a winning board and display if necessary
+- Forced handleClick function to return early if someone had won the game
+  to prevent game from continuing
+- Add a constructor to the Game component to allow it to handle game 
+  history
+- Modify the Board component to lift state to the Game component
+- Update the render function in Game to update the game's status and
+  remove the corresponding code in Board's render function
+- Moved handleClick to the Game component and added extra modifications
+  to update history
+- Added mappings from buttons to history of the game into the Game's
+  render function
+- Added a key to the newly constructed dynamic list
+- Implemented the jumpTo function for history's functionality
+- Modified handleClick so that 'time travel' is functional
+  
