@@ -1,0 +1,25 @@
+a) I ran into 2 notable obstacles during the creation of this program. The first involved using a letter input for amountPaid, which proceeded to print the next prompt correctly, but immediately took in "---" as an input, causing an error message to appear. I didn't resolve this issue because the spec says not to expect non-numbers as a test.
+
+I also ran into an issue when going above 40 or above 250 for amountPaid. When calculating, the suggested fine was always higher than expected. This was resolved when I noticed that I had to subtract 40 and 250 from the amountPaid when calculating the fine, because the percentages only applied to the additional amounts paid.
+
+b) 
+Empty response for Defendant ( ) - error
+Negative number for amount paid (test, -2) - error
+Zero for amount paid (test, 0, y) - 20.0
+Empty response for amount paid (test, ) (should not be required, program fails)
+Letter for amount paid (test, g) (should not be required, program fails)
+Empty response for fake athlete (test, 40, ) - error
+Other letter for fake athlete (test, 40, x) - error
+Less than 40 for amount paid, fake athlete (test, 25, y) - 36.5
+40 for amount paid, fake athlete (test, 40, y) - 46.4
+Between 40 and 250 for amount paid, fake athlete (test, 150, y) - 70.6
+250 for amount paid, fake athlete (test, 250, y) - 92.6
+Greater than 250 for amount paid, fake athlete (test, 300, y) - 99.6
+Less than 40 for amount paid, no fake athlete (test, 25, n) - 36.5
+40 for amount paid, no fake athlete (test, 40, n) - 46.4
+Between 40 and 250 for amount paid, no fake athlete (test, 150, n) - 57.4
+250 for amount paid, no fake athlete (test, 250, n) - 67.4
+Greater than 250 for amount paid, no fake athlete (test, 300, n) - 74.4
+Less than 40 for amount paid, non-integer (test, 15.222, n) - 30.0
+Between 40 and 250 for amount paid, non-integer (test, 150.222, n) - 57.4
+Greater than 250 for amount paid, non-integer (test, 275.222, n) - 70.9
