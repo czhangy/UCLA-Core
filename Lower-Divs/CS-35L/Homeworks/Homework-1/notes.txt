@@ -1,0 +1,20 @@
+1. mv is located at /usr/local/cs/bin/mv and sh is located at /usr/bin/sh
+2. ar - Creates, modifies, and extracts from archives
+   pr - Converts text files for printing
+   tr - Transliterates words
+3. /etc/alternatives/emacs
+4. /usr/bin/gcc is Version 4.8.5-39, while plain gcc is version 10.2.0. There are multiple versions of gcc because one copy of the program is on the server and the other copy is local.
+5. The u+sx part means that, for the user that owns it, execution permissions are granted and the file will set user ID on execution. The o-w part means that other users not in the file's group are given writing permissions.
+6. This can be done using the shell command "find /usr/local/cs -type d -mtime -28", which recursively searches the directory /usr/local/cs for directories modified in the last 28 days.
+7. 280
+8. librom1394.so.0.3.0
+9. /usr/lib/locale/locale-archive and /usr/share/i18n/locales
+10. downcase-dwim, downcase-region, downcase-word
+11. C-M-r: Searches backwards in the file for an input regular expression
+    C-M-s: Searches forwards in the file for an input regular expression
+    C-M-t: Interchanges regualar expressions around a pivot point
+    C-M-u: Moves out of the current level of parens
+    C-M-v: Scrolls the next window upwards by a given number of lines or a full screen if no number given
+12. C-g aborts the current command sequence by signaling a quit condition
+13. Yank is the Emacs analog of pasting, and can be done using C-y
+14. Dired has the same output as ls -al, not ls -l, so more contents are visible
