@@ -1,7 +1,0 @@
-- Used git grep -n 'Even newspaper reports present contradictory information.'
-	- Outputs the file name the phrase occurs in and the line number it occurs at (-n flag)
-	- Phrase occurs at line 890 of file northamerica
-- Used git log -L 890,+1:northamerica
-	- Outputs the history of line 890 in the file northamerica
-- Manually checked for the earliest commit containing the desired phrase
-- Phrase added by Arthur David Olsen on Dec. 21st, 1995

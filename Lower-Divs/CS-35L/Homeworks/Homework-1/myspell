@@ -1,2 +1,0 @@
-#!/bin/bash
-tr -cs 'A-Za-z' '[\n*]' </dev/stdin | sort -u | comm -23 - <(tr -cs 'A-Za-z' '[\n*]' <sorted.words | sort -u)

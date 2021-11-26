@@ -1,9 +1,0 @@
-{
-    "raptor": {
-        "dependencies": [
-            { "module": "raptor/widgets" },
-            "dmkcomponent-widget.js",
-            "dmkcomponent.css"
-        ]
-    }
-}

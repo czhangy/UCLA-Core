@@ -1,9 +1,0 @@
-1. I see a tree structure that details the mergepoint and the branches that 
-   come into/from it. This, along with author/date of commit information is 
-   displayed in the top subwindow. In the bottom left, there is a screen with
-   more details about the merge, including parent and child commits, the branch
-   the commit is located in, and the author/committer. The bottom right window
-   seems to be for comments, although it is empty for this merge.
-
-3. The Savannah clone of Emacs contains only the master branch, while the one
-   in ~eggert/src/gnu/emacs contains all of the branches explored using gitk
