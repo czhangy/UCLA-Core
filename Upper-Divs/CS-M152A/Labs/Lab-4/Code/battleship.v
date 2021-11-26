@@ -72,15 +72,21 @@ module battleship(
 	reg [BOARD_SIZE - 1:0] p2_board;
 	initial begin
 		for (i = 0; i < BOARD_SIZE; i = i + 3) begin
-			p1_board[i +: 3] = 0;
-			p2_board[i +: 3] = 0;
+			p1_board[i +: 3] = ARR_BLANK;
+			p2_board[i +: 3] = ARR_BLANK;
 		end
 	end
 	
-	// Track player turn
+	// Track player turn (0 is p1, 1 is p2)
 	reg turn;
 	initial begin
 		turn = 0;
+	end
+	
+	// Track game mode (0 is placement, 1 is play)
+	reg mode;
+	initial begin
+		mode = 0;
 	end
 
 	// Debounce all inputs
@@ -108,6 +114,31 @@ module battleship(
 		.clk_ssd(clk_ssd),
 		.clk_vga(clk_vga)
 	);
+	
+	// Determine the game mode and handle logic
+	game game_logic(
+		.clk(clk),
+		.rst(rst),
+		.btnC(btnC),
+		.btnL(btnL),
+		.btnR(btnR),
+		.btnU(btnU),
+		.btnD(btnD),
+		.sw0(sw0),
+		.sw1(sw1),
+		.sw2(sw2),
+		.sw3(sw3),
+		.sw4(sw4),
+		.sw5(sw5),
+		.sw6(sw6),
+		.sw7(sw7),
+		.p1_board(p1_board),
+		.p2_board(p2_board),
+		.p1_ships(p1_ships),
+		.p2_ships(p2_ships),
+		.mode(mode),
+		.turn(turn)
+	)
 	
 	// Handle SSD
 	ssd ssd_display(
