@@ -1,4 +1,4 @@
-# COM SCI 181 - Introduction to Formal Languages and Automata Theory
+# CS 181 - Introduction to Formal Languages and Automata Theory
 
 # Campbell - Spring '21
 
