@@ -19,7 +19,7 @@
 
 ## Labs
 
-| Name                       |  Score  |
+| Lab                        |  Score  |
 | :------------------------- | :-----: |
 | 0. A Kernel Seedling       | 100/100 |
 | 1. Pipe Up                 | 100/100 |
