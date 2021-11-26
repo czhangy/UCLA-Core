@@ -1,0 +1,59 @@
+<c:template
+    xmlns:c="core"
+    xmlns:html="html"
+    xmlns:optimizer="optimizer"
+    xmlns:w="widgets"
+    xmlns:async="async"
+    xmlns:app="app"
+    xmlns:gh="ebay-global-header"
+    xmlns:rui="raptor-ui"
+    xmlns:reload="raptor-hot-reload"
+    params="">
+
+    <gh:configure layout="full" category-id="0" />
+
+    <optimizer:page name="search-results" cache-key="search-results">
+        <dependencies>
+            <js url="http://code.jquery.com/jquery-1.8.3.js"/>
+            <module name="raptor"/>
+            <ebay-global-header/>
+            <module name="raptor/widgets"/>
+            <module name="ui/components/buttons/simple-button"/>
+            <module name="ebay/ui/buttons/Button"/>
+            <module name="ebay/ui/buttons/MenuButton"/>
+            <module name="ebay/ui/containers/Tabs"/>
+            <module name="ui/components/ebay/search/search-results-container"/>
+            <css path="search-results.css"/>
+        </dependencies>
+    </optimizer:page>    
+
+    <html html:doctype="html">
+        <head>
+            <title>Search Results Demo | CubeJS</title>
+            <optimizer:slot name="head"/>
+        </head>
+        <body>
+            <gh:header/>
+
+            <h1>Search Results Demo</h1>
+ 
+            <optimizer:slot name="body"/>
+            
+            <async:fragment dependency="searchResults" var="searchResults">
+                <app:search-results-container search-results="searchResults"/>
+                <w:init-widgets/>
+                <div style="clear: both"/>
+            </async:fragment>
+
+            
+            <w:init-widgets/>
+            
+            <gh:footer/>
+
+            
+            <w:init-widgets/>
+
+            <reload:auto-reload enabled="true"/>
+        </body>
+    </html>
+</c:template>
