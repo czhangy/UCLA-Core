@@ -61,3 +61,6 @@ parameter TOP_BORDER = 0;
 parameter LEFT_BORDER = 0
 parameter BOTTOM_BORDER = BLOCK_SIZE - 1;
 parameter RIGHT_BORDER = BLOCK_SIZE - 1;
+
+// Ship coordinates
+parameter ALL_SHIP_COORDS = 272;
