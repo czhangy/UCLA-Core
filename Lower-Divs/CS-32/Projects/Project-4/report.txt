@@ -1,0 +1,7 @@
+StreetMap::load(): If the document being read holds N lines, then load() is O(N)
+
+StreetMap::getSegmentsThatStartWith(): If a given GeoCoord has N segments associated with it, then getSegmentsThatStartWith() is O(N)
+
+PointToPointRouter::generatePointToPointRoute(): If N is the number of segments in the mapping data, S is the average number of segments connected to each GeoCoord, and C is the number of segments connecting the beginning to the end, then generatePointToPointRoute() is O(NS + C)
+
+DeliveryOptimizer::optimizeDeliveryOrder(): If N is the number of deliveries to be made, then optimizeDeliveryOrder() is O(N)
