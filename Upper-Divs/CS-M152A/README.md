@@ -1,4 +1,4 @@
-# COM SCI M152A - Introductory Digital Design Laboratory
+# CS M152A - Introductory Digital Design Laboratory
 
 # Sarrafzadeh - Fall '21
 
