@@ -1,1 +1,0 @@
-printf(“%s”, magic8ball[3][4]); prints out "Wrong".
