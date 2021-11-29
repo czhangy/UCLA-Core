@@ -141,6 +141,9 @@ module battleship(
 		.cathode(cathode),
 		.anode(anode)
 	);
+
+	wire [1:0] game_state;
+	assign game_state = 2;
 	
 	// Handle VGA
 	vga vga_display(
@@ -149,6 +152,7 @@ module battleship(
 		.player_turn(turn),
 		.p1_board(p1_board),
 		.p2_board(p2_board),
+		.game_state(game_state),
 		.hsync(hsync),
 		.vsync(vsync),
 		.rgb(rgb)
