@@ -53,17 +53,28 @@ module ssd(
 		// Handle P1's right digit
 		end else if (digit == 1) begin
 			digit <= digit + 1;
-			cathode <= p1_cathode;
+			if (game_state == 2 || game_state == 3)
+				cathode <= ST_P;
+			else
+				cathode <= p1_cathode;
 			anode <= P1_RIGHT;
 		// Handle P2's left digit
 		end else if (digit == 2) begin
 			digit <= digit + 1;
-			cathode <= ST_OFF;
+			if (game_state == 2)
+				cathode <= ST_001;
+			else if (game_state == 3)
+				cathode <= ST_010;
+			else
+				cathode <= ST_OFF;
 			anode <= P2_LEFT;
 		// Handle P2's right digit
 		end else if (digit == 3) begin
 			digit <= 0;
-			cathode <= p2_cathode;
+			if (game_state == 2 || game_state == 3)
+				cathode <= ST_OFF;
+			else
+				cathode <= p2_cathode;
 			anode <= P2_RIGHT;
 		end
 	end
