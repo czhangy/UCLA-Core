@@ -44,6 +44,7 @@ parameter ARR_MISS = 5;
 
 // Game board colors
 parameter BLACK = 0;
+parameter WHITE = 8'b11111111
 parameter BLANK = 8'b00011111; 		    // Cyan
 parameter SHIP = 8'b11111111; 	        // White
 parameter ACTIVE_SHIP = 8'b00011100; 	// Green

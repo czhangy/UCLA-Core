@@ -25,6 +25,7 @@ module vga(
 	input player_turn,
 	input [BOARD_SIZE - 1:0] p1_board,
 	input [BOARD_SIZE - 1:0] p2_board,
+	input [1:0] game_state,
 	// Outputs
 	output hsync,
 	output vsync,
