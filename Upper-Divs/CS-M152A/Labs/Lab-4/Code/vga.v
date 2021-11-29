@@ -69,88 +69,100 @@ module vga(
 	assign vsync = (v_counter < VPULSE) ? 0 : 1;
 
 	always @(*) begin
-		// Set row
-		if (v_counter < VBP + HEADER)
-			row = OUT_OF_BOUNDS;
-		else if (v_counter <= VBP + HEADER + BLOCK_SIZE)
-			row = 0;
-		else if (v_counter <= VBP + HEADER + BLOCK_SIZE * 2)
-			row = 1;
-		else if (v_counter <= VBP + HEADER + BLOCK_SIZE * 3)
-			row = 2;
-		else if (v_counter <= VBP + HEADER + BLOCK_SIZE * 4)
-			row = 3;
-		else if (v_counter <= VBP + HEADER + BLOCK_SIZE * 5)
-			row = 4;
-		else if (v_counter <= VBP + HEADER + BLOCK_SIZE * 6)
-			row = 5;
-		else if (v_counter <= VBP + HEADER + BLOCK_SIZE * 7)
-			row = 6;
-		else if (v_counter <= VBP + HEADER + BLOCK_SIZE * 8)
-			row = 7;
-		else if (v_counter <= VBP + HEADER + BLOCK_SIZE * 9)
-			row = 8;
-		else if (v_counter <= VBP + HEADER + BLOCK_SIZE * 10)
-			row = 9;
-		else
-			row = OUT_OF_BOUNDS;
-		// Set column
-		if (h_counter < HBP + MARGIN)
-			col = OUT_OF_BOUNDS;
-		else if (h_counter <= HBP + MARGIN + BLOCK_SIZE)
-			col = 0;
-		else if (h_counter <= HBP + MARGIN + BLOCK_SIZE * 2)
-			col = 1;
-		else if (h_counter <= HBP + MARGIN + BLOCK_SIZE * 3)
-			col = 2;
-		else if (h_counter <= HBP + MARGIN + BLOCK_SIZE * 4)
-			col = 3;
-		else if (h_counter <= HBP + MARGIN + BLOCK_SIZE * 5)
-			col = 4;
-		else if (h_counter <= HBP + MARGIN + BLOCK_SIZE * 6)
-			col = 5;
-		else if (h_counter <= HBP + MARGIN + BLOCK_SIZE * 7)
-			col = 6;
-		else if (h_counter <= HBP + MARGIN + BLOCK_SIZE * 8)
-			col = 7;
-		else if (h_counter <= HBP + MARGIN + BLOCK_SIZE * 9)
-			col = 8;
-		else if (h_counter <= HBP + MARGIN + BLOCK_SIZE * 10)
-			col = 9; 
-		else
-			col = OUT_OF_BOUNDS;
+		if (game_state == 1 || game_state == 2) begin
+			// Top line
+			if (v_counter > VBP + HEADER + BLOCK_SIZE && v_counter < VBP + HEADER + BLOCK_SIZE * 4) begin
 
-		// Check if we're within vertical active video range
-		if (v_counter >= VBP && v_counter < VFP) begin
-			if (row == OUT_OF_BOUNDS)
-				rgb = 0;
-			else begin
-				// Check if we're within horizontal active video range
-				if (h_counter >= HBP && h_counter < HFP) begin
-					if (col == OUT_OF_BOUNDS)
+			// Bottom line
+			end else if (v_counter > VBP + HEADER + BLOCK_SIZE * 6 && v_counter < VBP + HEADER + BLOCK_SIZE * 9) begin
+			
+			// Background
+			end else
+				rgb = BLACK;
+		end else begin
+			// Set row
+			if (v_counter < VBP + HEADER)
+				row = OUT_OF_BOUNDS;
+			else if (v_counter <= VBP + HEADER + BLOCK_SIZE)
+				row = 0;
+			else if (v_counter <= VBP + HEADER + BLOCK_SIZE * 2)
+				row = 1;
+			else if (v_counter <= VBP + HEADER + BLOCK_SIZE * 3)
+				row = 2;
+			else if (v_counter <= VBP + HEADER + BLOCK_SIZE * 4)
+				row = 3;
+			else if (v_counter <= VBP + HEADER + BLOCK_SIZE * 5)
+				row = 4;
+			else if (v_counter <= VBP + HEADER + BLOCK_SIZE * 6)
+				row = 5;
+			else if (v_counter <= VBP + HEADER + BLOCK_SIZE * 7)
+				row = 6;
+			else if (v_counter <= VBP + HEADER + BLOCK_SIZE * 8)
+				row = 7;
+			else if (v_counter <= VBP + HEADER + BLOCK_SIZE * 9)
+				row = 8;
+			else if (v_counter <= VBP + HEADER + BLOCK_SIZE * 10)
+				row = 9;
+			else
+				row = OUT_OF_BOUNDS;
+			// Set column
+			if (h_counter < HBP + MARGIN)
+				col = OUT_OF_BOUNDS;
+			else if (h_counter <= HBP + MARGIN + BLOCK_SIZE)
+				col = 0;
+			else if (h_counter <= HBP + MARGIN + BLOCK_SIZE * 2)
+				col = 1;
+			else if (h_counter <= HBP + MARGIN + BLOCK_SIZE * 3)
+				col = 2;
+			else if (h_counter <= HBP + MARGIN + BLOCK_SIZE * 4)
+				col = 3;
+			else if (h_counter <= HBP + MARGIN + BLOCK_SIZE * 5)
+				col = 4;
+			else if (h_counter <= HBP + MARGIN + BLOCK_SIZE * 6)
+				col = 5;
+			else if (h_counter <= HBP + MARGIN + BLOCK_SIZE * 7)
+				col = 6;
+			else if (h_counter <= HBP + MARGIN + BLOCK_SIZE * 8)
+				col = 7;
+			else if (h_counter <= HBP + MARGIN + BLOCK_SIZE * 9)
+				col = 8;
+			else if (h_counter <= HBP + MARGIN + BLOCK_SIZE * 10)
+				col = 9; 
+			else
+				col = OUT_OF_BOUNDS;
+
+			// Check if we're within vertical active video range
+			if (v_counter >= VBP && v_counter < VFP) begin
+				if (row == OUT_OF_BOUNDS)
+					rgb = 0;
+				else begin
+					// Check if we're within horizontal active video range
+					if (h_counter >= HBP && h_counter < HFP) begin
+						if (col == OUT_OF_BOUNDS)
+							rgb = BLACK;
+						else if ((v_counter - HEADER - VBP) % BLOCK_SIZE == TOP_BORDER ||
+								(v_counter - HEADER - VBP) % BLOCK_SIZE == BOTTOM_BORDER ||
+								(h_counter - MARGIN - HBP) % BLOCK_SIZE == LEFT_BORDER ||
+								(h_counter - MARGIN - HBP) % BLOCK_SIZE == RIGHT_BORDER)
+							rgb = BLACK;
+						else begin
+							case(p1_board[(row * 30) + (col * 3) +: 3])
+								ARR_BLANK : rgb = BLANK;
+								ARR_SHIP : rgb = SHIP;
+								ARR_ACTIVE_SHIP : rgb = ACTIVE_SHIP;
+								ARR_OVERLAP_SHIP : rgb = OVERLAP_SHIP;
+								ARR_HIT : rgb = HIT;
+								ARR_MISS : rgb = MISS;
+							endcase
+						end
+					// Outside active horizontal range so display black
+					end else
 						rgb = BLACK;
-					else if ((v_counter - HEADER - VBP) % BLOCK_SIZE == TOP_BORDER ||
-							(v_counter - HEADER - VBP) % BLOCK_SIZE == BOTTOM_BORDER ||
-							(h_counter - MARGIN - HBP) % BLOCK_SIZE == LEFT_BORDER ||
-							(h_counter - MARGIN - HBP) % BLOCK_SIZE == RIGHT_BORDER)
-						rgb = BLACK;
-					else begin
-						case(p1_board[(row * 30) + (col * 3) +: 3])
-							ARR_BLANK : rgb = BLANK;
-							ARR_SHIP : rgb = SHIP;
-							ARR_ACTIVE_SHIP : rgb = ACTIVE_SHIP;
-							ARR_OVERLAP_SHIP : rgb = OVERLAP_SHIP;
-							ARR_HIT : rgb = HIT;
-							ARR_MISS : rgb = MISS;
-						endcase
-					end
-				// Outside active horizontal range so display black
-				end else
-					rgb = BLACK;
-			end
-		// Outside active vertical range so display black
-		end else
-			rgb = BLACK;
+				end
+			// Outside active vertical range so display black
+			end else
+				rgb = BLACK;
+		end
 	end
 	
 endmodule
