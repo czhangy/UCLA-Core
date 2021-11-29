@@ -132,18 +132,19 @@ module battleship(
 		.mode(mode),
 		.turn(turn)
 	)
+
+	wire [1:0] game_state;
+	assign game_state = 2;
 	
 	// Handle SSD
 	ssd ssd_display(
 		.clk_ssd(clk_ssd),
 		.p1_ships(p1_ships),
 		.p2_ships(p2_ships),
+		.game_state(game_state),
 		.cathode(cathode),
 		.anode(anode)
 	);
-
-	wire [1:0] game_state;
-	assign game_state = 2;
 	
 	// Handle VGA
 	vga vga_display(
