@@ -17,6 +17,7 @@ parameter ST_011 = 7'b0110000;
 parameter ST_100 = 7'b0011001;
 parameter ST_101 = 7'b0010010;
 parameter ST_OFF = 7'b1111111;
+parameter ST_P = 7'b0001100;
 
 // SSD anodes
 parameter P1_LEFT = 4'b0111;

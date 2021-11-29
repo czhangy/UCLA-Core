@@ -23,6 +23,7 @@ module ssd(
 	input clk_ssd,
 	input [2:0] p1_ships,
 	input [2:0] p2_ships,
+	input [1:0] game_state,
 	// Outputs
 	output reg [6:0] cathode,
 	output reg [3:0] anode
