@@ -69,8 +69,8 @@
     - [x] Win screens
   - [x] SSD display
   - [x] UCF file
-- [ ] Report
-- [ ] Submission
+- [x] Report
+- [x] Submission
   - [x] Submit a cleaned and zipped ISE project file
-  - [ ] Submit an electronic copy of the report
+  - [x] Submit an electronic copy of the report
 
