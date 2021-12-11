@@ -2,7 +2,7 @@
 
 # Sarrafzadeh - Fall '21
 
-## Overall: IP | Raw Percentage: IP
+## Overall: IP | Raw Percentage: 98.2%
 
 ## Grading
 
@@ -22,5 +22,5 @@
 | Lab 1: Sequencer                              | 100/100 |
 | Lab 2: Floating Point Conversion              | 100/100 |
 | Lab 3: Stopwatch                              | 100/100 |
-| Lab 4: Creative Project                       |   ???   |
+| Lab 4: Creative Project                       | 94/100  |
 
