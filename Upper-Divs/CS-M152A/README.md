@@ -2,7 +2,7 @@
 
 # Sarrafzadeh - Fall '21
 
-## Overall: IP | Raw Percentage: 98.2%
+## Overall: A+ | Raw Percentage: 98.2%
 
 ## Grading
 
