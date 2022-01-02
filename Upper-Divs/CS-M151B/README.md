@@ -2,6 +2,26 @@
 
 # Reinman - Winter '22
 
-## Overall: PL | Raw Percentage: PL
+## Overall: IP | Raw Percentage: IP
 
 ## Grading
+
+| Category | Percentage |
+| :------: | :--------: |
+| Homework |    10%     |
+| Midterm  |    40%     |
+|  Final   |    50%     |
+
+## Homeworks
+
+|  #   | Score |
+| :--: | :---: |
+| ???  |  ???  |
+
+## Exams
+
+|  Exam   | Score |
+| :-----: | :---: |
+| Midterm |  ???  |
+|  Final  |  ???  |
+
