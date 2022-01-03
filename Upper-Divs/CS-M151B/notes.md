@@ -126,4 +126,23 @@
 
 ## Video 1: Introduction and Performance
 
-- 
+- Computer Abstractions and Technology
+  - The Computer Revolution	
+    - Progress in computer technology
+      - Underpinned by Moore's Law (every new generation of technology comes with a doubling of transistor density => more capacity for computing)
+    - Makes novel applications feasible
+      - Computers in automobiles
+      - Cell phones
+      - Human genome project
+      - World Wide Web (especially in relation to SaaS)
+      - Search engines
+    - Computers are pervasive
+  - Classes of Computers
+    - Personal computers
+      - General purpose, variety of software
+      - Subject to cost/performance tradeoff
+    - Server computers
+      - Network-based
+      - High capacity, performance, reliability
+      - Range from small servers to building-sized
+
