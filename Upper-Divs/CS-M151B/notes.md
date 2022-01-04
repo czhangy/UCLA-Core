@@ -85,7 +85,7 @@
 
     - 10 billion instructions
 
-    - 2 GHz clock
+    - 2GHz clock
 
     - Instruction set:
 
@@ -118,7 +118,7 @@
 
         
 
-## Lecture 2:
+## Lecture 2: ISA
 
 - 
 
@@ -376,12 +376,12 @@
 
     - Example:
 
-      - Computer `A`: 2 GHz clock, 10s CPU time
+      - Computer `A`: 2GHz clock, 10s CPU time
 
       - Designing Computer `B`
 
         - Aim for 6s CPU time
-        - Can do faster clock, but causes 1.2x clock cycles
+        - Can do faster clock, but causes `1.2x` clock cycles
 
       - How fast must Computer `B`'s clock be?
 
@@ -600,7 +600,418 @@
 
 
 
-## Video 2:
+## Video 2: ISA I
+
+- Instructions: Language of the Computer
+
+  - Instruction Set
+
+    - The repertoire of instructions of a computer
+      - Method by which the software communicates with the hardware
+    - Different computers have different instruction sets
+      - But with many aspects in common
+    - Early computers had very simple instruction sets
+      - Simplified implementation
+    - Many modern computers also have simple instruction sets
+
+  - Key ISA Decisions
+
+    - Operations
+      - How many?
+      - Which ones?
+      - Length?
+        - How many bits does it take to represent individual instructions?
+    - Operands
+      - How many?
+      - Location?
+        - Memory? Registers? Immediates?
+      - Types?
+      - How to specify?
+    - Instruction Format
+      - Size?
+      - How many formats?
+      - Remember that instructions are stored in memory
+
+  - Main ISA Classes
+
+    - CISC (Complex Instruction Set Computers)
+      - Digital's VAX (1977) and Intel's x86 (1978)
+        - x86 gets translated to micro-operations, resulting in more RISC-like behavior
+      - Large # of instructions
+      - Many specialized complex instructions
+      - Makes the software's job relatively easy
+      - More useful for times when memory was more constrained
+    - RISC (Reduced Instruction Set Computers)
+      - Almost all machines of 80s and 90s are RISC
+        - MIPS, PowerPC, DEC Alpha, IA64
+      - Relatively fewer instructions in the set
+        - More instructions executed
+      - Enable pipelining and parallelism
+        - Easier to overlap and extract small tasks
+
+  - The MIPS Instruction Set
+
+    - Used as the example throughout the book
+    - Stanford MIPS commercialized by MIPS Technologies
+    - Large share of embedded core market
+      - Applications in consumer electronics, network/storage equipment, cameras, printers, etc.
+    - Typical of many modern ISAs
+
+  - Arithmetic Operations
+
+    - Add and subtract, three operands
+
+      - Two sources and one destination
+
+    - ```pseudocode
+      add a, b, c		# a gets b + c
+      ```
+
+      - All arithmetic operations have this form
+
+    - Design Principle 1: Simplicity favors regularity
+
+      - Regularity makes implementation simpler
+      - Simplicity enables higher performance at lower cost
+
+    - Example:
+
+      - C code:
+
+        - ```c
+          f = (g + h) - (i + j);
+          ```
+
+      - Compiled MIPS code:
+
+        - ```mips
+          add t0, g, h		# temp t0 = g + h
+          add t1, i, j		# temp t1 = i + j
+          sub f, t0, t1		# f = t0 - t1
+          ```
+
+  - Register Operands
+
+    - Arithmetic instructions use register operands
+
+    - MIPS has a 32 x 32-bit register file
+
+      - Use for frequently accessed data
+      - Numbered `0` to `31`
+      - 32-bit data called a "word"
+
+    - Assembler names:
+
+      - `$t0`, `$t1`, ..., `$t9` for temporary values
+      - `$s0`, `$s1`, ..., `$s7` for saved variables
+
+    - Design Principle 2: Smaller is faster
+
+      - c.f. main memory: millions of locations
+      - Access latency on wires is shorter => related to physical design
+
+    - Examples:
+
+      - C code:
+
+        - ```c
+          f = (g + h) - (i + j);
+          ```
+
+          - `f`, ..., `j` in `$s0`, ... `$s4` => done through other instructions that aren't displayed below
+
+      - Compiled MIPS code:
+
+        - ```mips
+          add $t0, $s1, $s2
+          add $t1, $s3, $s4
+          sub $s0, $t0, $t1
+          ```
+
+          - `add` instructions are independent of one another => potential for parallelism
+
+  - Memory Operands
+
+    - Main memory used for composite data
+
+      - Arrays, structures, dynamic data, etc.
+
+    - To apply arithmetic operations
+
+      - Load values from memory into registers
+      - Store result from register to memory
+
+    - Memory is byte-addressed
+
+      - Each address identifies an 8-bit byte
+      - Word granularity for load instructions
+
+    - Words are aligned in memory
+
+      - Address must be a multiple of `4`
+
+    - MIPS is Big Endian
+
+      - MSB is at the least address of a word
+      - c.f. Little Endian: LSB is at the least address of a word
+
+    - Example 1:
+
+      - C code:
+
+        - ```c
+          g = h + A[8]
+          ```
+
+          - `g` in `$s1`, `h` in `$s2`, base address of `A` in `$s3`
+
+      - Compiled MIPS code:
+
+        - Index `8` requires offset of `32`
+
+          - 4 bytes per word
+
+        - ```mips
+          lw	$t0, 32($s3)		# load word
+          add	$s1, $s2, $t0
+          ```
+
+          - `<offset>(<base register>)` 
+
+    - Example 2:
+
+      - C code:
+
+        - ```c
+          A[12] = h + A[8]
+          ```
+
+          - `h` in `$s2`, base address of `A` in `$s3`
+
+      - Compiled MIPS code:
+
+        - Index `8` requires offset of `32`
+
+        - Index `12` requires offset of `48`
+
+        - ```mips
+          lw	$t0, 32($s3)		# load word
+          add	$t0, $s2, $t0
+          sw	$t0, 48($s3)		# store word
+          ```
+
+          - Load words grab from memory and write to a register
+          - Store words grab from a register and write to memory
+
+  - Registers vs. Memory
+
+    - Registers are faster to access than memory
+    - Operating on memory data requires loads and stores
+      - More instructions to be executed
+      - c.f. CISC where instructions can directly access memory
+    - Compiler must use registers for variables as much as possible
+      - Only spill to memory for less frequently used variables
+        - Can result in more loads and stores => makes optimization extremely important
+      - Register optimization is important!
+
+  - Immediate Operands
+
+    - Constant data specified in an instruction
+
+    - ```mips
+      addi $s3, $s3, 4
+      ```
+
+    - No subtract immediate instruction
+
+      - Just use a negative constant:
+
+        - ```mips
+          addi $s2, $s1, -1
+          ```
+
+    - Design Principle 3: Make the common case fast
+
+      - Small constants are common => helps reduce instruction count
+      - Immediate operand avoids a load instruction
+
+  - The Constant Zero
+
+    - MIPS register 0 (`$zero`) is the constant `0`
+
+      - Cannot be overwritten
+
+    - Useful for common operations
+
+      - E.g., move between registers
+
+        - ```mips
+          add $t2, $t1, $zero
+          ```
+
+  - Unsigned Binary Integers
+
+    - Range:
+
+      - $$
+        [0, 2^n-1]
+        $$
+
+  - 2s-Complement Signed Integers
+
+    - Range:
+
+      - $$
+        [-2^{n-1},2^{n-1}-1]
+        $$
+
+    - Bit `31` is the sign bit
+
+      - `1` for negative numbers
+      - `0` for non-negative numbers
+
+  - Signed Negation
+
+    - Complement and add `1`
+      - Complement means `1 -> 0` and `0 -> 1`
+
+  - Sign Extension
+
+    - Representing a number using more bits
+      - Preserve the numeric value
+    - In MIPS instruction set
+      - `addi`: extend immediate value
+      - `lb`, `lh`: extend loaded byte/half-word
+      - `beq`, `bne`: extend the displacement
+    - Replicate the sign bit to the left
+      - c.f. unsigned values: extend with `0`s
+
+  - Representing Instructions
+
+    - Instructions are encoded in binary
+      - Called machine code
+    - MIPS instructions
+      - Encoded as 32-bit instruction words (fixed-length)
+      - Small number of formats encoding operation code (opcode), register numbers, etc.
+      - Regularity!
+    - Register numbers
+      - `$t0` - `$t7` are registers `8` - `15`
+      - `$t8` - `$t9` are registers `24` - `25`
+      - `$s0` - `$s7` are registers `16` - `23`
+
+  - MIPS R-format Instructions
+
+    |  `op`  |  `rs`  |  `rt`  |  `rd`  | `shamt` | `funct` |
+    | :----: | :----: | :----: | :----: | :-----: | :-----: |
+    | 6 bits | 5 bits | 5 bits | 5 bits | 5 bits  | 6 bits  |
+
+  - Instruction fields:
+
+    - `op`: operation code (opcode)
+    - `rs`: first source register number
+    - `rt`: second source register number
+    - `rd`: destination register number
+    - `shamt`: shift amount
+    - `funct`: function code (extends opcode)
+
+    - Example:
+
+      - ```mips
+        add $t0, $s1, $s2
+        ```
+
+        | special  |   $s1   |   $s2   |   $t0   |    0    |   add    |
+        | :------: | :-----: | :-----: | :-----: | :-----: | :------: |
+        | `000000` | `10001` | `10010` | `01000` | `00000` | `100000` |
+
+  - Hexadecimal
+
+    - Base-16
+      - Compact representation of bit-strings
+      - 4 bits per hex digit
+
+  - MIPS I-Format Instructions
+
+    |  `op`  |  `rs`  |  `rt`  | constant or address |
+    | :----: | :----: | :----: | :-----------------: |
+    | 6 bits | 5 bits | 5 bits |       16 bits       |
+
+  - Immediate arithmetic and load/store instructions
+
+    - `rt`: destination or source register number
+
+    - Constant:
+
+      - $$
+        [-2^{15},2^{15}-1]
+        $$
+
+    - Address: offset added to base address in `rs`
+
+    - Design Principle 4: Good design demands good compromises
+      - Different formats complicate decoding, but allow 32-bit instructions uniformly
+      - Keep formats as similar as possible
+
+  - Stored Program Computers
+
+    - Instructions represented in binary, just like data
+    - Instructions and data stored in memory
+    - Programs can operate on programs
+      - e.g., compilers, linkers, etc.
+    - Binary compatibility allows compiled programs to work on different computers
+      - Standardized ISAs
+
+  - Logical Operations
+
+    - Instructions for bitwise manipulation
+
+      |  Operation  |  C   | Java  |     MIPS      |
+      | :---------: | :--: | :---: | :-----------: |
+      | Shift left  | `<<` | `<<`  |     `sll`     |
+      | Shift right | `>>` | `>>>` |     `srl`     |
+      | Bitwise AND | `&`  |  `&`  | `and`, `andi` |
+      | Bitwise OR  | `|`  |  `|`  |  `or`, `ori`  |
+      | Bitwise NOT | `~`  |  `~`  |     `nor`     |
+
+    - Useful for extracting and inserting groups of bits in a word
+
+  - Shift Operations
+
+    - `shamt`: how many positions to shift
+    - Shift left logical
+      - Shift left and fill with `0` bits
+      - `sll` by `i` bits multiplies by `2^i`
+    - Shift right logical
+      - Shift right and fill with `0` bits
+      - `srl` by `i` bits divides by `2^i` (unsigned only)
+
+  - AND Operations
+
+    - Useful to mask bits in a word
+      - Select some bits, clear other to `0`
+
+  - OR Operations
+
+    - Useful to include bits in a word
+      - Set some bits to `1`, leave other unchanged
+
+  - NOT Operations
+
+    - Useful to invert bits in a word
+
+      - Change `0` to `1`, and `1` to `0`
+
+    - MIPS has NOR 3-operand instruction
+
+      - `a NOR b == NOT (a OR b)`
+
+      - ```mips
+        nor $t0, $t1, $zero
+        ```
+
+        
+
+## Video 3: ISA II
 
 - 
 
