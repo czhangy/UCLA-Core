@@ -118,7 +118,137 @@
 
         
 
-## Lecture 2: ISA
+## Lecture 2: ISA I
+
+- CISC vs. RISC
+
+  - Old computers had low memory capacity, slow cycle times
+    - As memory capacity and CPU latency trended upwards, memory latency grew much slower (memory wall)
+      - Transistors scaled (got smaller, leading to higher density), wires did not => results in much slower DRAM access
+      - More problematic as we run into problems that require more and more data => motivates caching
+
+    - Rudimentary compiler technology
+    - Lack of sophisticated design tools to build complex systems
+    - Computer complexity is low relative to today
+    - All factors force us into an ISA implementation where there were a lot of types of complex instructions => CISC
+      - Simple datapath allows for lack of conflict in this approach (no aggressive clock, etc.)
+      - Reduces the size of the program, making efficient use of limited memory
+      - Variable-length ISA to conserve even more memory based on complexity of instruction
+
+  - Processor frequency increases, compiler technology improves => system becomes more and more complex to put together
+    - Complex instructions begin to inhibit pipelining, driven by the memory wall
+    - Memory is no longer an issue, multiple discrete instructions are no longer a concern => RISC
+      - Better compilers also help to reorder instructions for better efficiency => unlocked by breaking complex instructions into simpler ones
+      - "Reduced" refers to the number of instructions available to us to build the program, not the number of instructions being executed for a given program
+      - Fixed-length ISA makes it easier to decode instructions at the cost of memory fragmentation (32 bits in MIPS)
+
+- MIPS
+
+  - 32 registers
+
+    - Each register can hold 32 bits
+    - Register files are implemented in hardware, on the CPU
+    - To retrieve a particular value in the register, we provide a "register address"
+      - This means we must specify which of the 32 registers we want => 5 bits for the register address
+
+  - Operands
+
+    - Register
+      - One of the 32 32-bit values from the register file
+      - Instruction knows the address of the register value, not the value in the register => level of indirection
+      - Flexible, a single instruction can be reused for many different values
+      - Can store data or other operands => up to the program to decide
+
+    - Immediate
+      - A constant that is specified as part of the instruction itself
+      - Doesn't have to access memory or the register file
+      - Faster in terms of latency
+        - Instructions either read the value of the register address or the value of the immediate
+        - Due to pipelining, this benefit doesn't materialize in practice
+
+      - Note the balancing of space in the instruction and space in the register file
+
+  - Formats
+
+    - R-Type
+
+      - Contains an opcode, 3 register specifiers, shift amount, and function determiner
+        - The opcode for all R types is always the same 6-bit value
+        - The function determiner specifies what operation the instruction encodes
+
+      - Most R-type instructions work in the following format: `RF[RD] = RF[RS] FUNC RF[RT]`
+
+    - I-Type
+
+      - Contains an opcode, 2 register specifiers, and an immediate
+
+      - This is a 32-bit operation
+
+      - `ADDI`: `RF[RT] = RF[RS] + SE(I)`
+
+      - `LW`/`SW`
+
+        - Data movement operations
+          - Responsible for moving between memory and register files
+          - `LW` loads from memory into the register file
+          - `SW` stores from register file into memory
+
+        - `LW`: `RF[RT] <= M[RF[RS] + SE(I)]`
+        - `SW`: `M[RF[RS] + SE(I)] <= RF[RT]`
+
+      - `BEQ`/`BNE`
+
+        - `BEQ`:
+
+          - ```pseudocode
+            if (RF[RS] == RF[RT])
+            	PC = PC + 4 + SES(I)
+            else
+            	PC = PC + 4
+            ```
+
+          - Note that any `BEQ` will advance the `PC` by `4`
+
+          - Since the `PC` is word-aligned, the last 2 bits of the `PC` are always `00`
+
+            - The `I` is left-shifted by `2` prior to the sign extension and addition to ensure this
+
+        - `BNE`
+
+          - ```pseudocode
+            if (RF[RS] != RF[RT])
+            	PC = PC + 4 + SES(I)
+            else
+            	PC = PC + 4
+            ```
+
+        - Optimized for shorter jumps
+
+        - Conditionals
+
+    - J-Type
+
+      - Contains an opcode and an immediate
+      - When we do `PC + 4`, we take the top 4 bits of the result, append the 26-bit immediate in the J-type instruction, and then place `00` at the end for the new address
+      - Optimized for longer jumps
+      - Unconditional
+      - `j`
+      - `jal`
+        - Stores the `PC + 4` into a register (the return address register) prior to jumping
+          - Essentially storing the address of the instruction following the `JAL`
+          - Setting up a call queue
+
+        - We can then use an instruction like `jR` to return to the next instruction
+          - Forces you to specify the register being used
+            - Allows for use beyond simple returning
+
+          - `PC = RF[RS]`
+          - Goes away from the format that the instruction is used in, but still uses R-type instructions
+
+
+
+
+## Lecture 3:
 
 - 
 
