@@ -118,7 +118,7 @@
 
         
 
-## Lecture 2: ISA I
+## Lecture 2: ISA Basics
 
 - CISC vs. RISC
 
@@ -248,7 +248,37 @@
 
 
 
-## Lecture 3:
+## Lecture 3: ISA Design
+
+- Register Spilling
+
+  - May result in storing of the old value and loading of the new value, or just loading of the new value (if the old value is already stored/no longer needed)
+  - This may affect execution time, as the increasing frequency of loads and stores may increase the CPI of the program
+    - Tradeoffs that we must discuss conceptually
+    - Won't get a definitive answer
+
+- Larger Register File
+
+  - Attempt to reduce spilling
+
+  - Increase in hardware latency from increasing the size of the register file manifests in an increase in cycle time and/or an increase in CPI
+    - Dependent on the design and how we implement tolerance for that latency
+  - Should result in a reduction in spills on the software side (application dependent), resulting in a decrease in instruction count and/or CPI (less loads and stores)
+    - Will necessitate a change in the ISA => more registers requires more register bits in instructions
+      - Larger instructions
+        - Leads to larger code, increasing CPI and possibly CT
+      - Same-size instructions
+        - Decrease the length of the opcode or `func` field, leading to an increase in instruction count (decrease in number of instructions available)
+        - Decrease the length of `shamt` in the R-type and of the immediates in I- and J-type, increasing the instruction count
+
+- Procedure Inlining
+
+  - Reduces branching, which reduces the instruction count and increases CPI (if branching instructions are lower than average)
+  - Increases the instruction footprint in memory, possibly increasing CPI
+
+
+
+## Lecture 4: ALU I
 
 - 
 
