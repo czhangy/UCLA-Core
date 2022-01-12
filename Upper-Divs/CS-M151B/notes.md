@@ -1517,9 +1517,199 @@
 
 
 
-## Video 4:
+## Video 4: ALU I
+
+- Arithmetic for Computers
+  - Operations on integers
+    - Addition and subtraction
+    - Multiplication and division
+    - Dealing with overflow
+  - Floating-point real numbers
+    - Representation and operations
+  - Integer Addition
+    - Example: `7 + 6`
+    - Overflow if result out of range
+      - Adding positive and negative operands, no overflow
+      - Adding 2 positive operands
+        - Overflow if result sign is `1`
+      - Adding 2 negative operands
+        - Overflow if result sign is `0`
+  - Integer Subtraction
+    - Add negation of second operand
+    - Example: `7 - 6 = 7 + (-6)`
+    - Overflow if result out of range
+      - Subtracting 2 positive or 2 negative operands, no overflow
+      - Subtracting positive from negative operand
+        - Overflow if result sign is `0`
+      - Subtracting negative from positive operand
+        - Overflow if result sign is `1`
+  - Dealing with Overflow
+    - Some languages (e.g., C) ignore overflow
+      - Use MIPS `addui`, `subu` instructions
+    - Other languages (e.g., Ada, Fortran) require raising an exception
+      - Use MIPS `add`, `addi`, `sub` instructions
+      - On overflow, invoke exception handler
+        - Save program counter in exception program counter (EPC) register
+        - Jump to predefined handler address
+        - `mfc0` (move from coprocessor register) instruction can retrieve EPC value to return after corrective action
+
+- ALU Design
+
+  - Instruction Fetch => Instruction Decode => Operand Fetch => Execute (ALU) => Result Store => Next Instruction
+  - Inputs: `a`, `b`, and ALU operation
+  - Outputs: `Zero`, `CarryOut`, `Result`, `Overflow`
+    - `Result` should have the same number of bits as `a` and `b`
+
+- One-Bit ALU
+
+  - Performs `AND`, `OR`,  and `ADD`
+
+    - On 1-bit operands
+    - Components:
+      - AND gate
+      - OR gate
+      - 1-bit adder
+      - Multiplexer
+        - Chooses which operation is pushed to result
+        - Every time we use the ALU, all three operations are performed, but only one is output
+
+  - One-Bit Full Adder
+
+    - Also known as a (3, 2) adder
+
+    - Half adder
+
+      - No `CarryIn`
+
+    - | `a`  | `b`  | `CarryIn` | `CarryOut` | `Sum` |  Comments  |
+      | :--: | :--: | :-------: | :--------: | :---: | :--------: |
+      | `0`  | `0`  |    `0`    |    `0`     |  `0`  | `0+0+0=00` |
+      | `0`  | `0`  |    `1`    |    `0`     |  `1`  | `0+0+1=01` |
+      | `0`  | `1`  |    `0`    |    `0`     |  `1`  | `0+1+0=01` |
+      | `0`  | `1`  |    `1`    |    `1`     |  `0`  | `0+1+1=10` |
+      | `1`  | `0`  |    `0`    |    `0`     |  `1`  | `1+0+0=01` |
+      | `1`  | `0`  |    `1`    |    `1`     |  `0`  | `1+0+1=10` |
+      | `1`  | `1`  |    `0`    |    `1`     |  `0`  | `1+0+1=10` |
+      | `1`  | `1`  |    `1`    |    `1`     |  `1`  | `1+1+1=11` |
+
+    - `CarryOut` Logic Equation
+
+      - ```pseudocode
+        CarryOut = (!a & b & CarryIn) | (a & !b & CarryIn)
+        								| (a & b & !CarryIn) | (a & b & CarryIn)
+        								
+        CarryOut = (b & CarryIn) | (a & CarryIn) | (a & b)
+        ```
+
+    - `Sum` Logic Equation
+
+      - ```pseudocode
+        Sum = (!a & !b & CarryIn) | (!a & b & !CarryIn)
+        					| (a & !b & !CarryIn) | (a & b & CarryIn)
+        ```
+
+- 32-Bit ALU
+
+  - Ripple carry ALU
+
+    - Carry from each 1-bit ALU to the next
+      - Each handles 1 bit of the result
+    - Start at the 0th ALU and end at the 31st ALU
+
+  - Subtraction
+
+    - Expand our 1-bit ALU to include an inverter
+      - 2's complement: take inverse of every bit and add `1`
+        - Add input `Binvert` to multiplex between the original signal and the inverted signal, then add `1` by setting `CarryIn` to `1`
+
+  - Overflow
+
+    - For `N`-bit ALU
+
+      - ```pseudocode
+        Overflow = CarryIn[N - 1] ^ CarryOut[N - 1]
+        ```
+
+    - On the MSB (`N - 1`) ALU
+
+  - Zero Detection
+
+    - Conditional branches
+
+    - One big NOR gate
+
+      - Add an `Ainvert` signal to achieve a NOR effect
+
+    - ```pseudocode
+      Zero = (Result_N-1 + Result_N-2 + ... Result_1 + Result_0)
+      ```
+
+    - Any non-zero result will cause zero detection output to be `0`
+
+  - Set-On-Less-Than (`SLT`)
+
+    - `SLT` produces a `1` if `rs < rt` and `0` otherwise
+      - All but least significant bit will be `0`
+      - How do we set the least significant bit?
+      - Can we use subtraction?
+        - `rs - rt < 0`
+      - Set the least significant bit to the sign-bit of `rs - rt`
+    - New input: `LESS`
+      - All set to `0` except the LSB's
+    - New output: `SET`
+      - Set by the adder in the MSB's ALU
+    - Implementation
+      - `SET` of MSB is connected to `LESS` of LSB
+
+- Final ALU
+
+  - You should feel comfortable identifying what signals accomplish:
+    - `add`
+    - `sub`
+    - `and`
+    - `or`
+    - `nor`
+    - `slt`
+
+- Can We Make a Faster Adder?
+
+  - Worst-case delay for `N`-bit ripple carry adder
+
+    - `2N` gate delays
+      - 2 gates per `CarryOut`
+      - `N` `CarryOut`s
+
+  - We will explore the carry lookahead adder
+
+    - Generate - bit `i` creates new `Carry`
+
+      - ```pseudocode
+        g_i = A_i & B_i
+        ```
+
+- Carry Look Ahead
+
+  - Idea is to avoid propagating the `CarryOut` of one adder into the `CarryIn` of the next by generating the `CarryIn` ahead of time
+    - Trades area for performance
+    - If `A == B`, we know what the `CarryOut` is
+    - Add 2 new signals to adders: `G` and `P`
+      - `G`: `A & B` => guaranteed carry, "generate"
+      - `P`: `A ^ B` => carry if `CarryIn`, "propagate"
+      - All done in parallel, `G` and `P` are only dependent on `A` and `B`
+  - Partial Carry Lookahead Adder
+    - Connect several `N`-bit lookahead adders together
+      - Ripple carry
+    - 4 8-bit carry lookahead adders can form a 32-bit partial carry lookahead adder
+  - Hierarchal CLA
+
+- Carry Select Adder
+
+  - 2 1-bit adders, one with `1` as `CarryIn` and the other with `0` as `CarryIn`
+    - Multiplex these with `CarryIn`, if the delay of the multiplexer is less than the delay of chaining, we see benefit to this tradeoff
+
+
+
+## Video 5: ALU II
 
 - 
-
-
 
