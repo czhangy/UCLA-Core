@@ -280,7 +280,28 @@
 
 ## Lecture 4: ALU I
 
-- 
+- The ALU is the physical structure that handles the core arithmetic operations for instructions
+  - Takes in a 4-bit ALU operation that specifies one of 6 instructions
+  - Takes in 2 32-bit inputs: `a` and `b`
+  - Outputs a 32-bit result
+  - Outputs a 1-bit value that tells us if the result of the operation was `0`
+  - Outputs a 1-bit value that tells us if overflow has occurred
+  - Outputs a 1-bit carry out value
+- Basic idea of improving on the ripple carry adder is that we have a tradeoff between physical space and performance
+  - Use extra logic to precompute carry outs so we don't have to wait for each carry out to propagate down the chain
+    - `T` to propagate to the next ALU, `T` to perform the XOR with `a ^ b`
+      - `2nT` for the `n`th `CarryOut`
+    - 3 situations without `CarryIn`:
+      - `G`/generate: `a & b`, we know `CarryOut` must be `1`
+      - `P`/propagate: `a ^ b`, we know that `CarryOut` will be the same as `CarryIn`
+      - `K`/kill: `a NOR b`, we know that no `CarryOut` exists
+  -  All `G` and `P` signals can be computed in parallel, and be used to precompute `CarryIn`s of later adders
+    - `C_1 = G_0 OR P_0 AND C_0`
+    - `C_2 = G_1 OR P_1 AND G_0 OR C_0 AND P_0 AND P_1`
+    - etc.
+    - All `G` and `P` signals ready after `T`
+    - All `CarryIn` ready at `3T`
+    - All sums ready at `4T`
 
 
 
