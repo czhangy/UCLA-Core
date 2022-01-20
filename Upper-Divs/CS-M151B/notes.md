@@ -781,7 +781,7 @@
 
 
 
-## Video 2: ISA I
+## Video 2: ISA Basics
 
 - Instruction Set
 
@@ -1190,7 +1190,7 @@
 
       
 
-## Video 3: ISA II
+## Video 3: Branching and Jumping
 
 - Conditional Operations
 
@@ -1538,7 +1538,7 @@
 
 
 
-## Video 4: ALU I
+## Video 4: ALU Basics
 
 - Arithmetic for Computers
   - Operations on integers
@@ -1730,7 +1730,114 @@
 
 
 
-## Video 5: ALU II
+## Video 5: Multiplication and Floating Point
 
-- 
+- Multiplication
+
+  - Start with long-multiplication approach
+
+  - Multiplication Hardware
+
+  - Optimized Multiplier
+
+    - Perform steps in parallel: add/shift
+    - One cycle per partial-product addition
+      - That's ok, if frequency of multiplications is low
+
+  - Faster Multiplier
+
+    - Uses multiple adders
+      - Cost/performance tradeoff
+    - Can be pipelined
+      - Several multiplications performed in parallel
+
+  - MIPS Multiplication
+
+    - Two 32-bit registers for product
+
+      - `HI`: most-significant 32 bits
+      - `LO`: least-significant 32 bits
+
+    - Instructions
+
+      - ```mips
+        mult rs, rt
+        multu rs, rt
+        ```
+
+        - 64-bit product in `HI`/`LO`
+
+      - ```mips
+        mfhi rd
+        mflo rd
+        ```
+
+        - Move from `HI`/`LO` to `rd`
+        - Can test `HI` value to see if product overflows 32 bits
+
+      - ```mips
+        mul rd, rs, rt
+        ```
+
+        - Least-significant 32 bits of product into `rd`
+
+  - Signed Multiplication
+
+    - Make both positive
+      - Remember whether to complement product when done
+    - Apply definition of 2's complement
+      - Need to sign-extend partial products and subtract at the end
+    - Booth's Algorithm
+      - Elegant way to multiply signed number using same hardware as before and saving cycles
+      - Motivation:
+
+- IEEE Floating-Point Format
+
+  - `S | Exponent | Fraction`
+
+    - `Exponent` is 8 bits in a single and 11 bits in a double
+    - `Fraction` is 23 bits in a single and 52 bits in a double
+    - `S`: sign bit (`0` => non-negative, `1` => negative)
+    - Normalize significand: `1.0 <= |significand| < 2.0`
+      - Always has a leading pre-binary-point `1` bit, so no need to represent it explicitly (hidden bit)
+      - Significand is `Fraction` with the `1.` restored
+    - `Exponent`: excess representation: actual exponent + `Bias`
+      - Ensures exponent is unsigned
+      - Single: `Bias = 127`; Double: `Bias = 1203`
+
+  - Floating-Point Addition
+
+    - Consider a 4-digit decimal example:
+
+      - $$
+        9.999\times10^1+1.610\times10^{-1}
+        $$
+
+      - Align decimal points
+
+        - Shift number with smaller exponent
+
+        - $$
+          9.999\times10^1+0.016\times10^1
+          $$
+
+      - Add significands
+
+        - $$
+          9.999\times10^1+0.016\times10^1=10.015\times10^1
+          $$
+
+      - Normalize result and check for over/underflow
+
+        - $$
+          1.0015\times10^2
+          $$
+
+      - Round and renormalize if necessary
+
+        - $$
+          1.002\times10^2
+          $$
+
+    - FP Adder Hardware
 
