@@ -305,6 +305,12 @@
 
 
 
+## Lecture 5:
+
+- 
+
+
+
 ## Video 1: Introduction and Performance
 
 - Computer Abstractions and Technology
@@ -1738,8 +1744,27 @@
 
   - Multiplication Hardware
 
+    - Multiplies using a series of adds and shifts
+    - Shifts the multiplier right every iteration
+    - Shifts the multiplicand left every iteration (64-bit)
+      - Forces ALU to be 32 bits
+    - Product develops in the product register, with 64 bits of significance
+    - Process:
+      - Test `Multiplier[0]`
+        - If `1`, add multiplicand to product and place in `Product`
+        - Shift `Multiplicand` left 1 bit
+        - Shift `Multiplier` right 1 bit
+        - Check if it's the 32nd iteration
+          - Loop back to step 1 if not
+
   - Optimized Multiplier
 
+    - Shift `Product` right instead of `Multiplicand`
+      - Allows us to use 32-bit ALUs and multiplicand register, saving latency
+      - Add to the upper bits of product and shift right
+      - Load multiplier into the lower bits of `Product`
+        - Right shift strips bits out
+        - Upper bits written depending on the control test
     - Perform steps in parallel: add/shift
     - One cycle per partial-product addition
       - That's ok, if frequency of multiplications is low
@@ -1781,7 +1806,7 @@
 
         - Least-significant 32 bits of product into `rd`
 
-  - Signed Multiplication
+  - Signed Multiplication?
 
     - Make both positive
       - Remember whether to complement product when done
@@ -1789,7 +1814,8 @@
       - Need to sign-extend partial products and subtract at the end
     - Booth's Algorithm
       - Elegant way to multiply signed number using same hardware as before and saving cycles
-      - Motivation:
+      - Replace a string of `1`s in multiplier with an initial subtract when we first see a `1`, and then later add for the bit after the last `1`
+      - Current bit vs. bit to the right
 
 - IEEE Floating-Point Format
 
@@ -1840,4 +1866,16 @@
           $$
 
     - FP Adder Hardware
+
+      - Small ALU to check difference of exponents
+      - Large ALU to add shifted fractional fields
+      - etc.
+      - Large amount of hardware needed for this to work
+        - Typically multi-cycled operations
+
+
+
+## Video 6:
+
+- 
 
