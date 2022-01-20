@@ -311,7 +311,7 @@
 
 
 
-## Video 1: Introduction and Performance
+## Pre-Lecture 1: Introduction and Performance
 
 - Computer Abstractions and Technology
   - The Computer Revolution	
@@ -787,7 +787,7 @@
 
 
 
-## Video 2: ISA Basics
+## Pre-Lecture 2: ISA Basics
 
 - Instruction Set
 
@@ -1196,7 +1196,7 @@
 
       
 
-## Video 3: Branching and Jumping
+## Pre-Lecture 3: Branching and Jumping
 
 - Conditional Operations
 
@@ -1544,7 +1544,7 @@
 
 
 
-## Video 4: ALU Basics
+## Pre-Lecture 4: ALU Basics
 
 - Arithmetic for Computers
   - Operations on integers
@@ -1736,7 +1736,7 @@
 
 
 
-## Video 5: Multiplication and Floating Point
+## Pre-Lecture 5: Multiplication and Floating Point
 
 - Multiplication
 
@@ -1875,7 +1875,7 @@
 
 
 
-## Video 6:
+## Pre-Lecture 6:
 
 - 
 
