@@ -331,7 +331,21 @@
 
   - Multiplier stored in `Product`'s lower 32 bits
     - `Product` right shifted every iteration
-    - Usually always 32 shifts in general
+    - Usually always 32 shifts in general, counted in the control test
+  - Booth's Algorithm
+    - Look for sequences of `1`s in the multiplier
+      - Each sequence can be reduced to a subtraction and an addition
+    - LSB and the "bit to the right"
+      - `00` => nothing
+      - `01` => end of a sequence, add
+      - `10` => beginning of a sequence, subtract
+      - `11` => nothing
+
+
+
+## Lecture 6:
+
+- 
 
 
 
@@ -1899,7 +1913,7 @@
 
 
 
-## Pre-Lecture 6:
+## Pre-Lecture 6: 
 
 - 
 
