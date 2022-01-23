@@ -18,7 +18,7 @@ c) Given the cost/performance ratios you just calculated, describe a situation w
 
 
 
-**For the following problems, just implement the described instructions (datapath and control modifications) on the single cycle datapath. Assume that `Load With Increment` will be an R-type instruction, and `Swap` and `Store Sum` will be I-type instructions.
+**For the following problems, just implement the described instructions (datapath and control modifications) on the single cycle datapath. Assume that `Load With Increment` will be an R-type instruction, and `Swap` and `Store Sum` will be I-type instructions.**
 
 
 
