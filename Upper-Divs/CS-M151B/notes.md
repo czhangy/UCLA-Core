@@ -305,9 +305,33 @@
 
 
 
-## Lecture 5:
+## Lecture 5: Hierarchal CLA and Multiplication
 
-- 
+- Hierarchal CLA
+
+  - Idea is to connect multiple CLA structures together with a higher-level CLA
+
+  - Using the notion of generates and propagates at a higher granularity
+
+    - $$
+      G=G_0\cdot P_1\cdot P_2\cdot P_3+G_1\cdot P_2\cdot P_3+G_2\cdot P_3+G_3
+      $$
+
+    - $$
+      P=P_0\cdot P_1\cdot P_2\cdot P_3
+      $$
+
+      - Note the lack of reliance on carry-in entirely
+
+    - Expressions for individual carry-ins are exactly the same logical form as their smaller granularity counterparts
+
+  - Controls the exponential fan-in of CLA
+
+- Multiplication
+
+  - Multiplier stored in `Product`'s lower 32 bits
+    - `Product` right shifted every iteration
+    - Usually always 32 shifts in general
 
 
 
