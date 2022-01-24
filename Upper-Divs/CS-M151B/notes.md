@@ -1913,7 +1913,215 @@
 
 
 
-## Pre-Lecture 6: 
+## Pre-Lecture 6: Datapath and Control
+
+- Introduction
+  - CPU performance factors
+    - Instruction count
+    - CPI and cycle time
+  - We will examine 2 MIPS implementations
+    - A single-cycle implementation
+      - CPI will always be `1`, cycle time will be based on the instruction with the longest latency
+    - A pipelined version
+  - Simple subset, shows most aspects
+    - Memory reference: `lw`, `sw`
+    - Arithmetic/logical: `add`, `sub`, `and`, `or`, `slt`
+    - Control transfer: `beq`, `j`
+- Instruction Execution
+  - PC => instruction memory, fetch instruction
+  - Register numbers => register file, read registers
+  - Depending on instruction class:
+    - Use ALU to calculate
+      - Arithmetic result
+      - Memory address for load/store
+      - Branch target address
+    - Access data memory for load/store
+    - PC <= target address or PC + 4
+- CPU Overview
+  - PC pointing to instruction memory
+    - Specify what instruction to grab at what address
+    - Instruction comes out of the instruction memory
+      - Assume box spits out instruction based off of input address
+  - Register file has two outputs into the ALU beside it (`rs`, `rt`)
+    - The ALU also has another wire coming straight from the instruction memory that can be used for immediate arithmetic
+  - ALU sends calculation to the data input port of the register file and to the address port of data memory for loads/stores
+    - Data memory can either send data to the data input of the register file (load) or grab from the register file and place in the data port of data memory (store)
+  - First adder has a hardwired value of `4`, which allows us to get the next instruction (increment PC)
+  - Second adder is for effective address calculation, grabbing an immediate from instruction memory to calculate a new PC
+  - Multiplexers
+    - Can't just join wires together
+      - Use multiplexers
+    - Control
+      - Sets up what happens along the datapath
+
+- Logic Design Basics
+
+  - Information encoded in binary
+    - Low voltage = `0`, high voltage = `1`
+    - One wire per bit
+    - Multi-bit data encoded on multi-wire buses
+  - Combinational element
+    - Operate on data
+    - Output is a function of input
+  - State (sequential) elements
+    - Store information
+  - Combinational Elements
+    - AND-gate
+      - `Y = A & B`
+    - Adder
+      - `Y = A + B`
+    - Multiplexer
+      - `Y = S ? l1 : l0`
+    - Arithmetic/Logic Unit
+      - `Y = F(A, B)`
+  - Sequential Elements
+    - Register: stores data in a circuit
+      - Uses a clock signal to determine when to update the stored value
+      - Edge-triggered: update when `clk` changes from `0` to `1`
+        - All processing needs to occur between clock ticks
+      - Register with write control
+        - Only updates on clock edge when write control input is `1`
+        - Used when stored value is required later
+  - Clocking Methodology
+    - Combinational logic transforms data during clock cycles
+      - Between clock edges
+      - Input from state elements, output to state element
+      - Longest delay determines clock period
+
+- Building a Datapath
+
+  - Datapath
+    - Elements that process data and addresses in the CPU
+      - Registers, ALUs, MUXs, memories, etc.
+  - We will build a build a MIPS datapath incrementally
+    - Refining the overview design
+  - Instruction Fetch
+    - 32-bit register PC
+      - Provides the address for the instruction memory to fetch an instruction
+      - Instruction comes out of instruction memory
+      - Incremented by `4` with an ALU for the next instruction
+      - Everything happens in a single cycle
+  - R-Format Instructions
+    - Read two register operands (`rs` and `rt`)
+    - Register file
+      - Read register 1 and 2 ports (5-bit)
+        - Data at specified registers driven out of read data 1 and read data 2 ports, respectively
+      - Write register port (5-bit)
+      - Write data port is the value that will be written to the register specified by the write register port
+      - `RegWrite` is control logic that tells the register file whether or not to write using write register/write data
+    - ALU
+      - 4-bit ALU operation from control logic
+      - Perform arithmetic/logical operation
+    - Write register result
+  - Load/Store Instruction
+    - Read register operands
+    - Calculate address using 16-bit offset
+      - Use ALU, but sign-extend offset
+      - Sign extension unit transforms 16-bit immediate into 32-bit value
+    - Data memory
+      - Address port to specify where to read.write
+      - Read data port pulls data out of memory
+      - Write data port writes data into memory
+      - `MemWrite` control line enables write data port
+      - `MemRead` control line enables read data port
+    - Load: read memory and update register
+    - Store: write register value to memory
+  - Branch Instructions
+    - Read register operands
+    - Compare operands
+      - Use ALU, subtract, and check `Zero` output
+    - Calculate target address
+      - Sign-extend displacement
+      - Shift left 2 places (word displacement)
+      - Add to `PC + 4`
+        - Already calculated by instruction fetch
+    - Adder
+      - Takes in `PC + 4` from instruction datapath and the sign extended immediate from the instruction that has been left-shifted by `2`
+      - Outputs the branch target
+    - ALU
+      - Concerned with the `Zero` output for comparison
+  - Composing the Elements
+    - First-cut datapath does an instruction in one clock cycle
+      - Each datapath element can only do one function at a time
+      - Hence, we need separate instruction and data memories
+    - Use MUXs where alternate data sources are used for different instructions
+
+- Full Datapath
+
+  - ALU Control
+
+    - ALU used for:
+
+      - Load/Store: `F = add`
+      - Branch: `F = subtract`
+      - R-type: `F` depends on `funct` field
+
+    - | ALU Control | Function |
+      | :---------: | :------: |
+      |   `0000`    |   AND    |
+      |   `0001`    |    OR    |
+      |   `0010`    |   Add    |
+      |   `0110`    | Subtract |
+      |   `0111`    |   SLT    |
+      |   `1100`    |   NOR    |
+
+    - Assume 2-bit `ALUop` derived from opcode
+
+      - Combinational logic derives ALU control
+
+      - | opcode | `ALUop` |
+        | ------ | ------- |
+        | `lw`   | `00`    |
+        | `sw`   | `00`    |
+        | `beq`  | `01`    |
+        | R-type | `10`    |
+
+  - The Main Control Unit
+
+    - Control signals derived from instruction
+    - Breaking up instructions
+      - 4 possible opcodes: R-type, load, store, branch
+      - `rs` is present for all instructions
+
+  - Controller
+
+    - |            | R-format |   `lw`   |   `sw`   |  `beq`   |
+      | :--------: | :------: | :------: | :------: | :------: |
+      |   Opcode   | `000000` | `100011` | `101011` | `000100` |
+      |  `RegDst`  |   `1`    |   `0`    |    X     |    X     |
+      |  `ALUSrc`  |   `0`    |   `1`    |   `1`    |   `0`    |
+      | `MemtoReg` |   `0`    |   `1`    |    X     |    X     |
+      | `RegWrite` |   `1`    |   `1`    |   `0`    |   `0`    |
+      | `MemRead`  |   `0`    |   `1`    |   `0`    |   `0`    |
+      | `MemWrite` |   `0`    |   `0`    |   `1`    |   `0`    |
+      |  `Branch`  |   `0`    |   `0`    |   `0`    |   `1`    |
+      |  `ALUOp1`  |   `1`    |   `0`    |   `0`    |   `0`    |
+      |  `ALUOp2`  |   `0`    |   `0`    |   `0`    |   `1`    |
+
+  - Implementing Jumps
+
+    - Jump uses word address
+    - Update PC with concatenation of:
+      - Top 4 bits of old PC
+      - 26-bit jump address
+      - `00`
+    - Need an extra control signal decoded from opcode
+
+- Up Next
+
+  - Pipelined Implementation
+  - Why isn't single cycle enough?
+    - Control is relatively simple
+    - CPI is `1`, but cycle time must be long enough for every instruction to complete
+    - Branch instruction vs. load instruction
+      - Loads require instruction fetch, register access, ALU, memory access, register access
+      - Branches require instruction fetch, register access, ALU
+    - And this is for a simplified processor!
+      - No floating point ops, no multiply or divide
+
+
+
+## Pre-Lecture 7:
 
 - 
 
