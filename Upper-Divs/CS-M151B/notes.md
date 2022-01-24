@@ -343,7 +343,148 @@
 
 
 
-## Lecture 6:
+## Lecture 6: Datapath
+
+- Introduction
+
+  - 
+    $$
+    \text{ET}=\text{IC}\times\text{CPI}\times\text{CT}
+    $$
+
+  - Build the microprocessor with a subset of the MIPS ISA
+
+    - R-format: `add`, `sub`, `slt`, `or`, `nor`, `and`
+    - I-format: `lw`, `sw`, `beq`
+    - Be able to expand this datapath
+      - Add components to make the new instruction work
+      - Avoid breaking the implementation of already-existing instructions
+
+  - Single-cycle datapath
+
+    - `CPI = 1`
+    - `CT` dependent on longest latency instruction
+
+- Datapath
+
+  - High-Level Flow
+    - Use the PC to access instruction memory and grab instruction
+    - The instruction must be decoded by the instruction decoder, accessing registers and determining control
+    - The instruction is executed, involving the ALU and branching
+    - Data memory is accessed if necessary
+      - Loads/stores
+    - Write back occurs back to the register files
+  - Major Blocks
+    - PC
+      - Clock-latched
+    - Instruction Memory
+      - Idealized
+      - I/O
+        - 32-bit input port:
+          - Address
+        - 32-bit output port
+          - Instruction
+      - We supply an address, it supplies an instruction
+    - Register File
+      - Clock-latched
+      - I/O
+        - 3 5-bit input ports:
+          - Address A
+          - Address B
+          - Write Address
+        - 32-bit input port:
+          - Write Data
+        - 2 5-bit output ports:
+          - Data A
+          - Data B
+      - Data A/B is the data contained in the register specified by Address A/B
+      - Write Data is the data to be written to the register specified by Write Address
+    - ALU
+      - I/O
+        - 2 32-bit input ports
+          - X
+          - Y
+        - 1 1-bit output port
+          - Zero
+        - 1 32-bit output port
+          - Result
+      - Handles arithmetic and logical operations for R-types
+      - Handles the subtraction for the branching comparison
+    - Data Memory
+      - I/O
+        - 2 32-bit input ports
+          - Address
+          - Write Data
+        - 1 32-bit output port
+          - Data
+      - Address allows us to read from or write to that address in memory
+        - Data is what is read from data memory
+        - Write Data is what is written to data memory
+  - Control
+    - Components need to be controlled to affect what data moves between components
+    - `RegWrite`
+      - 2 registers will be read from unconditionally
+      - Register writes need to be protected
+        - Only write if `RegWrite = 1`
+    - `Operation`
+      - 4-bit
+      - Control what operation is performed on the data coming into the ALU
+    - `MemRead`
+      - Indicates if we are reading from data memory at the address specified
+      - We don't want every instruction to read from data memory for caching/page fault/protection fault reasons
+    - `MemWrite`
+      - Indicates if we are writing to data memory from the address specified
+      - Mutually exclusive with `MemRead` for the single-cycle datapath
+    - `ALUOp`
+      - 2-bit
+      - `00` => add
+      - `01` => subtract
+      - `10` -> `funct` field
+    - `ALUSrc`
+      - `0` => use Data B output as source of Y for ALU
+      - `1` => use immediate as source of Y for ALU
+    - `MemtoReg`
+      - `0` => ALU output connected to Write Data of register file
+      - `1` => Data memory Data port connected to Write Data of register file
+    - `RegDst`
+      - `0` => `rt` used as Write Address
+      - `1` => `rd` used as Write Address
+    - `Branch`
+      - Indicates if the current instruction is a branching instruction
+  - Flow
+    - Instruction Breakdown
+      - Top 6 bits (`[31 - 26]`) of the instruction from instruction memory are isolated to determine opcode
+      - `[25 - 21]` to Address A of register file (`rs`)
+      - `[20 - 16]` to Address B of register file (`rt`)
+    - R-Type
+      - Data A and Data B flow into X and Y in the ALU
+      - `Operation` set based on the `funct` field of the instruction
+      - Doesn't use data memory
+        - Result of ALU connected to the Write Data port of the register file
+        - Bits `[15 - 11]` of the instruction set to Write Address port of register file
+      - Bits `[5 - 0]` enter the ALU control to specify what the ALU should do for an R-type
+        - Used if `ALUOp = 10`
+    - I-Type
+      - Bits `[15 - 0]` should be used as the immediate
+        - Needs to be sign-extended to a 32-bit value
+        - Patch it into Y input of ALU with a MUX
+      - Access data memory (`lw`)
+        - Patch output to Write Data with a MUX
+        - Use a MUX to specify `rt` as the destination register
+      - Write to data memory (`sw`)
+        - Reroute Data B of the register file to the Write Data port of data memory
+        - Set `RegWrite = 0`
+          - Doesn't matter what `RegDst` or `MemtoReg` are, as no writes are occurring in the register file anyways
+      - Alter the PC (`beq`)
+        - Shift the sign-extended immediate by `2`
+        - Patch it into the `PC + 4` ALU with a MUX
+          - Cannot hardwire with `Zero` output, as that would cause any arithmetic operation that resulted in `0` to branch randomly => guard with AND gate (`Zero & Branch`)
+    - PC
+      - Route PC output to an ALU with `+ 4` hardcoded to advance the PC
+
+
+
+## Lecture 7:
 
 - 
 
