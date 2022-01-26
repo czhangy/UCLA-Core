@@ -484,9 +484,49 @@
 
 
 
-## Lecture 7:
+## Lecture 7: Datapath Extension
 
-- 
+- `addi`
+  - I-type
+  - `R[RT] = R[RS] + SE(I)`
+  - Datapath
+    - No new datapath elements needed
+  - Control
+    - New unique opcode since this is an I-type
+    - `RegDst = 0`
+    - `ALUSrc = 1`
+    - `MemtoReg = 0`
+    - `RegWrite = 1`
+    - `MemRead = 0`
+    - `MemWrite = 0`
+    - `Branch = 0`
+    - `ALUOp = 00`
+    - No new control needed
+- `blt`
+  - I-type
+  - `if R[RS] < R[RT] PC = PC + 4 + SES(I)`
+  - Datapath
+    - Hardwire `11` to be `slt` on the ALU control
+    - Use the `Zero` output of the ALU and invert it
+    - Use an AND-gate to perform `Bltc & Zero`
+    - Use an OR-gate to perform `(Branch & Zero) | (Bltc & Sign)`
+  - Control
+    - New unique opcode since this is an I-type
+    - `RegDst = X`
+    - `ALUSrc = 0`
+    - `MemtoReg = X`
+    - `RegWrite = 0`
+    - `MemRead = 0`
+    - `MemWrite = 0`
+    - `Branch = 0`
+    - `ALUOp = 11`
+    - New control
+      - `Bltc = 1`, `0` for all other instructions
+- `jr`
+  - R-type
+  - `PC = R[RS]`
+  - Datapath
+    - 
 
 
 
@@ -2262,7 +2302,44 @@
 
 
 
-## Pre-Lecture 7:
+## Pre-Lecture 7: Single-Cycle Datapath Control
+
+- Main Controller
+
+  - | Signal Name | R-format | `lw` | `sw` | `beq` |
+    | ----------- | :------: | :--: | :--: | :---: |
+    | `op[5]`     |   `0`    | `1`  | `1`  |  `0`  |
+    | `op[4]`     |   `0`    | `0`  | `0`  |  `0`  |
+    | `op[3]`     |   `0`    | `0`  | `1`  |  `0`  |
+    | `op[2]`     |   `0`    | `0`  | `0`  |  `1`  |
+    | `op[1]`     |   `0`    | `1`  | `1`  |  `0`  |
+    | `op[0]`     |   `0`    | `1`  | `1`  |  `0`  |
+    | `RegDst`    |   `1`    | `0`  |  X   |   X   |
+    | `ALUSrc`    |   `0`    | `1`  | `1`  |  `0`  |
+    | `MemtoReg`  |   `0`    | `1`  |  X   |   X   |
+    | `RegWrite`  |   `1`    | `1`  | `0`  |  `0`  |
+    | `MemRead`   |   `0`    | `1`  | `0`  |  `0`  |
+    | `MemWrite`  |   `0`    | `0`  | `1`  |  `0`  |
+    | `Branch`    |   `0`    | `0`  | `0`  |  `1`  |
+    | `ALUOp[1]`  |   `1`    | `0`  | `0`  |  `0`  |
+    | `ALUOp[0]`  |   `0`    | `0`  | `0`  |  `1`  |
+
+- ALU Controller
+
+  - | Opcode | `ALUOp` | Instruction  | Function | ALU Action | ALUCtrl |
+    | ------ | :-----: | ------------ | -------- | ---------- | ------- |
+    | `lw`   |  `00`   | Load word    | XXXXXX   | Add        | `010`   |
+    | `sw`   |  `00`   | Store word   | XXXXXX   | Add        | `010`   |
+    | `beq`  |  `01`   | Branch equal | XXXXXX   | Sub        | `110`   |
+    | R-type |  `10`   | Add          | `100000` | Add        | `010`   |
+    | R-type |  `10`   | Subtract     | `100010` | Sub        | `110`   |
+    | R-type |  `10`   | AND          | `100100` | AND        | `000`   |
+    | R-type |  `10`   | OR           | `100101` | OR         | `001`   |
+    | R-type |  `10`   | SLT          | `101010` | SLT        | `111`   |
+
+
+
+## Pre-Lecture 8:
 
 - 
 
