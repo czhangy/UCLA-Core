@@ -526,7 +526,77 @@
   - R-type
   - `PC = R[RS]`
   - Datapath
-    - 
+    - New MUX choosing between the current PC input and the result of `R[RS]`
+      - Controlled by `Jrc`
+    - New MUX between `RegWrite` and register file
+      - Hardwire a `0` so that `jr` doesn't write to register
+  - Control
+    - Opcode is `000000` since `jr` is an R-type
+      - Unique `func` field for ALU control
+    - `RegWrite = 0`
+    - New control
+      - `Jrc` coming out of the ALU control, only `1` on the `func` field representing `jr`
+- `jal`
+  - J-type
+  - `PC = PC + 4[31:28] || Immed || 00`, `$31 = PC + 4`
+  - Datapath
+    - Take lower 26 bits of the instruction, shift it to the left by 2, and then append to the upper 4 bits of `PC + 4`
+      - MUX this with `PC + 4`
+    - Connect original `PC + 4` with a MUX to the Write Data port
+    - Add a hardcoded `$31` to the Write Register port
+  - Control
+    - New unique opcode
+    - `RegDst = 10`
+      - Sign-extend all others
+    - `ALUSrc = X`
+    - `MemtoReg = X`
+    - `RegWrite = 1`
+    - `MemRead = 0`
+    - `MemWrite = 0`
+    - `Branch = 0`
+    - `ALUOp = 00`
+    - New control
+      - `Jalc = 1`, `0` for all others
+- `cmov`
+  - R-type
+  - `if (R[RT] != 0) R[RD] = R[RS]`
+  - Datapath
+    - Take Read Data 1 to MUX with the Write Data port
+      - Controlled by `Cmovc`
+    - MUX Read Data 1 input to ALU, with `1` hardwired to `0`
+      - Controlled by `Cmovc`
+    - MUX `RegWrite` with the `Zero` output from the ALU
+      - Controlled by `Cmovc`
+  - Control
+    - Opcode is `000000` since `cmov` is an R-type
+    - ALU control is add
+    - New control
+      - `Cmovc` coming out of the ALU control, only `1` on the `func` field representing `cmov`
+- `saw`
+  - I-type
+  - `M[R[RS]] = R[RT] + SE(I)`
+  - Datapath
+    - MUX with Read Data 1 into the Address of data memory
+      - Controlled by `Sawc`
+    - MUX with ALU result into the Write Data of data memory
+      - Controlled by `Sawc`
+  - Control
+    - `RegDst = X` 
+    - `Branch = 0`
+    - `MemRead = 0`
+    - `MemtoReg = X`
+    - `ALUOp = 00`
+    - `MemWrite = 1`
+    - `ALUSrc = 1`
+    - `RegWrite = 0`
+    - New control
+      - `Sawc` coming out of control, `1` for `sawc`, `0` otherwise
+
+
+
+## Lecture 8:
+
+- 
 
 
 
