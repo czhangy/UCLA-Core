@@ -2409,7 +2409,153 @@
 
 
 
-## Pre-Lecture 8:
+## Pre-Lecture 8: Pipelined Datapath
+
+- Performance Issues
+
+  - Longest delay determines clock period
+    - Critical path: load instruction
+    - Instruction memory => register file => ALU => data memory => register file
+  - Not feasible to vary period for different instructions
+  - Violates design principle
+    - Making the common case fast
+  - We will improve performance by pipelining
+
+- Pipelining Analogy
+
+  - Pipelined laundry: overlapping execution
+    - Parallelism improves performance
+
+- MIPS Pipeline
+
+  - Five stages, one step per stage:
+    - `IF`: Instruction fetch from memory
+    - `ID`: Instruction decode and register read
+    - `EX`: Execute operation or calculate address
+    - `MEM`: Access memory operand
+    - `WB`: Write result back to register
+  - Pipeline Performance
+  - Pipeline Speedup
+    - If all stages are balanced:
+      - i.e., all take the same time
+      - The time between pipelined instructions is equal to the time between non-pipelined instructions divided by the number of stages
+    - If not balanced, speedup is less
+    - Speedup due to increased throughput
+      - Latency (time for each instruction) does not decrease
+  - Pipelining and ISA Design
+    - MIPS ISA designed for pipelining
+      - All instructions are 32 bits
+        - Easier to fetch and decode in one cycle
+        - Compare to x86: 1- to 17-byte instructions
+      - Few and regular instruction formats
+        - Can decode and read registers in one step
+      - Load/store addressing
+        - Can calculate address in 3rd stage, access memory in 4th stage
+      - Alignment of memory operands
+        - Memory access takes only one cycle
+  - Pipeline Principles
+    - All instructions that share a pipeline must hav e the same stages in the same order
+      - Therefore, `add` does nothing during the `MEM` stage
+      - `sw` does nothing during the `WB` stage
+    - All intermediate values must be latched each cycle
+    - There is no functional block reuse
+      - Ex) we need 2 adders and ALU (like in single-cycle)
+  - Pipeline Registers
+    - Need registers between stages to hold information produced in the previous cycle
+
+- Pipeline Operation
+
+  - Cycle-by-cycle flow of instructions through the pipelined datapath
+    - "Single-clock-cycle" pipeline diagram
+      - Shows pipeline usage in a single cycle
+      - Highlight the resources used
+    - Compare to a "multi-clock-cycle" diagram
+      - Graph of operation over time
+  - We'll look at "single-clock-cycle" diagrams for load and store
+
+- Pipelined Control
+
+  - Control signals derived from instruction
+    - As in single-cycle implementation
+
+- Hazards
+
+  - Example:
+
+    - Suppose initially, register `$i` holds the number `2i`
+
+    - What happens when we see the following dynamic instruction sequence:
+
+      - ```mips
+        add $3, $10, $11
+        ```
+
+        - This should add `20 + 22`, putting the result `42` into `$3`
+
+      - ```mips
+        lw $8, 50($3)
+        ```
+
+        - This should load memory location `92` (`42 + 50`) into `$8`
+
+      - ```mips
+        sub $11, $8, $7
+        ```
+
+        - This should subtract `14` from that just-loaded value
+
+  - Situations that prevent starting the next instruction in the next cycle
+
+  - Structure Hazards
+
+    - A required resource is busy
+    - Conflict for use of a resource
+    - In MIPS pipeline with single memory
+      - Load/store requires data access
+      - Instruction fetch would have to stall for that cycle
+        - Would cause a pipeline "bubble"
+    - Hence, pipelined datapaths require separate instruction/data memories
+      - Or separate instruction/data caches
+
+  - Data Hazards
+
+    - Need to wait for previous instruction to complete its data read/write
+
+    - An instruction depends on completion of data access by a previous instruction
+
+      - ```mips
+        add $s0, $t0, $t1
+        sub $t2, $s0, $t3
+        ```
+
+    - Occurs when a result is needed in the pipeline before it is available
+
+    - Dealing with Data Hazards
+
+      - In software:
+        - Insert independent instructions (or no-ops)
+        - Reorder code to avoid use of load result in the next instruction
+      - In hardware:
+        - Insert bubbles (i.e., stall the pipeline)
+          - To ensure proper pipeline execution in light of register dependencies, we must:
+            - Detect the hazard
+            - Stall the pipeline
+              - Prevent the `IF `na d`ID` stages from making progress
+                - The `ID` stage because we can't go on until the dependent instruction completes correctly
+                - The `IF` stage because we do not want to lose any instructions
+                - Don't write the `PC` (`PCWrite = 0`)
+                - Don't rewrite the `IF`/`ID` register (`IF/IDWrite = 0`)
+              - Insert "nops"
+                - Set all control signals propagating to `EX`/`MEM`/`WB` to zero
+        - Data forwarding
+
+  - Control Hazards
+
+    - Deciding on control action depends on previous instruction
+
+
+
+## Pre-Lecture 9:
 
 - 
 
