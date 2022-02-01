@@ -594,7 +594,115 @@
 
 
 
-## Lecture 8:
+## Lecture 8: Pipelined Datapath
+
+- 5 structurally independent stages:
+  - `IF`: instruction fetch
+    - PC and instruction memory
+
+  - `ID`: instruction decode
+    - Register file
+
+  - `EX`: execution
+    - ALU
+
+  - `MEM`: memory access
+    - Data memory
+
+  - `WB`: write back
+    - Register file
+
+  - One instruction per stage of the pipeline
+    - Achieved by buffering between each stage with latches
+      - Banks of registers that hold data values between clock ticks
+      - Operations in stage complete before the setup time of the latch, which can then store the values in that stage on the clock edge
+      - Latches store data and control signals between stages
+      - Forces each instruction to go through each stage of the pipeline whether that stage is useful for that instruction or not
+        - "Regularity" of the pipeline
+
+    - 4 latches:
+      - `IF/ID`
+      - `ID/EX`
+      - `EX/MEM`
+      - `MEM/WB`
+
+    - Synchronization of clocks between latches allow us to separate instructions
+    - Single-cycle implementation cycle time is bounded by the total latency of the critical path
+      - Hope is to drop the clock time while keeping the CPI close to `1`
+      - Ideally, each stage is perfectly balanced, but this isn't realistic
+      - Pipelined cycle time is bounded by the slowest stage
+        - Some drop in cycle time, but we don't know by how much
+
+    - When each stage of the pipeline is filled, we are in the steady state
+      - Way for us to gauge if we are utilizing the pipeline optimally
+      - Cannot avoid the pipeline's start-up time
+        - "Disappears" as more instructions are executed
+
+- A structural hazard is when there isn't enough physical resources to satisfy the current needs of the instructions in the pipeline
+  - Current design of the pipeline has non-overlapping functionality
+  - No structural hazards exist in our datapath
+
+- Data Hazards
+  - Data from a prior instruction is needed for the current instruction
+    - Forces us to leave the steady state, pulling CPI away from `1`
+
+  - Software approach:
+    - Inserting of independent instructions between two dependent instructions by the compiler
+      - Without hardware support, we need 3 independent instructions or no-ops to resolve this
+
+    - Assume the register file has a transparent latch
+      - Write occurs in the first half of the clock cycle and read occurs in the second half of the clock cycle
+      - Allows `WB` of one instruction and `ID` of a dependent instruction to occur in the same clock cycle
+
+    - Requires the compiler to know information about the hardware
+      - ISA changes now break code portability for the same ISA
+      - Ruins separation between hardware and software
+
+    - Instruction count would likely increase due to the injection of no-ops
+      - Unlikely that enough independent instructions can be found in the program
+
+  - Hardware approach:
+    - Inject a bubble into the pipeline to stall
+      - Effectively a no-op, but not an instruction fetched from memory
+        - Doesn't take space in the instruction cache
+        - Introduces the need for the hazard detection logic
+          - May impact cycle time if this logic is the critical path
+
+      - All control signals zeroed-out
+      - Freezes the dependent instruction and all following instructions in their respective stages
+        - Requires us to do two things:
+          - Make sure the PC and `IF/ID` latch do not update
+            - Write disable line into PC and `IF/ID`, controlled by the hazard detection logic
+
+          - The `ID/EX` latch must create the bubble
+            - MUX that controls if the control logic is passed into `ID/EX` or if all `0`s are
+
+    - Hazard Detection
+      - If `RegWrite` is high and the destination register from `ID/EX` is writing to one of the registers being read in `IF/ID`, there is a potential need to stall
+        - Needs the `rs` and `rt` of `IF/ID`
+        - Needs the destination register (`rd` or `rt`) and `RegWrite` of `ID/EX`
+      - If `RegWrite` is high and the destination register from `EX/MEM` is a match, there is a potential need to stall
+      - Resultant signal generates the bubble at `ID/EX` and stops the `IF/ID` latch and PC from updating
+
+  - 3 types:
+    - RAW (read after write)
+      - True data dependence
+      - `lw` then `add`
+
+    - WAW (write after write)
+      - False data dependence
+      - `add` then `add`
+      - Creates a hazard for out-of-order execution
+
+    - WAR (write after read)
+      - False data dependence
+      - `add` then `lw`
+      - Creates a hazard for out-of-order execution
+
+
+
+
+## Lecture 9:
 
 - 
 
