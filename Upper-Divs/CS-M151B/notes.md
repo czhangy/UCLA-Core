@@ -2663,7 +2663,323 @@
 
 
 
-## Pre-Lecture 9:
+## Pre-Lecture 9: Forwarding, Branching, and Exceptions
+
+- Forwarding (aka Bypassing)
+
+  - Use result when it is computed
+
+    - Don't wait for it to be stored in a register
+    - Requires extra connections in the datapath
+
+  - Data Hazards in ALU Instructions
+
+    - Consider this sequence:
+
+      - ```mips
+        sub	$2, $1, $3
+        and	$12, $2, $5
+        or	$13, $6, $2
+        add	$14, $2, $2
+        sw	$15, 100($2)
+        ```
+
+    - We can resolve hazards with forwarding
+
+      - How do we detect when to forward?
+
+  - Detecting the Need to Forward
+
+    - Pass register numbers along pipeline
+      - e.g., `ID/EX.RegisterRs` = register number for `rs` sitting in `ID/EX` pipeline register
+      - ALU operand register numbers in `EX` stage are given by `ID/EX.RegisterRs`, `ID/EX.RegisterRt`
+    - Data hazards when:
+      - `EX/MEM.RegisterRd = ID/EX.RegisterRs`
+      - `EX/MEM.RegisterRd = ID/EX.RegisterRt`
+        - Forward from `EX/MEM` pipeline register
+      - `MEM/WB.RegisterRd = ID/EX.RegisterRs`
+      - `MEM/WB.RegisterRd = ID/EX.RegisterRt`
+        - Forward from `MEM/WB` pipeline register
+    - But only if the forwarding instruction will write to a register
+      - `EX/MEM.RegWrite`, `MEM/WB.RegWrite`
+    - And only if `rd` for that instruction is not `$zero`
+
+- Forwarding Conditions
+
+  - `EX` hazard
+
+    - ```pseudocode
+      if (EX/MEM.RegWrite and (EX/MEM.RegisterRd != 0) 
+          and (EX/MEM.RegisterRd == ID/EX.RegisterRs))
+          ForwardA = 10
+      ```
+
+    - ```pseudocode
+      if (EX/MEM.RegWrite and (EX/MEM.RegisterRd != 0) 
+          and (EX/MEM.RegisterRd == ID/EX.RegisterRt))
+          ForwardB = 10
+      ```
+
+  - `MEM` hazard
+
+    - ```pseudocode
+      if (MEM/WB.RegWrite and (MEM/WB.RegisterRd != 0) 
+          and (MEM/WB.RegisterRd == ID/EX.RegisterRs))
+          ForwardA = 01
+      ```
+
+    - ```pseudocode
+      if (MEM/WB.RegWrite and (MEM/WB.RegisterRd != 0) 
+          and (MEM/WB.RegisterRd == ID/EX.RegisterRt))
+          ForwardB = 01
+      ```
+
+- Double Data Hazard
+
+  - Consider the sequence:
+
+    - ```mips
+      add $1, $1, $2
+      add $1, $1, $3
+      add $1, $1, $4
+      ```
+
+  - Both hazards occur
+
+    - Want to use the most recent
+
+  - Revise `MEM` hazard condition
+
+    - Only forward if `EX` hazard condition isn't true
+
+- Load-Use Data Hazard
+
+  - Can't always avoid stalls by forwarding
+
+    - If value not computed when needed
+    - Can't forward backward in time
+
+  - Load-Use Hazard Detection
+
+    - Check when current instruction is decoded in `ID` stage
+
+    - ALU operand register numbers in `ID` stage are given by:
+
+      - `IF/ID.RegisterRs`, `IF/ID.RegisterRt`
+
+    - Load-use hazard when:
+
+      - ```pseudocode
+        ID/EX.MemRead and 
+        	((ID/EX.RegisterRt = IF/ID.RegisterRs) or
+        	 (ID/EX.RegisterRt = IF.ID.RegisterRt))
+        ```
+
+    - If detected, stall and insert bubble
+
+- How to Stall the Pipeline
+
+  - Force control values in `ID/EX` register to `0`
+    - `EX`, `MEM`, and `WB` do `nop` (no-operation)
+  - Prevent update of `PC` and `IF/ID` register
+    - Current instruction is decoded again
+    - Following instruction is fetched again
+    - 1-cycle stall allows `MEM` to read data for `lw`
+      - Can subsequently forward to `EX` stage
+
+- Stalls and Performance
+
+  - Stalls reduce performance, but are required to get correct results
+  - Compiler can arrange code to avoid hazards and stalls
+    - Requires knowledge of the pipeline structure
+
+- Control Hazards
+
+  - Branch determines flow of control
+    - Fetching next instruction depends on branch outcome
+    - Pipeline can't always fetch correct instruction
+      - Still working on `ID` stage of branch
+  - In MIPS pipeline
+    - Need to compare registers and compute target early in the pipeline
+    - Add hardware to do it in `ID` stage
+  - Dealing With Branch Hazards
+    - Hardware solutions:
+      - Stall until you know which direction branch goes
+        - Wait until the branch outcome is decided before fetching the next instruction
+      - Guess which direction, start executing chosen path (but be prepared to undo any mistakes)
+        - Static branch prediction: base guess on instruction type
+        - Dynamic branch prediction: base guess on execution history
+        - Longer pipelines can't readily determine branch outcome early
+          - Stall penalty becomes unacceptable
+        - Predict outcome of branch
+          - Only stall if prediction is wrong
+          - In MIPS pipeline:
+            - Can predict branches not taken
+            - Fetch instruction after branch, with no delay
+        - More-Realistic Branch Prediction
+          - Static branch prediction
+            - Based on typical branch behavior
+            - Ex) loop and if-statement branches
+              - Predict backward branches taken
+              - Predict forward branches not taken
+          - Dynamic branch prediction
+            - Hardware measures actual branch behavior
+              - e.g., record recent history of each branch
+            - Assume future behavior will continue the trend
+              - When wrong, stall while re-fetching, and update history
+      - Reduce the branch delay
+        - Move hardware to determine outcome to `ID` stage
+          - Target address adder
+          - Register comparator
+
+- Data Hazards for Branches
+
+  - If a comparison register is a destination of second or third preceding ALU instruction
+    - Can resolve using forwarding
+  - If a comparison register is a destination of preceding ALU instruction or second preceding load instruction
+    - Need 1 stall cycle
+  - If a comparison register is a destination of immediately preceding load instruction
+    - Need 2 stall cycles
+
+- Dynamic Branch Prediction
+
+  - In deeper and superscalar pipelines, branch penalty is more significant
+  - Use dynamic prediction
+    - Branch prediction buffer (aka branch history table)
+    - Indexed by recent branch instruction addresses
+    - Stores outcome (taken/not taken)
+    - To execute a branch
+      - Check table, expect the same outcome
+      - Start fetching from fall-through or target
+      - If wrong, flush pipeline and flip prediction
+  - 1-Bit Predictor: Shortcoming
+    - Inner loop branches mispredicted twice
+      - Mispredict as taken on last iteration of inner loop
+      - Then mispredict as not taken on first iteration of inner loop next time around
+  - 2-Bit Predictor
+    - Only change prediction on two successive mispredictions
+
+- Calculating the Branch Target
+
+  - Even with predictor, still need to calculate the target address
+    - 1-cycle penalty for a taken branch
+  - Branch target buffer
+    - Cache of target addresses
+    - Indexed by PC when instruction fetched
+      - If hit and instruction is branch predicted taken, can fetch target immediately
+
+- Exceptions and Interrupts
+
+  - "Unexpected" events requiring change in flow of control
+    - Different ISAs use the terms differently
+  - Exception
+    - Arises within the CPU
+      - e.g., undefined opcode, overflow, syscall, etc.
+  - Interrupt
+    - From an external I/O controller
+  - Dealing with them without sacrificing performance is hard
+
+- Handling Exceptions
+
+  - In MIPS, exceptions managed by a System Control Coprocessor (`CP0`)
+  - Save PC of offending (or interrupted) instruction
+    - In MIPS: Exception Program Counter (EPC)
+  - Save indication of the problem
+    - In MIPS: Cause register
+    - We'll assume 1-bit
+      - `0` for undefined opcode, `1` for overflow
+  - Jump to handler at `8000 00180`
+
+- An Alternate Mechanism
+
+  - Vectored Interrupts
+
+    - Handler address determined by the cause
+
+    - Example:
+
+      - ```pseudocode
+        Undefined opcode:	 C000 0000
+        Overflow:						C000 0020
+        ```
+
+  - Instructions either:
+
+    - Deal with the interrupt
+    - Jump to real handler
+
+- Handler Actions
+
+  - Read cause and transfer to relevant handler
+  - Determine action required
+  - If restartable:
+    - Take corrective action
+    - Use EPC to return to program
+  - Otherwise:
+    - Terminate program
+    - Report error using EPC, cause, etc.
+
+- Exceptions in a Pipeline
+
+  - Another form of control hazard
+
+  - Consider overflow on add in `EX` stage
+
+    - ```mips
+      add $1, $2, $1
+      ```
+
+    - Prevent `$1` from being clobbered
+
+    - Complete previous instructions
+
+    - Flush `add` and subsequent instructions
+
+    - Set Cause and EPC register values
+
+    - Transfer control to handler
+
+  - Similar to mispredicted branch
+
+    - Use much of the same hardware
+
+- Exception Properties
+
+  - Restartable exceptions
+    - Pipeline can flush the instruction
+    - Handler executes, then returns to the instruction
+      - Refetched and executed from scratch
+  - PC saved in EPC register
+    - Identifies causing instruction
+    - Actually, `PC + 4` is saved
+      - Handler must adjust
+
+- Multiple Exceptions
+
+  - Pipelining overlaps multiple instructions
+    - Could have multiple exceptions at once
+  - Simple approach: deal with exception from earliest instruction
+    - Flush subsequent instructions
+    - "Precise" exceptions
+  - In complex pipelines:
+    - Multiple instructions issued per cycle
+    - Out-of-order completion
+    - Maintaining precise exceptions is difficult
+
+- Imprecise Exceptions
+
+  - Just stop pipeline and save state
+    - Including exceptions cause(s)
+  - Let the handler work out:
+    - Which instruction(s) had exceptions
+    - Which to complete or flush
+      - May require "manual" completion
+  - Simplifies hardware, but more complex handler software
+  - Not feasible for complex multiple-issue out-of-order pipelines
+
+
+
+## Pre-Lecture 10:
 
 - 
 
