@@ -702,7 +702,180 @@
 
 
 
-## Lecture 9:
+## Lecture 9: Pipeline Forwarding and Branching
+
+- Motivation
+
+  - In certain situations, it can be noted that there might not be a need to stall, but we will with hazard detection
+  - An instruction executing in the `EX` stage will have its result ready by the end of the cycle, so the following instruction could theoretically use that computed value without going through the register file
+  - We could forward this value, removing the need to stall
+    - Need to be able to forward to the `EX` stage from both the `EX/MEM` latch and the `MEM/WB` latch
+    - Results in 3 possible candidates for the sources of the ALU in `EX`
+
+- Forwarding
+
+  - Loads must be handled differently, as the result of an `lw` instruction is known at the end of the `MEM` stage, not the `EX` stage
+
+    - Known as the Load-Use Hazard
+
+  - Forwarding Unit
+
+    - Decides what to forward and when to forward
+
+    - Note that the forwarding unit doesn't handle any data transfer, it is solely responsible for acting as a control unit
+
+      - Forwarding of data handled by the datapath itself
+
+    - 2 outputs: `ForwardA` and `ForwardB`
+
+      - Control the MUXs that decide what is input to the ALU
+
+    - Takes in 2 inputs from the `ID/EX` latch: `Rs` and `Rt`
+
+      - Tells the forwarding unit what register specifiers the instruction currently in `EX` is waiting on
+
+    - Takes in 2 inputs from the `EX/MEM` latch: `RegWrite` and `Rd`
+
+      - Tells the forwarding unit if the instruction currently in `MEM` is writing back to the register file, and, if it is, which register it is writing back to
+
+    - Takes in 2 inputs from the `MEM/WB` latch: `RegWrite` and `Rd`
+
+      - Tells the forwarding unit if the instruction currently in `WB` is writing back to the register file, and, if it is, which register it is writing back to
+
+    - `EX` hazard
+
+      - ```pseudocode
+        if (EX/MEM.RegWrite and (EX/MEM.RegisterRd != 0)
+            and (EX/MEM.RegisterRd == ID/EX.RegisterRs))
+            ForwardA = 10
+            
+        if (EX/MEM.RegWrite and (EX/MEM.RegisterRd != 0)
+            and (EX/MEM.RegisterRd == ID/EX.RegisterRt))
+            ForwardB = 10
+        ```
+
+      - Tests if the forwarding unit should be `10`
+
+        - Passes the result of the ALU operation for the previous instruction into the ALU input(s) for the current instruction
+
+      - Checks 3 things:
+
+        - Checks if the previous instruction is writing to the register file at all
+        - Checks if the destination register of the previous instruction overlaps with an input register of the current instruction
+          - `rs` for `ForwardA`
+          - `rt` for `ForwardB`
+
+        - Checks if the destination register of the previous instruction is `$zero`
+          - No reason to forward if this is the case
+
+    - `MEM` hazard
+
+      - ```pseudocode
+        if (MEM/WB.RegWrite and (MEM/WB.RegisterRd != 0)
+        	and not (EX/MEM.RegWrite and (EX/MEM.RegisterRd != 0)
+        			 and (EX/MEM.RegisterRd = ID/EX.RegisterRs))
+        	and (MEM/WB.RegisterRd == ID/EX.RegisterRs))
+            ForwardA = 01
+            
+        if (MEM/WB.RegWrite and (MEM/WB.RegisterRd != 0)
+        	and not (EX/MEM.RegWrite and (EX/MEM.RegisterRd != 0)
+        			 and (EX/MEM.RegisterRd = ID/EX.RegisterRt))
+        	and (MEM/WB.RegisterRd == ID/EX.RegisterRt))
+            ForwardB = 01
+        ```
+
+      - Tests if the forwarding unit should be `01`
+
+        - Passes the result of the ALU operation for the instruction in `WB` into the ALU input(s) for the current instruction
+
+      - Checks 4 things:
+
+        - Checks if the instruction in `WB` is writing to the register file at all
+
+        - Checks if the destination register of the instruction in `WB` overlaps with an input register of the current instruction
+
+        - Checks if the destination register of the instruction in `WB` is `$zero`
+
+        - Checks that there doesn't also exist an `EX` hazard
+
+          - `EX` hazards should take precedence
+
+          - Example:
+
+            - ```mips
+              add	$t0, $s1, $s2
+              sub	$t0, $t0, $s0
+              or	$t1, $t0, $s3
+              ```
+
+            - The `or` instruction should be taking the result of the `sub`, not the `add`, as that was the most recent modification of `$t0`
+
+    - Load-Use Hazard
+
+      - Occurs when a `lw` is directly followed by a dependent instruction
+        - The `lw`'s value isn't known until `MEM`, and therefore breaks the current forwarding logic
+        - The dependent instruction needs to be stalled by 1 cycle in the `EX` stage
+          - Zeroes out control bits
+          - Don't update the PC or `IF/ID`
+
+      - Add to the hazard detection unit
+        - Look for this specific load-use case and bubble if it occurs
+          - In the current instruction set, we can check `ID/EX.MemRead` to see if there is an `lw` in the `EX` stage
+          - Check `ID/EX.RegisterRt` for the destination of the `lw`
+            - Check against `IF/ID.RegisterRs` and `IF/ID.RegisterRt` to see if there's an overlap with the instruction in `ID`
+
+          - If all of these things are true, we send a bubble into the `ID/EX` latch for 1 cycle to stall the instruction in `ID`
+
+        - Once `lw` reaches the `WB` stage, we can now successfully forward the value fetched by `lw` from `MEM/WB` to `EX`
+
+- Branch Hazards
+
+  - At a branch instruction, we must wait for the `beq` to resolve before we can guarantee that instructions coming into the pipeline are the correct instructions
+
+  - Software methods:
+
+    - Fill up space behind branch instructions with no-ops
+
+      - Results in increase in instruction count
+      - Forces the compiler to know when branches are resolved in a given pipeline, reducing portability
+
+    - Branch delay slot
+
+      - Basic idea is to place control-independent instructions into special slots after the branch instruction
+      - Allows for a less significant increase in instruction count, as meaningful work can still be done while waiting for the branch instruction to resolve
+
+      - Good for situations in which we have a tight control over the compiler and hardware, we have enough instructions to fill many slots/few slots to fill, and when the penalty for re-compiling code for different hardware is small
+
+  - Hardware methods:
+
+    - Not-Taken Prediction
+      - Guess that the branch is not taken every time
+      - Actual result determined when the branch instruction resolves
+        - If correct, we can just continue fetching instructions on the path we guessed, avoiding any negative penalties
+        - If incorrect, we must kill off instructions that shouldn't have executed and then redirect fetch to the instructions that should have been executed
+          - We kill off instructions by flushing (turning the instructions into bubbles)
+          - Flushing must occur before we modify any data we shouldn't have
+
+    - Static Prediction
+      - For a specific instruction, we give it a prediction based on the instruction itself
+
+    - Dynamic Prediction
+      - Use a hardware structure called the branch predictor, which uses the PC and other information to guess if a given instruction will be taken or not taken
+      - An approach that learns as the program executes and branches are taken
+      - Use a way to look up past behavior, helping with structures such as `while` and `for` which are heavily biased towards one side
+        - 2-Bit Pattern History Table
+          - Each entry of the PHT has 2 bits of storage, hashed by a part of the PC
+          - MSB may tell us the prediction
+          - Update the predictor based on observed behavior at the end of `EX`
+          - Dictated by an FSM
+
+        - Use in combination with a branch target buffer to cache previous locations that have been jumped to
+
+- Bubbling to stall and incorrect branch predictions both contribute to an increasing CPI
+
+
+
+## Lecture 10:
 
 - 
 
