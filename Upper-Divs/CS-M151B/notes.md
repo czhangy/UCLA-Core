@@ -3154,5 +3154,197 @@
 
 ## Pre-Lecture 10:
 
+- Instruction-Level Parallelism (ILP)
+
+  - Pipelining: executing multiple instructions in parallel
+  - To increase ILP:
+    - Deeper pipeline
+      - Less work per stage => shorter clock cycle
+
+    - Multiple issue
+      - Replicate pipeline stages => multiple pipelines
+      - Start multiple instructions per clock cycle
+      - `CPI < 1`, so use Instructions Per Cycle (IPC)
+      - e.g., 4GHz 4-way multiple-issue
+        - 16 BIPS, peak `CPI = 0.25`, peak `IPC = 4`
+
+      - But dependencies reduce this in practice
+      - Static multiple issue
+        - Compiler groups instructions to be issued together
+        - Packages them into "issue slots"
+        - Compiler detects and avoids hazards
+
+      - Dynamic multiple issue
+        - CPU examines instruction stream and chooses instructions to issue each cycle
+        - Compiler can help by reordering instructions
+        - CPU resolves hazards using advanced techniques at runtime
+
+- Speculation
+
+  - "Guess" what to do with an instruction
+    - Start operation as soon as possible
+    - Check whether guess was right
+      - If so, complete the operation
+      - If not, roll back and do the right thing
+
+    - Common to static and dynamic multiple issue
+    - Examples:
+      - Speculate on branch outcome
+        - Roll back if path taken is different
+
+      - Speculate on load
+        - Roll back if location is updated
+
+  - Compiler/Hardware Speculation
+    - Compiler can reorder instructions
+      - e.g., move load before branch
+      - Can include "fix-up" instructions to recover from incorrect guess
+
+    - Hardware can look ahead for instructions to execute
+      - Buffer results until it determines they are actually needed
+      - Flush buffers on incorrect speculation
+
+  - Speculation and Exceptions
+    - What if exception occurs on a speculatively executed instruction?
+      - e.g., speculative load before null-pointer check
+    - Static speculation
+      - Can add ISA support for deferring exceptions
+    - Dynamic speculation
+      - Can buffer exceptions until instruction completion (which may not occur)
+
+- Static Multiple Issue
+
+  - Compiler groups instructions into "issue packets"
+    - Group of instructions that can be issued on a single cycle
+    - Determined by pipeline resources required
+
+  - Think of an issue packet as a very long instruction
+    - Specifies multiple concurrent operations
+    - Very Long Instruction Word (VLIW)
+
+  - Scheduling Static Multiple Issue
+    - Compiler must resolve some/all hazards
+      - Reorder instructions into issue packets
+      - No dependencies within a packet
+      - Possibly some dependencies between packets
+        - Varies between ISAs; compiler must know
+
+      - Pad with `nop` if necessary
+
+- MIPS with Static Dual Issue
+
+  - Two-issue packets
+    - One ALU/branch instruction
+    - One load/store instruction
+    - 64-bit aligned
+      - ALU/branch, then load/store
+      - Pad an unused instruction with `nop`
+
+  - Hazards in the Dual-Issue MIPS
+    - More instructions executing in parallel
+    - `EX` data hazard
+      - Forwarding avoided stalls with single-issue
+      - Now can't use ALU result in load/store in same packet
+        - Split into two packets, effectively a stall
+    - Load-use hazard
+      - Still one cycle use latency, but now 2 instructions
+    - More aggressive scheduling required
+
+- Loop Unrolling
+
+  - Replicate loop body to expose more parallelism
+    - Reduces loop-control overhead
+
+  - Use different registers per replication
+    - Called "register renaming"
+    - Avoid loop-carried "anti-dependencies"
+      - Store followed by a load of the same register
+      - aka "name dependence"
+        - Reuse of a register name
+
+- Dynamic Multiple Issue
+
+  - "Superscalar" processors
+
+  - CPU decides whether to issue 0, 1, 2, etc. each cycle
+
+    - Avoiding structural and data hazards
+
+  - Avoids the need for compiler scheduling
+
+    - Though it may still help
+    - Code semantics ensured by the CPU
+
+  - Dynamic Pipeline Scheduling
+
+    - Allow the CPU to execute instructions out of order to avoid stalls
+
+      - But commit result to registers in order
+
+    - Example:
+
+      - ```mips
+        lw		$t0, 20($s2)
+        addu	$t1, $t0, $t2
+        sub		$s4, $s4, $t3
+        slti	$t5, $s4, 20
+        ```
+
+      - Can start `sub` while `addu` is waiting for `lw`
+
+  - Register Renaming
+
+    - Reservation stations and reorder buffer effectively provide register renaming
+    - On instruction issue to reservation station
+
+      - If operand is available in register file or reorder buffer:
+      - Copied to reservation station
+      - No longer required in the register; can be overwritten
+      - If operand is not yet available:
+        - It will be provided to the reservation station by a function unit
+        - Register update may not be required
+
+  - Speculation
+
+    - Predict branch and continue issuing
+      - Don't commit until branch outcome determined
+
+    - Load speculation
+      - Avoid load and cache miss delay
+        - Predict the effective address
+        - Predict loaded value
+        - Load before completing outstanding stores
+        - Bypass stored values to load unit
+
+      - Don't commit load until speculation cleared
+
+  - Why Do Dynamic Scheduling?
+
+    - Why not just let the compiler schedule code?
+    - Not all stalls are predictable
+      - e.g., cache misses
+
+    - Can't always schedule around branches
+      - Branch outcome is dynamically determined
+
+    - Different implementations of an ISA have different latencies and hazards
+
+  - Does Multiple Issue Work?
+
+    - Yes, but not as much as we'd like
+    - Programs have real dependencies that limit ILP
+    - Some dependencies are hard to eliminate
+      - e.g., pointer aliasing
+    - Some parallelism is hard to expose
+      - Limited window size during instruction issue
+    - Memory delays and limited bandwidth
+      - Hard to keep pipelines full
+    - Speculation can help if done well
+
+
+
+
+## Pre-Lecture 11:
+
 - 
 
