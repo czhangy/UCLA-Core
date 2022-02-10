@@ -875,7 +875,136 @@
 
 
 
-## Lecture 10:
+## Lecture 10: Advanced Pipelining
+
+- Performance Implications of Pipelining
+
+  - Assume the 5-stage pipeline we've been using
+
+  - $$
+    \text{ET}=\text{IC}\times\text{CPI}\times\text{CT}
+    $$
+
+    - In a balanced pipeline, `CT` may be `1/5` of the original `CT`
+      - Can be improved by more aggressive pipelining
+    - In a perfect situation, `CPI` may be very close to `1`
+      - Not achievable due to hazards
+    - Ideally, pipelining may drop our `ET` to `1/5` of the original
+
+- Aggressive Pipelining/Superpipelining
+
+  - Basic idea is to continue breaking down the critical path, lessening the longest latency of a pipeline stage, allowing the `CT` to decrease further
+  - Hazard penalties increase as the pipeline gets deeper
+    - i.e., branch misprediction, load-use, etc.
+    - Loose Loops Sink Chips
+
+  - Is a given change worth it given the benefit, or does the added cost outweigh any benefits?
+
+- Total CPI
+
+  - $$
+    \text{TCPI}=\text{BCPI}+\text{MCPI}
+    $$
+
+  - `BCPI` is based on the CPI that results from the pipeline/hazards
+
+  - `MCPI` is based on the latency of memory accesses
+
+- Multiple Issue/Superscalar
+
+  - Basic idea is to increase the throughput of the pipeline, allowing for more instructions to be executed at a time, resulting in a decrease in CPI
+  - Structural Aspects
+    - Bring out 8 bytes (2 instructions) from instruction memory in `IF`
+      - Control dependencies make this challenging
+      - Requirement of finding independent instructions makes a challenging case of ILP
+        - Dependent instructions running simultaneously will result in incorrect program behavior
+
+    - Separate control logic for the instructions in `ID`
+      - Add more ports to support more reading/writing in the register file
+      - Sharing of the register file allows for easier data sharing than with TLP
+
+    - Duplicate hardware in `EX`
+    - Increase ports and simultaneous loads for the data memory in `MEM`
+    - Add more ports to support multiple instructions writing back to the register file for `WB`
+    - All changes increase the latency of the hardware, likely resulting in a `CT` impact
+
+  - Static vs. Dynamic Tradeoffs
+    - Compilation has an amortized, up-front cost
+    - Compiler can see the entire program, while the hardware is bounded by the buffer for instruction memory
+    - Compiler can't see real-time information, while the hardware can, making it more flexible
+    - Compiler is forced to behave conservatively when it optimizes, leading to possibly incomplete optimization when compared to hardware approaches
+
+  - Example Multiple Issue
+    - Bundle ALU instructions with memory instructions
+    - Heterogeneous specialization simplifies the hardware
+      - Possibly prevents an increase in cycle time that results from an increase in complexity
+
+    - Constrains what instructions can be bundled together 
+
+  - Static Multiple Issue
+    - VLIW (Very Long Instruction Word) method
+      - The compiler bundles independent instructions together
+      - May include `NOP`s bundled with instructions with large amounts of dependencies
+      - Due to the compiler's reliance on knowledge of the hardware for this method, it can also be exploited to deal with hazards rather than stalling it in the hardware
+        - Ex) scheduling to avoid a load-use hazard
+
+    - Static scheduling can resolve dependencies within the compiler
+      - Can also handle anti-dependencies using offsets
+      - Can more aggressively optimize by adding ILP through techniques such as loop unrolling
+        - Reduces the number of `NOP`s needed
+
+    - Generates a single version per program, independent of the data
+
+  - Dynamic Multiple Issue
+    - Abstract View
+      - We get instructions in program order (the order the compiler determined)
+        - `IF`
+
+      - We execute the instructions out of order
+        - `EX`, `MEM`, `WB`
+
+      - We then reorder the instructions back into program order in the commit phase
+        - This allows for the illusion that, from the software/OS point of view, the program is executing instructions in the order given by the compiler
+        - In reality, we want to be executing things in whatever order we want to speed things up
+
+    - The complexity originates from the need to determine what instructions can be executed out of order, and how to bring those instructions back in order for the commit phase
+    - Register Renaming
+      - Logical registers, such as `$t0` and `$s1`, are registers that the compiler can see and allocate
+        - The ones the ISA is aware of and are needed to handle commit
+
+      - Physical registers may not have a 1-to-1 correspondence with logical registers, there should be more of them
+        - They act as multiple versions of a single logical register
+
+      - Converts a logical register specifier into a physical register specifier
+        - Renaming allows for further division of dependent instructions by getting rid of false dependencies
+        - Allocation done for registers being written to, while reading done for registers being read from
+          - Reading done using the Register Alias Table (RAT), which maps from logical registers to physical tables
+
+      - Done in the frontend of the hardware
+        - Compiler is unaware of this process
+
+    - Reorder Buffer (ROB)
+      - Contains the original order of instructions that have been fetched, but not committed
+      - Allocated and removed in order
+        - Instructions that have completed before their predecessors are forced to wait
+
+      - Updated out of order
+      - Determines how many instructions we can consider as a whole for a commit
+
+    - Scheduling Window
+      - Contains the instructions that have been fetched, but not completed
+      - Instructions placed in the scheduling window and ROB at the same time
+      - Instructions are fetched, placed in the SW/ROB, sent into execution by the SW, then wait in the ROB until committed
+      - Constrains how many instructions can be sent into execution
+
+    - Out-of-order execution helps to overlap latencies as much as possible
+      - Can adapt to the data of the program
+      - In-order commits help verify execution and maintain precise exceptions
+
+
+
+
+## Lecture 11:
 
 - 
 
@@ -3152,7 +3281,7 @@
 
 
 
-## Pre-Lecture 10:
+## Pre-Lecture 10: Multiple Issue
 
 - Instruction-Level Parallelism (ILP)
 
