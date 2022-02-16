@@ -3202,7 +3202,7 @@
 
       - ```pseudocode
         Undefined opcode:	 C000 0000
-        Overflow:						C000 0020
+        Overflow:			 C000 0020
         ```
 
   - Instructions either:
@@ -3473,7 +3473,436 @@
 
 
 
-## Pre-Lecture 11:
+## Pre-Lecture 11: Memory Hierarchy
+
+- Memory Technology
+
+  - Static RAM (SRAM)
+    - 0.5ns - 2.5ns, $2000 - $5000 per GB
+
+  - Dynamic RAM (DRAM)
+    - 50ns - 70ns, $20 - $75 per GB
+
+  - Magnetic disk
+    - 5ms - 20ms, $0.20 - $2 per GB
+
+  - Ideal memory
+    - Access time of SRAM
+    - Capacity and cost/GB of disk
+
+- DRAM Technology
+
+  - Data stores as a charge in a capacitor
+    - Single transistor used to access the charge
+    - Must periodically be refreshed
+      - Read contents and write back
+      - Performed on a DRAM "row"
+
+- Flash Storage
+
+  - Nonvolatile semiconductor storage
+    - 100x - 1000x faster than disk
+    - Smaller, lower power, more robust
+    - Higher cost/GB (between disk and DRAM)
+
+- Disk Storage
+
+  - Nonvolatile, rotating magnetic storage
+
+- Principle of Locality
+
+  - Programs access a small proportion of their address space at any time
+  - Temporal locality
+    - Items accessed recently are likely to be accessed again soon
+    - e.g., instructions in a loop, induction variables
+
+  - Spatial locality
+    - Items near those accessed recently are likely to be accessed soon
+    - e.g., sequential instruction access, array data
+
+  - Taking Advantage of Locality
+    - Memory hierarchy
+    - Store everything on disk
+    - Copy recently accessed (and nearby) items from disk to smaller DRAM memory
+      - Main memory
+
+    - Copy more recently accessed (and nearby) items from DRAM to smaller SRAM memory
+      - Cache memory attached to CPU
+
+- Memory Hierarchy Levels
+
+  - Block (aka line): unit of copying
+    - May be multiple words
+
+  - If accessed data is present in upper level:
+    - Hit: access satisfied by upper level
+      - Hit ratio: hits/accesses
+
+  - If accessed data is absent:
+    - Miss: block copied from lower level
+      - Time taken: miss penalty
+      - Miss ratio: misses/accesses
+        - Equal to `1 - Hit Ratio`
+
+    - Then accessed data supplied from upper level
+
+- Cache Memory
+
+  - Cache memory: the level of the memory hierarchy closest to the CPU
+
+  - Given accesses `X_1, ... , X_n-1, X_n`:
+
+    - How do we know if the data is present?
+    - Where do we look?
+
+  - Direct Mapped Cache
+
+    - Location determined by address
+    - Direct mapped: only one choice
+      - `Block address % # blocks in cache`
+      - `# blocks in cache` is a power of 2
+      - Use low-order address bits
+
+  - Tags and Valid Bits
+
+    - How do we know which particular block is stored in a cache location?
+      - Store block address as well as the data
+      - Actually, only need the high-order bits
+      - Called the tag
+
+    - What if there is no data in a location?
+      - Valid bit: `1` means data is present, `0` means data is not present
+      - Initially `0`
+
+  - Block Size Considerations
+
+    - Larger blocks should reduce miss rate due to spatial locality
+    - But in a fixed-size cache:
+
+      - Larger blocks => fewer blocks
+        - More competition => increased miss rate
+
+      - Larger blocks => pollution
+
+    - Larger miss penalty
+      - Can override benefit of reduced miss rate
+      - Early restart and critical-word-first can help
+
+  - Cache Misses
+
+    - On cache hit, CPU proceeds normally
+    - On cache miss:
+      - Stall the CPU pipeline
+      - Fetch block from next level of hierarchy
+      - Instruction cache miss:
+        - Restart instruction fetch
+
+      - Data cache miss:
+        - Complete data access
+
+  - Write-Through
+
+    - On data-write hit, could just update the block in cache
+      - But then cache and memory would be inconsistent
+
+    - Write-through: also update memory
+    - But makes writes take longer
+      - e.g., assume base CPI is `1`, 10% of instructions are stores, write to memory takes 100 cycles
+        - Effective CPI = `1 + 0.1 × 100 = 11`
+
+    - Solution: write buffer
+      - Holds data waiting to be written to memory
+      - CPU continues immediately
+        - Only stalls on writes if write buffer is already full
+
+  - Write-Back
+
+    - Alternative: on data-write hit, just update the block in cache
+      - Keep track of whether each block is dirty
+
+    - When a dirty block is replaced
+      - Write it back to memory
+      - Can use a write buffer to allow replacing block to be read first
+
+  - Write Allocation
+
+    - What should happen on a write miss?
+    - Alternatives for write-through:
+      - Allocate on miss: fetch the blcok
+      - Write around: don't fetch the blcok
+        - Since programs often write a whole block before reading it (e.g., initialization)
+
+    - For write-back:
+      - Usually fetch the block
+
+  - Measuring Cache Performance
+
+    - Components of CPU time
+
+      - Program execution cycles
+        - Includes cache hit time
+
+      - Memory stall cycles
+        - Mainly from cache misses
+
+    - With simplifying assumptions:
+
+      - $$
+        \text{Memory stall cycles}=\frac{\text{Memory accesses}}{\text{Program}}\times\text{Miss rate}\times{\text{Miss penalty}}\\
+        =\frac{\text{Instructions}}{\text{Program}}\times\frac{\text{Misses}}{\text{Instruction}}\times\text{Miss penalty}
+        $$
+
+    - Example:
+
+      - Given:
+        - I-cache miss rate = 2%
+        - D-cache miss rate = 4%
+        - Miss penalty = 100 cycles
+        - Base CPI (ideal cache) = 2
+        - Load and stores are 36% of instructions
+
+      - Miss cycles per instruction:
+        - I-cache: `0.02 × 100 = 2`
+        - D-cache: `0.36 × 0.04 × 100 = 1.44`
+
+      - `Actual CPI = 2 + 2 + 1.44 = 5.44`
+        - Ideal CPU is `5.44 / 2 = 2.72` times faster
+
+  - Average Access Time
+
+    - Hit time is also important for performance
+
+    - Average memory access time (AMAT)
+
+      - $$
+        \text{AMAT}=\text{Hit time}\times\text{Miss rate}\times\text{Miss penalty}
+        $$
+
+    - Example:
+
+      - Given:
+        - CPU is 1ns clock
+        - Hit time = 1 cycle
+        - Miss penalty = 20 cycles
+        - I-cache miss rate = 5%
+
+      - `AMAT = 1 + 0.05 × 20 = 2ns`
+        - 2 cycles per instruction
+
+  - Performance Summary
+
+    - When CPU performance increases, miss penalty becomes more significant
+    - Decreasing base CPI results in a greater proportion of time spent on memory stalls
+    - Increasing clock rate results in memory stalls accounting for more CPU cycles
+    - Can't neglect cache behavior when evaluating system performance
+
+  - Associative Caches
+
+    - Fully associative
+      - Allow a given block to go in any cache entry
+      - Requires all entries to be searched at once
+      - Comparator per entry (expensive)
+
+    - `n`-way set associative
+      - Each set contains `n` entries
+      - Block number determines which set
+        - `Block number % # of sets in cache`
+
+      - Search all entries in a given set at once
+      - `n` comparators (less expensive)
+
+    - How Much Associativity?
+      - Increased associativity decreases miss rate, but with diminishing returns
+
+  - Replacement Policy
+
+    - Direct mapped: no choice
+    - Set associative
+      - Prefer non-valid entry, if there is one
+      - Otherwise, choose among entries in the set
+
+    - Least-recently used (LRU)
+      - Choose the one unused for the longest time
+        - Simple for 2-way, manageable for 4-way, too hard beyond that
+
+    - Random
+      - Gives approximately the same performance as LRU for high associativity
+
+  - Multilevel Caches
+
+    - Primary cache attached to CPU
+      - Small, but fast
+
+    - Level-2 cache services misses from primary cache
+      - Larger, slower, but still faster than main memory
+
+    - Main memory services L-2 cache misses
+    - Some high-end systems include L-3 cache
+    - Example:
+      - Given:
+        - CPU base CPI = 1
+        - Clock rate = 4GHz
+        - Miss rate per instruction = 2%
+        - Main memory access time = 100ns
+
+      - With just primary cache:
+        - `Miss penalty = 100ns / 0.25ns = 400 cycles`
+        - `Effective CPI = 1 + 0.02 × 400 = 9`
+
+      - Now add an L-2 cache:
+        - Access time = 5ns
+        - Miss rate = 10%
+
+      - Primary miss with L-2 hit:
+        - `Penalty = 5ns / 0.25ns = 20 cycles`
+
+      - Primary miss with L-2 miss:
+        - `Extra penalty = 400 cycles`
+
+      - `CPI = 1 + 0.02 × (20 + 0.10 × 400) = 2.2`
+      - Performance ration: `9 / 2.2 = 4.1`
+
+    - Multilevel Cache Considerations
+      - Primary cache
+        - Focus on minimal hit time
+
+      - L-2 cache
+        - Focus on low miss rate to avoid main memory access
+        - Hit time has less overall impact
+
+      - Results:
+        - L-1 cache usually smaller than a single cache
+        - L-1 block size smaller than L-2 block size
+
+  - Interactions with Advanced CPUs
+
+    - Out-of-order CPUs can execute instructions during cache miss
+      - Pending store stays in load/store unit
+      - Dependent instructions wait in reservation stations
+        - Independent instructions continue
+
+    - Effect of miss depends on program data flow
+      - Much harder to analyze
+      - Use system simulation
+
+  - Interactions with Software
+
+    - Misses depend on memory access patterns
+      - Algorithm behavior
+      - Compiler optimization for memory access
+
+- The Memory Hierarchy
+
+  - Common principles apply at all levels of the memory hierarchy
+
+    - Based on notions of caching
+
+  - At each level in the hierarchy:
+
+    - Block placement
+    - Finding a block
+    - Replacement on a miss
+    - Write policy
+
+  - Block Placement
+
+    - Determined by associativity
+      - Direct mapped (1-way associative)
+        - One choice for placement
+
+      - `n`-way set associative
+        - `n` choices within a set
+
+      - Fully associative
+        - Any location
+
+    - Higher associativity reduces miss rate
+      - Increases complexity, cost, and access time
+
+  - Finding a Block
+
+    - | Associativity           | Location Method                               | Tag Comparisons |
+      | ----------------------- | --------------------------------------------- | --------------- |
+      | Direct Mapped           | Index                                         | 1               |
+      | `n`-way Set Associative | Set index, then search entries within the set | `n`             |
+      | Fully Associative       | Search all entries                            | # of entries    |
+      | Fully Associative       | Full lookup table                             | 0               |
+
+    - Hardware caches
+
+      - Reduce comparisons to reduce cost
+
+    - Virtual memory
+
+      - Full table lookup makes full associativity feasible
+      - Benefit in reduced miss rate
+
+  - Replacement on a Miss
+
+    - Choice of entry to replace on a miss
+      - Least recently used (LRU)
+        - Complex and costly hardware for high associativity
+
+      - Random
+        - Close to LRU, easier to implement
+
+    - Virtual memory
+      - LRU approximation with hardware support
+
+  - Write Policy
+
+    - Write-through
+      - Update both upper and lower levels
+      - Simplifies replacement, but may require write buffer
+
+    - Write-back
+      - Update upper level only
+      - Update lower level when block is replaced
+      - Need to keep more state
+
+    - Virtual memory
+      - Only write-back is feasible, given disk write latency
+
+  - Sources of Misses
+
+    - Compulsory misses (aka cold start misses)
+      - First access to a block
+
+    - Capacity misses
+      - Due to finite cache size
+      - A replaced block is later accessed again
+
+    - Conflict misses (aka collision misses)
+      - In a non-fully associative cache
+      - Due to competition for entries in a set
+      - Would not occur in a fully associative cache of the same total size
+
+  - Cache Design Trade-offs
+
+    - | Design Change          | Effect on Miss Rate        | Negative Performance Effect                                  |
+      | ---------------------- | -------------------------- | ------------------------------------------------------------ |
+      | Increase cache size    | Decrease capacity misses   | May increase access time                                     |
+      | Increase associativity | Decrease conflict misses   | May increase access time                                     |
+      | Increase block size    | Decrease compulsory misses | Increases miss penalty; for very large block size, may increase miss rate due to pollution |
+
+- Concluding Remarks
+
+  - Fast memories are small, large memories are slow
+    - We really want fast, large memories
+    - Caching gives this illusion
+
+  - Principle of locality
+    - Programs use a small part of their memory space frequently
+
+  - Memory hierarchy
+    - L1 cache <=> L2 cache <=> ... <=> DRAM memory <=> disk
+
+  - Memory system design is critical for multiprocessors
+
+
+
+
+## Pre-Lecture 12:
 
 - 
 
