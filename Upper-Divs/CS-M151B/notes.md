@@ -1004,7 +1004,67 @@
 
 
 
-## Lecture 11:
+## Lecture 11: Superscalar Processors
+
+- Superscalar
+  - In-Order 1
+    - `IF`
+    - `ID`
+    - Register renaming
+      - Uses the RAT
+      - Maps from logical registers to physical registers to remove false dependencies and make better use of ILP
+      - Problem of aliasing of effective address of `lw` and `sw`
+  - Out-of-Order
+    - `EX`
+    - `MEM`
+    - `WB`
+  - In-Order 2
+    - Commit
+  - Allocation
+    - ROB (Reorder Buffer)
+      - Allocates in order, completes out of order, commits in order
+    - MOB (Memory Ordering Buffer)
+      - Deal with `lw` and `sw` in particular
+      - Tracks the effective addresses of `lw` and `sw` in program order
+        - Once the address is known, we can check if there is a conflict
+    - SB (Store Buffer)
+      - Keeps the data for `sw` instructions that haven't yet been verified by the MOB
+    - Reservation Station
+      - Wakes up instructions that are eligible for execution by the functional units
+        - Selection has to watch out for structural hazards
+  - Idea of completing instructions before knowing before that they can be executed - speculative execution
+- CPI Calculation of More Complex Pipelines
+  - `TCPI = BCPI + MCPI`
+    - `BCPI`: comes from the pipeline
+    - `MCPI`: comes from memory
+  - `BCPI`
+    - Assume it's baked into the pipeline
+    - `BCPI = Peak CPI + Stalls per Instruction + Flushes per Instruction`
+      - Stalls per instruction handles data hazards
+      - Flushes per instruction handles control hazards
+    - Example:
+      - Assume:
+        - Scalar processor
+        - 5-stage pipeline
+        - Forwarding for data hazards
+        - Load-use hazards cost 1 cycles
+        - 90% accurate dynamic branch prediction
+        - Branches are resolved in `MEM`
+        - 30% of instructions are `lw`s
+          - 50% of these are immediately followed by a dependent
+        - 20% of instructions are `beq`/`bne`
+      - Peak CPI is `1`
+      - For hazards, think `Frequency × Penalty`
+      - Stalls per instruction is `(0.3)(0.5)(1)`
+        - `(0.3)(0.5)` is the frequency
+        - `(1)` is the penalty
+      - Flushes per instruction is `(0.2)(0.1)(3)`
+        - `(0.2)(0.1)` is the frequency
+        - `(3)` is the penalty
+
+
+
+## Lecture 12: Memory Hierarchy
 
 - 
 
