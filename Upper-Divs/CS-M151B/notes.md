@@ -1064,7 +1064,69 @@
 
 
 
-## Lecture 12: Memory Hierarchy
+## Lecture 12: Caching
+
+- Model:
+  - L1 cache holds `2^12` bytes and takes 1 cycle to access
+  - L2 cache holds `2^20` bytes and takes 10 cycles to access
+  - Memory holds `2^32` bytes and takes 200 cycles to access
+  - 32B block size
+- Caches
+  - Moves data at a courser granularity than bytes to take advantage of locality
+    - Views memory as blocks
+    - Each block is discrete
+    - Requested data will be somewhere within the fetched chunk
+    - Starting memory address dependent on block size
+      - Ex) 32B block size => `...00000`
+  - Address requests data from cache, can result in a hit or miss
+    - On a hit, the data block can then be fetched from the cache
+    - Address contains an offset that can be used to see where the data is within the block
+      - Offset size dependent on block size
+      - Used to isolate a word
+  - We need a way to check if a given address is present in the cache
+    - Simplest method is direct mapping
+      - Indexed by the middle bits of the address, right before the offset
+        - Number of bits determined by cache size
+        - Minimizes thrashing by allowing for data near each other to co-exist in the cache
+        - Decoder maps the bits to the table entry
+        - Low-level hash table
+      - Rest of the address is the tag, which uniquely identifies an entry in the direct-mapped cache
+        - Saved in the cache
+        - Compare the upper bits of the address and the tag with a comparator
+      - Cache also contains an additional bit call the valid bit that tells us if the data in the cache is valid
+        - Check for tag equivalence and valid bit => if true, then we have the correct data
+    - More complex method is associativity
+      - How many blocks map to a particular cache index
+      - Each block in an index is referred to as a way
+      - We need as many comparators as ways
+        - Need to compare each way to a particular memory request
+      - `Total Data Size = # Indices × Associativity × Block Size`
+  - We need a method to evict data from the cache
+    - LRU => expensive on highly associative implementations
+    - Random => models LRU closely
+  - How do stores handle caches?
+    - Write through
+      - Write the next level when the current level is written to
+    - Write back
+      - Write the next level at eviction
+      - Maintains a dirty bit that tracks if the next level needs to be written to
+      - We don't have to pay the cost of accessing memory on every write, the cost is amortized
+      - Delays the instruction that triggers the write back
+    - What about on a store miss?
+      - Write allocate treats the store just like a load
+      - Write around skips the current level and writes directly to the next level
+        - Attempts to avoid polluting the cache
+        - Beneficial when there is low locality between loads and stores
+  - There are multiple types of misses
+    - A compulsory miss is one that we didn't have an opportunity to avoid
+      - Cache itself doesn't matter
+    - A conflict miss is one where the data was previously in the cache and there was space to keep it in the cache, but it was evicted
+      - Compare with a fully associative cache, which eliminates conflict misses
+    - A capacity miss is one where there isn't enough physical room in the cache, causing a miss
+
+
+
+## Lecture 13:
 
 - 
 
