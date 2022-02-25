@@ -1126,7 +1126,7 @@
 
 
 
-## Lecture 13:
+## Lecture 13: TCPI
 
 - `TCPI = MCPI + BCPI`
 
@@ -1180,7 +1180,20 @@
       \text{MCPI}=(1\times0.15\times(10+0.05\times(40+0.05\times 200)))\ +\\(0.4\times0.2\times(10+0.05\times(40+0.05\times 200)))
       $$
 
-      - 
+- Cache Design
+
+  - Split the decoding/hit checking from the data fetching/output
+    - Data has an enable bit linked to the hit detection
+
+    - Trade-offs
+      - Saves power consumption on larger caches, as only hits will force data out
+      - Increases latency, as data cannot be driven out in parallel with hit checking
+
+    - Latching
+      - Latch word lines to data access so we know what will be driven out next
+      - Latch the enable/control bits
+      - Latch the hit/miss logic
+
 
 
 
