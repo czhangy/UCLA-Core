@@ -1128,6 +1128,64 @@
 
 ## Lecture 13:
 
+- `TCPI = MCPI + BCPI`
+
+  - `MCPI = I-Cache Stalls + D-Cache Stalls`
+  - Stalls dependent on hierarchy, cache latencies, miss rates, and miss penalties
+    - D-cache stalls also dependent on instruction makeup
+
+- Example:
+
+  - Assume:
+
+    - 5-stage pipeline
+    - Forwarding
+    - Load-use hazard
+    - Dynamic branch prediction with 75% accuracy
+    - Branches resolved in `EX`
+    - 15% of instructions are `beq`/`bne`
+    - 25% of instructions are `lw`
+      - 25% of these are followed by a dependent instruction
+    - 15% of instructions are `sw`
+      - Can stall pipe on miss
+    - Separate L1 and L2 caches for instruction and data memory
+      - L1 instruction cache: 1 cycle access, 15% miss rate
+      - L1 data cache: 1 cycle access, 20% miss rate
+      - L2 instruction cache: 10 cycle access, 5% miss rate
+      - L2 data cache: 10 cycle access, 10% miss rate
+    - Joint L3 cache: 40 cycle access, 5% miss rate
+    - Memory has a 200 cycle access
+
+  - `BCPI`
+
+    - Peak CPI is `1`
+
+    - Load-use hazard
+
+      - Frequency of `(0.25)(0.25)`
+      - Penalty of `1`
+
+    - Branch misprediction
+
+      - Frequency of `(0.15)(0.25)`
+      - Penalty of `2`
+
+    - $$
+      \text{BCPI}=1+(0.25\times0.25\times1)+(0.15\times0.25\times2)
+      $$
+
+  - `MCPI`
+
+    - $$
+      \text{MCPI}=(1\times0.15\times(10+0.05\times(40+0.05\times 200)))\ +\\(0.4\times0.2\times(10+0.05\times(40+0.05\times 200)))
+      $$
+
+      - 
+
+
+
+## Lecture 14:
+
 - 
 
 
