@@ -4173,7 +4173,315 @@
 
 
 
-## Pre-Lecture #13
+## Pre-Lecture 13: Multiprocessors and GPUs
+
+- Introduction
+
+  - Goal: connecting multiple computers to get higher performance
+    - Multiprocessors
+    - Scalability, availability, power efficiency
+
+  - Job-level (process-level) parallelism
+    - High throughput for independent jobs
+
+  - Parallel processing program
+    - Single program run on multiple processors
+
+  - Multicore microprocessors
+    - Chips with multiple processors (cores)
+
+- Parallel Programming
+
+  - Parallel software is the problem
+  - Need to get significant performance improvement
+    - Otherwise, just use a faster uniprocessor, since it's easier
+
+  - Difficulties
+    - Partitioning
+    - Coordination
+    - Communications overhead
+
+- Amdahl's Law
+
+  - Sequential part can limit speedup
+
+  - Example:
+
+    - Assume: 100 processors, 90x speedup
+
+    - $$
+      T_{\text{new}}=\frac{T_{\text{parallelizable}}}{100}+T_{\text{sequential}}\\
+      \text{Speedup}=\frac{1}{(1-F_{\text{parallelizable}})+F_{\text{parallelizable}}/100}=90\\
+      F_{\text{parallelizable}}=0.999
+      $$
+
+  - Need sequential part to be 0.1% of original time
+
+- Scaling Example
+
+  - Workload: sum of 10 scalars and 10 x 10 matrix sum
+
+    - Speed up from 10 to 100 processors
+
+  - Single processor:
+
+    - $$
+      \text{Time}=(10+100)\times t_{\text{add}}
+      $$
+
+  - 10 processors:
+
+    - $$
+      \text{Time}=10\times t_{\text{add}}+\frac{100}{10}\times t_{\text{add}}=20\times t_{\text{add}}\\
+      \text{Speedup}=\frac{110}{20}=5.5
+      $$
+
+    - 55% of potential
+
+  - 100 processors:
+
+    - $$
+      \text{Time}=10\times t_{\text{add}}+\frac{100}{100}\times t_{\text{add}}=11\times t_{\text{add}}\\
+      \text{Speedup}=\frac{100}{11}=10
+      $$
+
+    - 10% of potential
+
+  - Assumes load can be balanced across processors
+
+- Strong vs. Weak Scaling
+
+  - Strong scaling: problem size fixed
+
+    - As in example
+
+  - Weak scaling: problem size proportional to number of processors
+
+    - 10 processors, 10 x 10 matrix
+
+      - $$
+        \text{Time}=20\times t_{\text{add}}
+        $$
+
+    - 100 processors, 32 x 32 matrix
+
+      - $$
+        \text{Time}=10\times t_{\text{add}}+\frac{1000}{100}\times t_{\text{add}}=20\times t_{\text{add}}
+        $$
+
+    - Constant performance in this example
+
+- Shared Memory
+
+  - SMP: shared memory multiprocessor
+
+    - Hardware provides single physical address space for all processors
+    - Synchronize shared variables using locks
+    - Memory access time
+      - UMA (uniform) vs. NUMA (nonuniform)
+
+  - Example: Sum Reduction
+
+    - Sum 100,000 numbers on 100 processor UMA
+
+      - Each processor has ID: `0 ≤ Pn ≤ 99`
+
+      - Partition 1,000 numbers per processor
+
+      - Initial summation on each processor:
+
+        - ```c
+          sum[Pn] = 0;
+          for (i = 1000 * Pn; i < 1000 & (Pn + 1); i = i + 1)
+              sum[Pn] = sum[Pn] + A[i]
+          ```
+
+    - Now need to add these partial sums
+
+      - Reduction: divide and conquer
+      - Half the processors add pairs, then quarter, etc.
+      - Need to synchronize between reduction steps
+
+  - Message Passing
+
+    - Each processor has private physical address space
+    - Hardware sends/receives messages between processors
+
+  - Loosely Coupled Clusters
+
+    - Network of independent computers
+      - Each has private memory and OS
+      - Connected using I/O system
+        - e.g., ethernet/switch, Internet
+
+    - Suitable for applications with independent tasks
+      - Web servers, databases, simulations, etc.
+
+    - High availability, scalable, affordable
+    - Problems:
+      - Administration cost (prefer virtual machines)
+      - Low interconnect bandwidth
+        - c.f., processor/memory bandwidth on an SMP
+
+  - Example: Sum Reduction (again)
+
+    - Sum 100,000 on 100 processors
+
+    - First distribute 100 numbers to eeach
+
+      - Then do partial sums:
+
+        - ```c
+          sum = 0;
+          for (i = 0; i < 1000; i = i + 1)
+              sum = sum + AN[i];
+          ```
+
+    - Reduction
+
+      - Half the processors send, other half receive and add
+      - The quarter send, quarter receive and add
+      - etc.
+
+  - Grid Computing
+
+    - Separate computers interconnected by long-haul networks
+      - e.g., Internet connections
+      - Work units framed out, results sent back
+
+    - Can make use of idle time on PCs
+      - e.g., SETI@home, World Community Grid
+
+- Multithreading
+
+  - Performing multiple threads of execution in parallel
+    - Replicate registers, PC, etc.
+    - Fast switching between threads
+
+  - Fine-grain multithreading
+    - Switch threads after each cycle
+    - Interleave instruction execution
+    - If one thread stalls, others are executed
+
+  - Coarse-grain multithreading
+    - Only switch on long stall (e.g., L2-cache miss)
+    - Simplifies hardware, but doesn't hide short stalls (e.g. data hazards)
+
+  - Simultaneous Multithreading
+    - In multiple-issue dynamically scheduled processor
+      - Schedule instructions from multiple threads
+      - Instructions from independent threads execute when functional units are available
+      - Within threads, dependencies handled by scheduling and register renaming
+
+    - Example: Intel Pentium-4 HT
+      - Two threads: duplicated registers, shared functional units and caches
+
+  - Future of Multithreading
+    - Will it survive? In what form?
+    - Power considerations => simplified microarchitectures
+      - Simpler forms of multithreading
+
+    - Tolerating cache-miss latency
+      - Thread switch may be most effective
+
+    - Multiple simple cores might share resources more effectively
+
+- Instruction and Data Streams
+
+  - SPMD: Single Program Multiple Data
+    - A parallel program on a MIMD computer
+    - Conditional code for different processors
+
+  - SIMD
+    - Operate element-wise on vectors of data
+      - e.g., MMX and SSE instructions in x86
+        - Multiple data elements in 128-bit wide registers
+
+    - All processors execute the same instruction at the same time
+      - Each with different data address, etc.
+
+    - Simplifies synchronization
+    - Reduced instruction control hardware
+    - Works best for highly data-parallel applications
+
+- Vector Processors
+
+  - Highly pipelined functional units
+  - Stream data from/to vector registers to units
+    - Data collected from memory into registers
+    - Results stored from registers to memory
+
+  - Example: Vector extension to MIPS
+    - 32 x 64-element registers (64-bit elements)
+    - Vector instructions:
+      - `lv`, `sv`: load/store vector
+      - `addv.d`: add vectors of doubles
+      - `addvs.d`: add scalar to each element of a vector of doubles
+
+  - Significantly reduces instruction-fetch bandwidth
+  - Vector vs. Scalar
+    - Vector architectures and compilers
+      - Simplify data-parallel programming
+      - Explicit statement of absence of loop-carried dependencies
+        - Reduced checking in hardware
+
+      - Regular access patterns benefit from interleaved and burst memory
+      - Avoid control hazards by avoiding loops
+
+    - More general than ad-hoc media extensions (such as MMX, SSE)
+      - Better match with compiler technology
+
+- History of GPUs
+
+  - Early video cards
+    - Frame buffer memory with address generation for video output
+
+  - 3D graphics processing
+    - Originally high-end computers (e.g., SGI)
+    - Moore's Law => lower cost, higher density
+    - 3D graphics cards for PCs and game consoles
+
+  - Graphics Processing Units
+    - Specialized processors oriented to 3D graphics tasks
+    - Vertex/pixel processing, shading, texture mapping, rasterization
+
+- GPU Architectures
+
+  - Processing in highly data-parallel
+    - GPUs are highly multithreaded
+    - Use thread switching to hide memory latency
+      - Less reliance on multi-level caches
+
+    - Graphics memory is wide and high-bandwidth
+
+  - GPU trends
+    - Heterogeneous CPU/GPU systems
+    - CPU for sequential code, GPU for parallel code
+
+  - Programming languages/APIs
+    - DirectX, OpenGL
+    - C for Graphics (Cg), High Level Shader Language (HLSL)
+    - Compute Unified Device Architecture (CUDA)
+
+- Classifying GPUs
+
+  - Don't fit nicely into SIMD/MIMD model
+
+    - Conditional execution in a thread allows an illusion of MIMD
+      - But with performance degradation
+      - Need to write general purpose code with care
+
+  - |                               | Static: Discovered at Compile Time | Dynamic: Discovered at Runtime |
+    | ----------------------------- | :--------------------------------: | :----------------------------: |
+    | Instruction-Level Parallelism |                VLIW                |          Superscalar           |
+    | Data-Level Parallelism        |           SIMD or Vector           |      Tesla Multiprocessor      |
+
+    
+
+
+## Pre-Lecture 14:
 
 - 
+
+
 
