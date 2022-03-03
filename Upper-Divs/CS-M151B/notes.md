@@ -1197,7 +1197,140 @@
 
 
 
-## Lecture 14:
+## Lecture 14: Virtual Memory
+
+- Motivation
+
+  - Add a layer of abstraction between what the application thinks is happening and what is actually happening
+  - Without VM, all memory would have to be laid out for all applications at compilation
+    - Recompile for every combination of applications to take care of how they interact with each other
+  - Instead, VM allows us to compile every application under the assumption the application has all of the available memory to itself
+  - Sharing, protection, etc.
+
+- Translation
+
+  - Data moved in page granularity
+
+    - Exploit locality to avoid incurring high cost of disk access
+
+  - Example:
+
+    - Assume:
+
+      - 32-bit virtual address
+      - 36-bit physical address
+      - `2^15`B page size
+
+    - Bottom 15 bits of both addresses are the page offset
+
+      - Same value in both addresses
+
+    - Number of pages is:
+
+      - $$
+        \frac{2^{32}\text{B}}{2^{15}\text{B}}=2^{17}\text{ pages}
+        $$
+
+      - Each page has its own entry in the page table, indexed by the top 17 bits of the virtual address (virtual page number)
+
+        - Page table is memory-resident
+        - Page table begins at the memory location stored in the PTBR (page table base register)
+        - Entry contains the value needed to complete the physical address (physical page number)
+        - If the physical page is not in memory, a fault is sustained and the OS must handle fetching the page from disk
+        - As of now, the space efficiency of the page table is poor
+
+  - Issue:
+
+    - Loads currently take 2 loads to execute
+      - 1 extra load to load the page table entry from memory
+      - Fix using the TLB (translation look-aside buffer)
+        - Cache that holds elements of the page table, translating from virtual address to physical address without having to load the page table entry from memory
+
+  - TLB
+
+    - Idea is to give a virtual address and translate into a physical address without going through memory
+    - Acts like a normal cache, using the virtual address in the same way an address would be used to index into a cache
+      - Offset is based on the size of a page
+      - Tag and index comes from the virtual address
+    - Each TLB entry contains a PTE
+    - Interaction with data cache
+      - Does the data cache use the virtual address or the physical?
+      - Straightforward (physically indexed, physically tagged):
+        - Have the data cache go after the TLB, allowing caches to be independent of virtual memory
+        - Latency intensive due to serial nature
+      - Parallel (virtually indexed, virtually tagged):
+        - Use the virtual address for both, allowing them to run in parallel
+        - If the data caches miss, then the physical address from the TLB can be used to fetch the cache block from physical memory
+        - Makes the cache's complexity greater due to having to include TLB properties
+      - Hybrid (virtually indexed, physically tagged):
+        - Send the virtual address to the TLB to get the physical address
+        - Use the index of the virtual address to access the data cache in parallel
+        - Use the tag from the physical address to check for a proper cache hit
+        - Allows for overlap of latency
+          - Can completely hide the latency of translation on small TLBs
+
+- Hierarchal Page Table
+
+  - Breaks page table up into page-sized chunks, pointed to by a higher-level page table
+  - Allows us to have less of the page table in main memory at a time
+  - More indexing bits needed in the virtual address
+  - Reduces memory, but worsens performance by adding another potential load
+
+
+
+## Lecture 15: Multicore Processors
+
+- Comparison to Single-Core
+  - When we touched on out-of-order execution, we looked to exploit ILP
+  - Now, we want to exploit thread-level parallelism on a hardware level
+- Energy Per Instruction
+  - Move towards EPI moves us towards multi-core designs
+  - Pushes the burden onto the programmer to fully exploit
+- Many-Core Design Decisions
+  - Deal with problems that have a large amount of parallelism
+  - Want a mix of strong cores that can handle non-parallelizable problems and weaker cores that are more power efficient
+    - Heterogeneous computations as a modern trend
+
+- Design Decisions
+  - Cache architecture
+    - Shared cache allows for communication efficiency and shared cache space
+    - Tradeoff of balancing spending on processor and cache topology
+  - Cores
+    - More threads allows for more utilization of the system => simultaneous multithreading
+      - Thread can execute simultaneously
+        - As opposed to coarse/fine-grain multithreading, which requires context switching
+      - Needs multiple PCs, register files, etc.
+      - Try to reuse as much as possible
+      - Provides illusion to the application that there are more cores than are present physically
+      - Can share resources, unlike separate cores
+    - Cache pressure is worsened, possibly causing more cache misses and worsening the performance of a given thread
+      - More beneficial to applications with bursts of cache pressure
+    - More threads allows for eased penalties for branch prediction
+- SIMD
+  - Deals with vector registers, preferably within high-spatial locality data
+  - Amortizing the cost of instruction fetch/decode => single frontend
+    - Loses flexibility compared to MIMD
+  - Exploit using multiple execution functional units
+
+- Programming General Purpose vs. ASIC (Application Specific Integrated Circuit)
+  - Very little flexibility
+  - Performs its designated task very efficiently
+    - Power/performance
+  - Economy of scale fails due to requirement to redesign silicon
+  - FPGA is a middle ground
+    - More flexible than ASIC, but also more efficient than PGP
+    - Sea of lookup tables that allow us to build up logic as a program
+    - Programmable
+    - Good for rapidly evolving fields as opposed to ASIC, which may become obsolete quickly
+- Sea of Accelerators Model
+  - Push towards dark silicon
+  - Argument for heterogeneity
+  - Activate parts of the chip based on demand
+  - Particular applications embedded into the core itself
+
+
+
+## Lecture 16:
 
 - 
 
