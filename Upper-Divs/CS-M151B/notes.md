@@ -4612,9 +4612,48 @@
     
 
 
-## Pre-Lecture 14:
+## Pre-Lecture 14: Cache Coherence
 
-- 
+- Cache Coherence Problem
+
+  - Suppose two CPU cores share a physical address space
+
+    - Write-through caches
+
+  - | Time Step |          Event          | CPU `A`'s Cache | CPU `B`'s Cache | Memory |
+    | :-------: | :---------------------: | :-------------: | :-------------: | :----: |
+    |     0     |            -            |        -        |        -        |   0    |
+    |     1     |    CPU `A` reads `X`    |        0        |        -        |   0    |
+    |     2     |    CPU `B` reads `X`    |        0        |        0        |   0    |
+    |     3     | CPU `A` writes 1 to `X` |        1        |        0        |   1    |
+
+- Coherence Defined
+
+  - Informally: reads return most recently written value
+  - Formally:
+    - `P` writes `X`; `P` reads `X` (no intervening writes)
+      - Read returns written value
+    - `P_1` writes `X`, `P_2` reads `X` (sufficiently later)
+      - Read returns written value
+    - `P_1` writes `X`, `P_2` writes `X`
+      - All processors see writes in the same order
+
+- Cache Coherence Protocols
+
+  - Operations performed by caches in multiprocessors to ensure coherence
+    - Migration of data to local caches
+      - Reduces bandwidth for shared memory
+    - Replication of read-shared data
+      - Reduces contention for access
+  - Snooping protocols
+    - Each cache monitors bus reads/writes
+  - Directory-based protocols
+    - Caches and memory record sharing status of blocks in a directory
+  - Invalidating Snooping Protocols
+    - Cache gets exclusive access to a block when it is written
+      - Broadcasts an invalidate message on the bus
+      - Subsequent read in another cache misses
+        - Owning cache supplies updated value
 
 
 
