@@ -1330,7 +1330,7 @@
 
 
 
-## Lecture 16:
+## Lecture 16: Cache Coherence
 
 - 
 
