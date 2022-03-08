@@ -1332,7 +1332,34 @@
 
 ## Lecture 16: Cache Coherence
 
-- 
+- Motivation:
+  - Assume a multicore system, each with individual L1 data caches
+    - Connected through some shared memory topology to a shared L2/memory
+  - When one of these cores writes to shared memory, we want the change to propagate to the other cores
+- Snoopy Coherence
+  - For any core to use the data bus that connects it to shared memory, it must gain control of the bus first
+    - The core can then write and release the bus
+  - Snoopy coherence has each of the cores snoop on the bus to listen for changes
+  - Monitors what the other cores are doing
+    - Cores themselves are responsible for their own updates
+  - May invalidate the cache contents or update them entirely
+  - Relatively simple
+    - Problems with scalability => everyone has to be listening to everyone else
+- Directory Coherence
+  - Every block's status is tracked
+  - Focus on MSI coherence
+    - Modified, shared, invalidated
+  - All blocks start out as invalid
+    - From the perspective of the L1 caches
+  - When a core attempts to load a block, that block becomes shared
+  - When a core attempts to store a block, that block becomes modified and is only available on that core until written back
+    - Any other cores with that block must invalidate the block
+    - Any successive loads or stores will force a write back
+    - Only one core can be in the modified state
+  - Injection of traffic for state tracking
+- False Sharing
+  - Tanking of performance due to the sharing at a cache block granularity
+  - Two threads may be writing to different parts of a cache block, but cache coherence would still require safe sharing between them
 
 
 
