@@ -4636,7 +4636,6 @@
     | Instruction-Level Parallelism |                VLIW                |          Superscalar           |
     | Data-Level Parallelism        |           SIMD or Vector           |      Tesla Multiprocessor      |
 
-    
 
 
 ## Pre-Lecture 14: Cache Coherence
