@@ -118,7 +118,7 @@
 
         
 
-## Lecture 2: ISA Basics
+## Lecture 2: MIPS Basics
 
 - CISC vs. RISC
 
@@ -278,7 +278,7 @@
 
 
 
-## Lecture 4: ALU I
+## Lecture 4: ALU and Adders
 
 - The ALU is the physical structure that handles the core arithmetic operations for instructions
   - Takes in a 4-bit ALU operation that specifies one of 6 instructions
@@ -305,9 +305,9 @@
 
 
 
-## Lecture 5: Hierarchal CLA and Multiplication
+## Lecture 5: Hierarchical CLA and Multiplication
 
-- Hierarchal CLA
+- Hierarchical CLA
 
   - Idea is to connect multiple CLA structures together with a higher-level CLA
 
@@ -1072,7 +1072,7 @@
   - Memory holds `2^32` bytes and takes 200 cycles to access
   - 32B block size
 - Caches
-  - Moves data at a courser granularity than bytes to take advantage of locality
+  - Moves data at a coarser granularity than bytes to take advantage of locality
     - Views memory as blocks
     - Each block is discrete
     - Requested data will be somewhere within the fetched chunk
@@ -1269,7 +1269,7 @@
         - Allows for overlap of latency
           - Can completely hide the latency of translation on small TLBs
 
-- Hierarchal Page Table
+- Hierarchical Page Table
 
   - Breaks page table up into page-sized chunks, pointed to by a higher-level page table
   - Allows us to have less of the page table in main memory at a time
@@ -1414,7 +1414,7 @@
 
   - What You Will Learn
 
-    - How programs are translated into the machine lanagueg
+    - How programs are translated into the machine language
       - And how the hardware executes them
     - The hardware/software interface
       - Design tradeoffs
@@ -1438,7 +1438,7 @@
 
     - Design for Moore's Law
       - Technology trends are giving processor designers a large toolchain to be used
-      - Voltage doesn't scale well, how do we spend out budget of transistors effectively?
+      - Voltage doesn't scale well, how do we spend our budget of transistors effectively?
     - Use abstraction to simplify design
       - Designing for something without fully knowing how it works as a means of simplifying a problem
     - Make the common case fast
@@ -1492,7 +1492,7 @@
         - Display, keyboard, mouse, etc.
       - Storage devices
         - Hard disk, CD/DVD, flash, etc.
-      - Network adapaters
+      - Network adapters
         - For communicating with other computers
 
   - Inside the Processor (CPU)
@@ -1831,7 +1831,7 @@
   - Concluding Remarks
 
     - Cost/performance is improving due to underlying technology development
-    - Hierarchal layers of abstraction in both hardware and software
+    - Hierarchical layers of abstraction in both hardware and software
     - ISA => the hardware/software interface
     - Execution time: the best performance measure
     - Power is a limiting factor
@@ -2080,7 +2080,7 @@
 
   - Useful for common operations
 
-    - E.g., move between registers
+    - e.g., move between registers
 
       - ```mips
         add $t2, $t1, $zero
@@ -2596,7 +2596,7 @@
 
 
 
-## Pre-Lecture 4: ALU Basics
+## Pre-Lecture 4: ALUs and Adders
 
 - Arithmetic for Computers
   - Operations on integers
@@ -2779,7 +2779,7 @@
     - Connect several `N`-bit lookahead adders together
       - Ripple carry
     - 4 8-bit carry lookahead adders can form a 32-bit partial carry lookahead adder
-  - Hierarchal CLA
+  - Hierarchical CLA
 
 - Carry Select Adder
 
@@ -3217,7 +3217,7 @@
       - Alignment of memory operands
         - Memory access takes only one cycle
   - Pipeline Principles
-    - All instructions that share a pipeline must hav e the same stages in the same order
+    - All instructions that share a pipeline must have the same stages in the same order
       - Therefore, `add` does nothing during the `MEM` stage
       - `sw` does nothing during the `WB` stage
     - All intermediate values must be latched each cycle
@@ -3634,7 +3634,7 @@
 
 
 
-## Pre-Lecture 10: Multiple Issue
+## Pre-Lecture 10: Superscalar Processors
 
 - Instruction-Level Parallelism (ILP)
 
@@ -3981,8 +3981,8 @@
 
     - What should happen on a write miss?
     - Alternatives for write-through:
-      - Allocate on miss: fetch the blcok
-      - Write around: don't fetch the blcok
+      - Allocate on miss: fetch the block
+      - Write around: don't fetch the block
         - Since programs often write a whole block before reading it (e.g., initialization)
 
     - For write-back:
@@ -4487,7 +4487,7 @@
 
     - Sum 100,000 on 100 processors
 
-    - First distribute 100 numbers to eeach
+    - First distribute 100 numbers to each
 
       - Then do partial sums:
 
