@@ -2,7 +2,7 @@
 
 # Reinman - Winter '22
 
-## Overall: IP | Raw Percentage: IP
+## Overall: IP | Raw Percentage: 92.9%
 
 ## Grading
 
@@ -24,12 +24,12 @@
 |  6   |  0/1  |
 |  7   |  1/1  |
 |  8   |  1/1  |
-|  9   |  ???  |
+|  9   |  1/1  |
 
 ## Exams
 
 |  Exam   |  Score   |
 | :-----: | :------: |
 | Midterm | 91.5/100 |
-|  Final  |   ???    |
+|  Final  |  95/100  |
 
