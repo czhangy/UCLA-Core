@@ -17,7 +17,7 @@
 | CS 118 | ??? | ??? |
 | CS 130 | ??? | ??? |
 | CS 131 | Winter '21 | A |
-| CS M151B | Winter '22 | IP |
+| CS M151B | Winter '22 | A |
 | CS M152A | Fall '21 |  A+  |
 | CS 180 | Fall '20 | A |
 | CS 181 | Spring '21 | A |
