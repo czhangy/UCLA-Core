@@ -2,7 +2,7 @@
 
 # Reinman - Winter '22
 
-## Overall: IP | Raw Percentage: 92.9%
+## Overall: A | Raw Percentage: 92.9%
 
 ## Grading
 
