@@ -102,6 +102,177 @@
 
 
 
-## Lecture 2:
+## Lecture 2: Limits to Transmission
+
+- Review
+
+  - The physical layer is responsible for transporting individual bits
+  - The data link layer allows us to include headers
+  - The IP layer routes from source to location
+  - The TCP layer packetizes and sends from a sender queue to a receiver queue
+    - Packetizes => takes the byte stream and breaks it up into smaller chunks
+    - Promotes reliability through acknowledgements and guarantee that everything that has been sent is read
+  - Headers
+    - TCP header contains the payload packet and a sequence number
+    - IP header contains the origin and destination IP addresses
+    - The data link header contains the origin and destination MAC addresses
+      - MAC address is one interface of the router => location independent
+        - IP addresses are location dependent
+      - `yx` => to MAC address `y` from `x`
+    - Headers are stripped away at each corresponding letter
+  - Strict Layering
+    - Each layer only looks at its header and interface data to do its job
+      - Modularity
+      - Information can be passed between layers via interface
+    - As data moves down the layers, each layer adds its header; as data moves up, each layer strips off its header
+  - In Class Example:
+    - `S` (Sender) => Sender TCP => Sender IP => Sender Data Link => Router Data Link => Router IP => Router Data Link => Receiver Data Link => Receiver IP => Receiver TCP => `R` (Receiver)
+    - Only the data link information changes from sender to receiver
+
+- Limits to Transmission
+
+  - Main idea: there are limits to the speed at which bits can be transmitted between a sender and a receiver over a channel based on how fast the channel can react (bandwidth) and the noise
+
+  - Physical Layer Abstraction
+
+    - Sending a bit over a channel
+      - How fast can we transmit?
+      - How do we decide when to sample?
+      - How do different forms of media impact this transmission?
+
+  - The Foundation: Sending Bits
+
+    - A three-step process:
+      - Take an input stream of bits (digital data)
+      - Modulate some physical media to send data (analog)
+      - Demodulate the signal to retrieve bits (digital again)
+    - No boundaries at the physical layer => boundaries at the data link layer
+
+  - Now in More Detail
+
+    - We will divide the physical layer into sublayers, starting with a coding layer (semaphores have codes as well)
+      - The bottom sublayer is really describing the essential properties of the media (frequency response, bit error rate)
+      - The middle sublayer describes properties of particular media (e.g., satellites, coaxial cable, fiber, etc.)
+      - The top sublayer is about things like clock recovery, synchronization, etc.
+    - To understand the Shannon Limit, we have to understand what bandwidth means in Hz (EE idea) and why it's related to bandwidth in bits/sec (CS idea)
+    - To do so we need to take a small painless detour into the world of signals, systems, and Fourier Analysis
+
+  - Bottom Sublayer: Signal Transmission and Limits
+
+    - How fast can you send, and what prevents you from sending faster?
+
+    - Sending bits to a receiver:
+
+      - Goal: to send a sequence of `0`s and `1`s from a sender to a receiver by sending energy (e.g., light, electricity) over a channel (e.g., fiber, cable)
+        - Ex) One coding: `0` = no energy, `1` = energy
+      - Problem: real channels distort input energy signals, leading to two questions:
+        - How can we predict what a given channel will do to an input signal given some properties of the channel?
+          - Fourier analysis
+        - How does distortion affect maximum bit rate?
+          - Nyquist (sluggishness) and Shannon (noise) limits
+
+    - Signals and Channels
+
+      - Signal: energy (e.g., voltage and light) that varies with time
+        - Continuous and discrete
+        - Periodic
+        - Period and frequency
+      - Channel: physical medium that conveys energy from a sender to a receiver (e.g., a fiber link) with possible distortion
+
+    - Sine Waves
+
+      - Sine waves are spvial because all signals can be rewritten in terms of sine waves
+
+      - Mathematically:
+
+        - $$
+          A\sin(2\pi ft+\theta)
+          $$
+
+        - `A` is max value (amplitude)
+
+        - `f` is frequence
+
+        - `θ` is initial phase shift
+
+      - Express angle in radians!
+
+    - Fournier Analysis: The Big Picture
+
+      - If we forget about noise, most channels are "nice" to sine waves
+        - A sine wave of frequency `f` is always scaled by a fixed factor `s(f)` and phase shifted by a fixed amount `p(f)`, regardless of amplitude
+      - Thus, we can completely describe a channel by plotting the values of `s(f)` (frequency response) and `p(f)` (phase response) for all values of frequency `f`
+      - To find what happens to arbitrary signal `S`, we:
+        - Use Fourier Analysis to rewrite `S` as a sum of sine waves of different frequencies
+        - Use frequency and phase response to see the effect on each sine wave
+        - Add scaled sine waves to find output signal
+
+    - Bandwidth
+
+      - A range of frequencies for which a channel passes signal through; not very precise
+      - More bandwidth, more fidelity
+      - More fidelity, better recovery of bits
+
+    - Sluggishness and Noise
+
+      - Most channels are sluggish (they take time to respond) because they turn a deaf ear to high frequencies in the input signal
+        - Thus, lower bandwidth channels are more sluggish
+      - What about noise?
+        - Different models for different channels
+        - Simplest and common model: white noise (uniformly distributed at all frequencies and normally distributed within a frequency)
+
+    - Sampling Bits
+
+      - Receivers recover the bits in the output signal by sampling output signal close to middle of bit period
+      - Two limits to bit rate: Nyquist (channel bandwidth) and Shannon (noise)
+      - When a signal is sent, the output will be a sinc wave
+        - When can we send the next wave?
+        - Nyquist noticed that sending every `T/2` works since the peak of the current signal lines up with the zeroes of past bits
+          - Assuming bandwidth is `1/T`, the max bit rate is `2/T` or 2 times the bandwidth
+        - We can play with the voltage to send more bits
+
+    - Baud Rate and Bit Rate
+
+      - To prevent ISI (inter-symbol interference), we cannot send "symbols" faster than `2B` times per second
+        - Nyquist rate is the max rate of sending symbols, not bits (baud rate)
+      - But as we saw, each symbol in a signal can carry multiple bits
+      - With `L` signal levels, bit rate is `log L` times baud rate
+      - Noise prevents us from transmitting many signal levels
+
+    - The Shannon Bound
+
+      - `S` is the maximum signal amplitude
+
+      - `N` is the maximum noise amplitude
+
+      - `log(S/2N)` bits per signal, `2B` signals/sec (Nyquist)
+
+      - Naive bound is:
+
+        - $$
+          2B\log\left(\frac{S}{2N}\right)
+          $$
+
+      - Shannon bound is:
+
+        - $$
+          B\log\left(1+\frac{S}{2N}\right)
+          $$
+
+      - The real Shannon bound does not have the factor of `2` and has an extra `1` added
+
+        - This is because our simple model was only for a simple coding and for fixed, deterministic noise
+
+      - Shannon bound works for any coding scheme (frequency, phase modulation) and for Gaussian additive noise
+
+        - Needs a deep probabilistic argument
+
+  - Bit Rate vs. Frequency
+
+    - A higher bit rate (each bit lasts a smaller time) leads to a higher frequency wave
+
+
+
+## Lecture 3:
 
 - 
