@@ -273,6 +273,208 @@
 
 
 
-## Lecture 3:
+## Lecture 3: Clock Recovery
+
+- Bandwidth and the Shannon Bound (cont.)
+
+  - Higher bit rate => higher frequency wave
+    - Note that, roughly, bit rate = frequency
+  - What does this intuition tell us?
+    - A higher bit rate (each bit lasts a smaller time) leads to a higher frequency wave
+    - We must cover a range of frequencies to adapt to any bit pattern
+  - From Nyquist to Shannon
+    - If we have a bandwidth of `B`, we can send `2B` signals per second
+    - Each signal can be multilevel => these levels must be spaced apart to distinguish between them
+
+- Clock Recovery
+
+  - Main idea: receivers learn when to sample the continuous wave received from sender by cueing on transitions
+
+  - Recall:
+
+    - Sending bits is a three-step process:
+      - Take an input stream of bits (digital)
+      - Modulate some physical media to send data (analog)
+      - Demodulate the signal to retrieve bits (digital)
+
+  - What does the physical layer do?
+
+    - A possibly faulty, single-hop, bit pipe that connects a sender to possibly multiple receivers
+    - Morse Code analogy:
+      - Example bit pipe: sending Morse Code to receivers using a flashlight
+      - Issues:
+        - Fundamental limits: brain-eye system processing limits leads to Inter Symbol Interference
+        - Media issues: flashlight, semaphore
+        - Coding: Morse Code, getting in sync, knowing receiver rate
+    - Sublayers:
+      - Input stream => coding sublayer => coded stream => media transmission sublayer => input signal => signal transmission sublayer => output signal => media reception sublayer => coded stream => decoding sublayer => output stream
+
+  - Sampling Bits
+
+    - Receivers recover the bits in the input signal by ssmpling output signal close to middle of bit period
+    - Two limits to bit rate: channel bandwidth (Nyquist) and noise (Shannon)
+
+  - Main Topic
+
+    - How does a receiver know when to sample bits, and how can the sender help?
+    - By cueing on transitions ensured by sender sending "extra bits"
+
+  - Who needs a clock anyways?
+
+    - How to initially synchronize receiver clock with sender clock?
+      - Initial training bits
+    - Stay in sync (first cut): receiver has a very similar clock as sender (say both run at 1GHz)
+    - Problem: all real physical clocks drift over time
+      - Crucial at high speeds
+      - Small drift leads to sampling error
+      - How do we keep in sync?
+        - Transitions
+
+  - Transitions and Coding
+
+    - Example: parse: "nohewontgosoon"
+      - Need spaces and punctuations to parse speech
+    - Stream of bits without transitions (change in signal value) is equally hard to parse
+    - Real data may contain all `0`s, so how w can you ensure transitions?
+      - Coding => adds cost
+    - Code to ensure that every `n` bits, you get at least `m` transitions
+      - Different coding schemes parameterized by `m` and `n`
+
+  - Asynchronous Coding
+
+    - Codes a character (assume 8 bits in ASCII)
+    - We add "extra" start bits to get into sync and one or two stop bits
+      - `1` is encoded as high voltage, `0` as low
+
+  - Receiver code assumes:
+
+    - Edge detector: a hardware gadget used to tell whether a `0` goes to a `1` or a `1` to a `0` that we abstract as a function to tell where a transition is
+
+    - Sampling: we abstract sampling and compare it to a threshold as a function `SampleSignal`
+
+    - Clock drift: receiver has a clock that runs at approximately the same rate as sender
+
+    - ```pseudocode
+      Data Structures:
+      C[0..10]; ARRAY, to store bits in current character
+      
+      On Transition:
+      	StartTimer(1/2 bit) // Don't sample on an edge
+      	For (i = 0 to 10), do
+      		Wait(TimerExpiry);
+      		C[i] = SampleSignal;
+      		StartTimer(1 bit) // Wait for next bit
+      	End;
+      	If (C[0] = 1) and (C[9] = C[10] = 0) then Output C[1..8];
+      ```
+
+  - Slow Clock Problem
+
+    - How much slower can the receiver clock be without causing bit errors? => 5%
+    - Can drift by 50% per bit => 10 bits => 5% drift per bit
+
+  - Synchronous Transmission
+
+    - Lots of start bits (preamble) + up to 12000 bits + lots of stop bits (postamble)
+    - Same as asynchronous except larger frame sizes
+    - Requires better clock tolerance and more sophisticated coding
+
+  - Why Synchronous Transmission?
+
+    - For clock recovery, receiver must know when to start its receive clock (phase)
+      - Then can sample the line at periodic intervals at the same rate as sender clock with some help from transitions in data
+    - In asynchronous, receiver gets locked in phase when voltage goes from low to high (start bit)
+      - Need to have fairly large idle time between characters for receiver to get locked in phase for each character
+      - Slows transmission and limits it to low rates
+    - Two overheads for start bit: extra bit + extra time needed for reliable detection
+      - Starting up receiver clock is expensive
+    - In synchronous, we put a large number of start bits at the front of a large number of data bits
+      - Allows the start-up overhead to be amortized
+
+  - Manchester Encoding
+
+    - Signal to data:
+      - High to low transition (`10`) => `1`
+      - Low to high transition (`01`) => `0`
+    - Comments:
+      - Solves clock recovery problem
+        - Transitions re-sync clocks every time they occur
+      - Only 50% efficient (1/2 bit per transition)
+      - Still need preamble (typically `0101010101...`) with a trailing `11` in Ethernet
+    - Getting Locked in Phase
+      - In asynchronous, you get in phase by a single `0` to `1` transition
+        - Not very reliable in the presence of noise
+      - But in Manchester, a sequence of `0`s sent can be read off as a sequence of `1`s if the receiver is out of phase
+      - In Manchester, you get in phase by sending a preamble or group of start bits of the form `01` repeating, in which the only transitions are at mid-bit
+        - Easy to recognize and get locked in phase
+        - End with `11` to know where data starts
+        - Full preamble is `0101010101...11`
+        - Can't count because we don't know how long the receiver will take to get in phase => once it's in phase, it can watch out for the `11`
+
+  - Phase Locked Loops
+
+    - Once you lock in at the start of a data unit, you can rely on accuracy of receiver clock frequency (as in asynchronous)
+      - Can't do this if the data unit is large
+    - Could try resetting receiver clock on every observed transition
+      - Susceptible to noise
+      - Better to use more gradual adjustment
+    - Phase locked loops measure phase difference and speed up or slow down the receiver clock to reduce phase difference
+      - Commonly used
+
+  - Modern Codes
+
+    - 8-10 coding: every group of 8 data bits is encoded as 10 bits
+      - Easily done by table lookup
+      - Removes bit patterns with no transitions
+      - Look up tables get too big if we try to go higher
+    - Why transitions?
+      - Because all 10-bit patterns with no transitions (`0000000000` and `1111111111`) are not used
+      - In fact, we can rule out even patterns with 1 transition as we have 1024 patterns to code a byte
+    - Receiver decoding: a 1024 entry table that looks up the 8-bit data corresponding to each received 10-bit pattern
+
+  - What Makes a Code Good?
+
+    - Coding efficiency: real bits/coded bits
+    - Signal-to-noise ratio
+    - DC balance
+    - Implementation complexity
+
+  - Eye Patterns
+
+    - A way to superimpose arbitrary bit sequences on screen as opposed to sending them in parallel
+    - In a perfect system, we will have a well-defined eye
+      - Should sample at the center of the eye
+      - Nice visual test of line quality
+
+  - Broadband Coding
+
+    - Baseband coding uses energy levels such as voltage or light
+      - In broadband coding, information is modulated on a carrier wave of a certain frequency
+      - Used by modems
+    - Modulation refers to changing the properties of the carrier to communicate the required information
+      - Frequency Shift Keying: high frequency encodes a `1`, low encodes a `0`
+      - Amplitude Shift Keying: high amplitude encodes a `1`
+    - Baseband vs. Broadband
+      - Baseband modulation: send the "bare" signal
+      - e.g., +5V for `1`, -5V for `0`
+      - All signals fall in the same frequency range
+      - Broadband modulation
+        - Use the signal to modulate a high-frequency signal (carrier)
+        - Can be viewed as the product of two signals
+    - Digital Modulation Methods
+      -  Amplitude Shift Keying (ASK)
+      - Frequency Shift Keying (FSK)
+      - Phase Shift Keying (PSK)
+
+  - Summary
+
+    - Clock synchronization: getting receiver clock in sync with sender transmission using transitions guaranteed by a code
+    - Coding schemes: asynchronous (transitions at start and end, small number of bits) vs. synchronous (many transitions in start and guaranteed transitions in data as well)
+    - Real engineering: phase locked loops (not programs we used), and eye patterns to visualize
+    - Broadband coding: modulate `1`s and `0`s on a high frequency carrier wave in wireless and cable modems
+
+
+
+## Lecture 4:
 
 - 
