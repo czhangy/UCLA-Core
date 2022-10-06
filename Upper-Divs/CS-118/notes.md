@@ -475,6 +475,175 @@
 
 
 
-## Lecture 4:
+## Lecture 4: Media
+
+- Main idea: to architect a large network, one needs to use different types of media at different places in the network
+
+- Pumping Bits Globally
+
+  - Last Mile Bottleneck
+    - Use twisted pair, cable, radio
+  - Crowded City Bottleneck
+    - Hard to install more wires
+    - A lot of contention for wireless
+    - Use microwave, radio
+  - Trans-Oceanic Bottleneck
+    - Use fiber, satellite
+
+- Review: Where is the Physical Layer
+
+  - Roughly, what happens which I click on a webpage?
+    - Web request => turn click into HTTP request
+    - Name resolution => check DNS for where the webpage is
+    - Data transport => break message into packets/TCP segments
+      - Should be delivered reliably and in-order
+      - "And let me know when they got there" => retransmits if the request times out
+    - Network layer => address each packet so it can traverse network and arrive at host
+    - Network routing in IP => each router forwards destination
+    - Data link scheduling (Ethernet) => break message into frames
+      - Media Access Control (MAC)
+      - "Can I send now? Can I send now?"
+    - Physical layer
+
+- Why Study Media?
+
+  - Media affects protocol design
+    - Low bandwidth led to tight encoding
+      - Early phone lines, not needed for LANs
+    - Broadcast LANs led to use of Multicast
+      - Initialization and free copies, to IP multicast
+    - Building wiring led to switching
+      - Wiring closest to hubs to ATM 
+    - Fiber led to rings
+      - Point-to-point fibers lead to rings
+    - Fiber led to Digital
+      - Long haul telephone network becomes digital
+    - Wireless leads to low bandwidths again
+      - Laptops; need IPv6 compression on wireless links
+  - We need to understand media tradeoffs when architecting networks
+    - Think of flashlights vs. semaphores in the Morse Code analogy
+
+- Twisted Pair Copper
+
+  - Low bandwidth
+  - Cheap, easy to install
+  - Using twisted pair for higher rates today:
+    - Standard twisted pair is limited by loading cables by telephone company to 4MHz
+      - Shannon limit is around 56Kbps (not counting compression)
+    - Two alternatives:
+      - Better quality twisted pair cables for local area networks
+        - e.g., Cat 3, Cat 5
+      - Telephone company removes loading cables, reduces your length, and gives you ADSL
+        - Asymmetrical
+
+- Baseband Cable
+
+  - e.g., Ethernet
+  - High bandwidth (10-100MHz)
+  - Hard to tap, expensive to install
+  - Small distance (1-3km without repeaters)
+  - Using coaxial cable today:
+    - Coaxial cable has high bandwidth
+      - Used for original 10Mbps Ethernet, but very clunky
+      - Twisted pair used today
+    - Cable still used in cable networks for cable TV and for data via cable modems
+    - Divide bandwidth into 6MHz channels for each TV channel and one 6MHz channel for downstream data
+    - Theoretically can reach 30Mbps but beware other users and bandwidth limits
+      - Upstream much less
+
+- Fiber Optics
+
+  - Huge bandwidth (10 million MHz)
+  - Can span continents with repeaters
+  - Almost impossible to tap => point-to-point secure
+  - Excellent electrical isolation
+  - Thin and easy to install
+  - Optics still expensive
+  - Unidirectional
+  - Modal Dispersion
+    - The long path reaches the output slower
+    - Can't send the next bit if the fast path of the next bit reaches the output before the slow path of the original bit
+      - Inter-symbol interference
+    - Solution: single mode fiber
+  - Chromatic Dispersion
+    - Different lights go at different speeds through glass
+    - Spreads the signal out at output => can't send next bit until output width or you get ISI
+    - Solution: use monochromatic light
+
+- Wireless
+
+  - Widely varying channel bandwidths/distances
+  - Extremely vulnerable to noise and interference
+  - Lower frequencies are omnidirectional, go through obstacles, and have lower speed
+  - Higher frequencies are directional, get absorbed by obstacles, and have higher speed
+  - Spectrum Allocation
+    - Policy approach forces spectrum to be allocated like a fixed spatial resource
+    - Reality is that spectrum is time and power shared
+    - Measurements show that fixed allocations are poorly utilized
+  - Wireless Data Options
+    - 802.11: wireless LANs using a wireless access point (AP) at hotspot using unlicensed frequency band 2.4 to 4.485GHz (radio frequency)
+      - 100m
+      - Needs hotspot, but common and very cheap
+      - AP configured with an SSID that you can see when doing "View Available Networks" and a channel number from 1 to 11
+        - Non-overlapping channels (e.g., 1, 6, 11) can be used to triple bandwidth
+      - Each AP periodically sends a beacon containing SSID
+      - Each station scans all 11 channels looking for beacons to get list of networks
+        - Some choice of AP and mobile sets up an association
+      - Access protocol to send data is tricky because of hidden terminal problem
+        - `A` and `B` can communicate with same output, but be unaware of one another, resulting in interference at the output
+    - Bluetooth: ad hoc personal area networks with no AP
+      - Master-slave
+      - 4Mbps
+    - WiMax: broader geographical range, smaller bandwidth of a few Mbps
+    - 3G: cellular telephone networks carrying data at a few Mbps such as EVDO
+      - Unlimited geographical range and true mobility
+    - Microwave
+      - Avoids right of way
+      - May be cheaper than installing cable
+      - Reasonable bandwidth
+      - Has problems with rain
+      - Up to 100km distance
+    - Geosync Satellite
+      - Avoides right of way
+      - Good bandwidth
+        - Limited from larger bandwidth due to limited sky space
+      - Worldwide span
+      - Large latency due to need to be geosynchronous
+        - In order to be geosynchronous, the satellite must be far from Earth
+      - Antenna cost: antenna need not be steerable due to the geosynchronous nature of satellites
+      - Low Orbiting Satellites
+        - Surround Earth with low-orbiting satellites
+        - Perform handoffs between satellites instead of staying connected to same satellite
+        - Requires a lot of satellites to be performant
+
+- Media Pros and Cons
+
+  - | Medium       | Speed             | Distance Span | Pros                           | Cons                          |
+    | ------------ | ----------------- | ------------- | ------------------------------ | ----------------------------- |
+    | Twisted Pair | 1Mbps-1Gbps       | 1-2km         | Cheap, easy to install         | Low distance                  |
+    | Digital Coax | 10-100Mbps        | 1-2km         | Broadcast                      | Hard to install in a building |
+    | Analog Coax  | 100-500Mbps       | 100km         | Cable companies use it now     | Expensive amplifiers          |
+    | Fiber        | Terabits          | 100km         | Security, low noise, bandwidth | No broadcast, needs digging   |
+    | Microwave    | 10-100Mbps        | 100km         | Bypass, no right of way need   | Fog outages                   |
+    | Satellite    | 100-500Mbps       | Worldwide     | Cost independent of distance   | 250ms delay, antenna size     |
+    | RF/Infrared  | 1-100Mbps/ <4Mbps | 1km/3m        | Wireless                       | Obstacles for infrared        |
+
+- Problems in All Layers
+
+  - Resource sharing
+    - FDM/TDM/WDM
+  - Addressing
+    - TDM time slots
+  - Synchronization
+    - Clock recovery, spacing apart levels, transition
+  - Interconnection
+    - Physical layer repeaters are called hubs
+    - Can have repeaters at each layer
+      - Lower level repeaters are more robust and cheaper
+      - Higher level repeaters are more knowledgeable about the payload
+
+
+
+## Lecture 5:
 
 - 
