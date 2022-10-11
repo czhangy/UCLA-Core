@@ -644,6 +644,109 @@
 
 
 
-## Lecture 5:
+## Lecture 5: Data Link: Framing and Error Detection
+
+- Data Link Sublayers
+  - Point-to-Point Links (2 nodes)
+    - Bits => Framing => Error detection => Error recovery (optional) => Frames
+  - Broadcast Links (≥2 notes)
+    - Bits => Framing => Error detection => Media access => Multiplexing => Frames
+    - Shared resources have to worry about collision, as there are multiple users across the same network
+  - From a high-level view, the data link layer takes bits and provides frames
+  - Quasi-reliable 1 hop frame pipe
+    - If something is corrupted, it will be detected and trashed at the data link layer with extremely high probability
+- Five Functions of Data Link
+  - Framing: breaking up a stream of bits into units called frames so that we can add extra information like  destination addresses and checksums to frames (required)
+    - First, as frames are required for error detection
+  - Error detection: using extra redundant bits called checksums to detect whether any bit in the frame was received incorrectly (required)
+  - Media access: there exist multiple senders, so we need traffic control to decide who sends next (required for broadcast links)
+  - Multiplexing: allowing multiple clients to use data link; needs some info in the frame header to identify the client (optional)
+  - Error recovery: go beyond error detection and take recovery action by retransmitting when frames are lost or corrupted (optional)
+- Why Not Perform Error Recovery at Each Hop?
+  - End-to-end argument
+    - We need end-to-end or transport error recovery anyways
+      - The only real guarantees are end-to-end => sender TCP to receiver TCP
+      - Redundant, more overhead and buffering
+    - Can't trust a series of hop-by-hop schemes because:
+      - Crashes and other losses at intermediate nodes
+      - Transport must work over both reliable and unreliable links
+    - Used in old networking due to greater link unreliability
+    - Thus, hop-by-hop is only a performance optimization
+    - Extra cost (acknowledgement messages, buffering, etc.) not worth it when error rate is low
+      - Worth it (quicker recovery, less wasted resources) when error rate is high and the latency of end-to-end recovery is unacceptable (within a compute cluster or storage area network)
+- Why Framing?
+  - Without framing, the bitstream is reserved for one sender and one client per sender
+    - Need frames to add multiplexing information like destination addresses and destination client names
+  - Frames offer a small manageable unit for error recovery and error detection
+    - Add checksums to frames for error detection and sequence numbers, etc. for error recovery
+- How Framing?
+  - Flags and Bit Stuffing
+    - Use special bit patterns or flags to delimit (i.e., mark boundaries) frames
+    - Need bit stuffing to "encode" the user data to not contain the flags (e.g., HDLC)
+  - Start Flags and Character Count
+    - Use flags to indicate the start of data and a bit count to indicate end of frame
+    - Bit stuffing not needed, but less robust (e.g., DDCMP)
+  - Flags Supplied by Physical Layer
+    - Use special physical layer symbols to delimit frames
+
+- Fixed-Length Frames
+  - Easy to manage for receiver
+    - Well understood buffering requirements
+  - Introduces inefficiencies for variable length payloads
+    - May waste space (padding) for small payloads
+    - Larger payloads need to be fragmented across many frames
+    - Very common inside switches/routers
+  - Requires explicit design tradeoff
+
+- Length-Based Framing
+  - Start | Length | Payload
+  - To avoid overhead, we'd like variable-length frames
+    - Each frame declares how long it is
+    - e.g., DECNet DDCMP
+  - What's the issue with an explicit length field?
+    - Must correctly read the length field (bad if corrupted)
+      - Need to decode while receiving
+    - Still need to identify the beginning
+- Sentinel-Based Framing
+  - Allow for variable-length frames
+  - Idea: mark start/end of frame with special "marker"
+    - Byte pattern, bit pattern, signal pattern, etc.
+    - But, we must make sure the pattern doesn't appear in the data
+  - Two solutions:
+    - Special non-data physical-layer symbol
+      - Code efficiency (can't use symbol for data)?
+    - Stuffing
+      - Dynamically remove marker bit patterns from data stream
+      - Receiver "unstuffs" data stream to reconstruct original data
+
+- Stuffing Design by Sublayering
+  - Frame => Stuffer => Add flags => Physical layer => Remove flags => Destuffer
+  - Sublayering is a good design technique within layers as well
+  - What happens if input data contains `01111110`? If the receiver gets `111110`?
+- Byte Stuffing
+  - Same as bit stuffing, except at byte (character) level
+    - Generally have two different flags: STX and ETX
+    - Found in DDCMP, BISYNC, etc.
+  - Need to stuff if either appears in the payload
+    - Prefix with another special character, CLE (data-link escape)
+    - New problem: what if DLE appears in payload
+  - Stuff DLE with DLE, like escape characters
+    - Could be as bad as 50% efficient to send all DLEs
+- The Engineering Solution
+  - Ask the physical layer for more symbols that are never used in data
+  - Easily possible in 4-5 encoding, as we have 16 data symbols, but 32 possible encoded values
+  - Even after ruling out `00000` and `11111` we still have 14 unused symbols
+  - Change interface to allow sending one of 16 data symbols (`0000` to `1111`) and special symbols for start of frame (SOF) and end of frame (EOF)
+- Useful Principles
+  - Each layer or sublayer exacts its penalty: e.g., clock recovery coding, framing bits
+  - The end-to-end argument
+  - Lower layers should not depend for correctness on assumptions about higher layers
+  - All layers have some common problems to solve: e.g., synchronization, multiplexing
+  - The best principles will/should be violated for pragmatic reasons
+  - Layering and sublayering are a good way to understand and design new protocols
+
+
+
+## Lecture 6:
 
 - 
