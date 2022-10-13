@@ -644,7 +644,7 @@
 
 
 
-## Lecture 5: Data Link: Framing and Error Detection
+## Lecture 5: Framing
 
 - Data Link Sublayers
   - Point-to-Point Links (2 nodes)
@@ -747,6 +747,186 @@
 
 
 
-## Lecture 6:
+## Lecture 6: Error Detection
+
+- Summary of Framing Techniques
+
+  - Silence
+    - Requires access to 3 levels
+    - Ethernet
+  - Special Pattern
+    - If you are already using some encoding like 8-10, we can use an unused encoding
+  - Bit Stuffing
+
+- Big question: how can we add just 32 bits to a frame and detect almost any error with very high probability?
+
+- Goal: Quasi-Reliability
+
+  - The probability of a receiving data link passing up an incorrect frame to the client layer should be very, very small
+
+    - Undetected error once in ~20 years
+    - Needs to be so small because transport protocols do not insist on end-to-end checksums, a violation of the end-to-end argument
+
+  - The probability of a receiving data link dropping frames sent by the sender should be small (once a day) to allow good performance
+
+  - Add checksums to detect as large of a burst as possible, as many random (at least 3) errors as possible, and to detect any error pattern with a very high probability of:
+
+    - $$
+      1-\frac{1}{2^{32}}
+      $$
+
+- Types of Errors
+
+  - Random errors: a noise spike or ISI makes you think a `0` is a `1` or a `1` is a `0`
+  - Burst errors: a group of bits get corrupted because of synchronization or a connector is plugged in => correlated!
+    - Modeling burst error: burst error of length `k` => distance from first to last is `k - 1`
+      - Middle bits may or may not have been corrupted
+  - Comparison:
+    - Imagine a frame of size 1000 and an error rate of 1 in 1000
+    - If random, all frames corrupted on average
+    - If we get a burst of 1000 every 1000 frames, only 1 is lost
+
+- Going Beyond Parity
+
+  - Parity: XOR of bits
+    - Can detect all odd bit errors in a frame
+    - Can't detect 2 bit errors
+  - Would like to do better than parity using so-called checksums for detecting larger number of errors (happens often) by adding more check bits (32 vs. 1)
+    - Big picture: checksum as a hash => unlikely for the error to hash into the same value
+
+- Basic Idea
+
+  - If the receiver find s that `H' = Hash(M')`, then receiver passes `M'` up to the higher layer, otherwise it drops the frame
+  - If `M` is not equal to `M'` and `H' = Hash(M')`, we have an undetected error
+    - If errors are random and hash is also random in a 32-bit domain, then the probability of this occurring is only `1/2^32`
+
+- Gentle Intro to Checksums
+
+  - Telephone Exchange
+    - Imagine you were sending a lot of numbers to a friend over a phone, and then end by sending the sum
+    - Error detection: if the sum your friend receives is not the sum of the numbers she received, then there's an error
+    - Undetected errors: an error that corrupts two numbers so that the sum works out
+    - CRCs: instead of being based on addition, they're based on division
+      - Also works using `mod 2`, but it's simplest to start with ordinary division
+
+- Ordinary Division Checksum
+
+  - Consider message `M` and generator `G` to be binary integers
+
+  - Let `r` be the number of bits in `G`
+
+  - We find the remainder `t` or `2^rM` when divided by `G`
+
+    - Why not just `M`? So we can separate the checksum from the message at the receiver by looking at the last `r` bits
+
+  - Thus:
+
+    - $$
+      2^rM=kG+t\\
+      2^rM+G-t=(k+1)G
+      $$
+
+    - So we add a checksum `c = G - t` to the shifted message and the result should divide `G`
+
+  - Has reasonable properties, however, integer division is hard to implement
+
+    - Prefer to do without carries
+
+- The Big Idea
+
+  - In ordinary division checksums, we transmitted a message plus a checksum that was divisible by the generator `G`
+    - Thus any errors that cause the resulting number to not be divisible by `G` (invalid codewords) will be detected
+  - In CRCs, we do the same thing, except we use `mod 2` arithmetic instead of ordinary arithmetic
+  - `mod 2` arithmetic: addition and subtraction are XORs so there is no carry
+    - Can implement at high speeds
+
+- Modulo 2 Arithmetic
+
+  - No carries: repeated addition does not result in multiplication
+
+  - Multiplication is normal is normal except for no carries
+
+    - Shift and XOR instead of shift and add
+
+  - Similar algorithm to ordinary division
+
+    - Again, let `r` be the number of bits in `G`
+    - We find the remainder `c` of `2^r-1 M` when divided by `G`
+
+  - Thus, `2^r-1M = kG + c`, thus:
+
+    - $$
+      2^{r-1}M-c=kG\\
+      2^{r-1}M+c=kG
+      $$
+
+    - Send `c` as checksum
+
+  - How `mod 2` Division Works
+
+    - For CRC, we need to repeatedly add `mod 2` multiples of the generator until we get a number that is `r - 1` bits long that is the remainder
+
+    - The only way to reduce number of bits in `mod 2` arithmetic is to remove the MSB by adding `mod 2` a number with a `1` in the same position
+
+    - ```pseudocode
+      While no more bits:
+      	If MSB = 1, XOR with generator
+      	Shift out MSB and shift in next bit
+      ```
+
+- Implementing CRCs
+
+  - The current remainder is held in a register initialized with the first `r` bits of the message
+  - If the MSB of the current remainder is `1`, then XOR the current remainder with the divisor; if the MSB is `0`, then do nothing
+  - Shift the current remainder 1 bit to the left and shift in the next message bit
+  - Faster to shift more bits at a time using a table of precomputed checksums
+
+- CRC: Polynomial View
+
+  - `101` and `011` can be represented as `X^2 + 1` and `X + 1`
+
+    - `X^i` term iff the `i`th bit is `1`
+
+  - Normal addition: `X^2 + X + 2`
+
+    - No carries between powers
+    - `+2` is bad: fix by using `mod 2` addition to get `X^2 + X`
+      - Applies to `X` terms as well
+
+  - Can think of CRC computation as dividing  a shifted message polynomial (multiplied by `x^r-1`) by CRC divisor polynomial and adding remainder
+
+  - Equivalent to arithmetic view, but polynomial is easier to analyze
+
+  - Errors in Polynomial View
+
+    - We model bit errors in positions `i`, `j`, `k`, etc. as the channel adding an error polynomial:
+
+      - $$
+        X^i+X^j+X^k+\cdots
+        $$
+
+    - Since the message polynomial divides the generator, the error will not be detected iff the error polynomial divides the generator
+
+      - Or in other words if one cannot multiply the generator by another polynomial to get the error polynomial
+
+  - Properties:
+
+    - CRC-16:
+
+      - $$
+        X^{16}+X^{15}+X^2+1
+        $$
+
+      - Error results in adding in a polynomial => use normal polynomial multiplication intuition
+
+    - Single-bit errors: result in addition of `X^i`
+
+      - If `G(x)` has at least two terms, any multiple of `G(x)` will have two terms
+
+    - Two-bit errors correspond to adding `X^i + X^j`
+
+
+
+## Lecture 7:
 
 - 
