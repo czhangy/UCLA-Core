@@ -927,6 +927,204 @@
 
 
 
-## Lecture 7:
+## Lecture 7: Error Recovery
+
+- Error Detection
+
+  - If the error polynomial divides the generator, we have a problem => undetected error
+
+    - $$
+      \frac{M(x)+E(x)}{G(x)}=\frac{M(x)}{G(x)}+\frac{E(x)}{G(x)}
+      $$
+
+  - CRCs want to detect:
+
+    - All 1-bit errors
+
+      - As long as the generator has 2 terms, there is no way a single-term error polynomial can be generated
+
+    - All 2-bit errors
+
+    - All odd-bit errors
+
+    - All bursts of size degree of CRC
+
+    - Every kind of error with probability:
+
+      - $$
+        1-\frac{1}{2^d}
+        $$
+
+  - Implementing CRCs
+
+    - The current remainder is held in a register initialized with the first `r` bits of the message
+    - If MSB of current remainder is `1`, then XOR the current remainder with divisor, if the MSB is `0`, do nothing
+    - Shift the current remainder `1` bit to the left and shift in next message bit
+    - Faster to shift, say, 8 bits at a time (your assignment) using a table of 256 precomputed checksums of all possible 8-bit checksums
+
+  - CRC in Hardware
+
+    - Registers `R0` through `R4` are several single-bit registers corresponding to the single multi-bit register
+    - XOR placed to the right of register `i` if bit `i` is set in the register
+    - When a message bit shits in, all registers send (in parallel) their bit values to the left, some through XOR gates
+      - Combines left shift of an iteration with MSB check and XOR of next iteration
+      - XOR during left shift
+    - Avoids check for MSB: output of `R4` as input to all XORs
+    - In practice, to implement at terabits, we need to shift multiple bits (say 8) per clock cycle using table lookup
+
+  - Back to the Big Picture
+
+    - How can we add just 32 bits and catch all errors with high probability?
+
+  - Hamming Distance
+
+    - Recall, we used CRCs to do better than parity using so-called checksums for detecting a larger number of errors (happens often)
+      - An idea called Hamming distance explains why some codes detect and correct more bits
+    - Hamming distance between two strings `S` and `R` is the number of bit positions at which they differ
+
+  - Error Detection as Coding
+
+    - Computation view: add bits to the end of a frame for detecting errors
+      - Parity adds 1, CRC adds 32
+    - Coding view: we take every packet `P` and encode it as a frame `F = C(P)` in any way you wish
+      - One way is to add a checksum but there are other examples
+      - After coding, some codewords are valid and some are invalid
+      - Allows us to abstract across details of code and use Hamming distance
+    - Triple code: imagine we encode every bit in `P` as 3 identical bits in `F`
+
+  - CRCs and Hamming Distance
+
+    - While CRCs are really chosen for burst detection, then Hamming distances are also important
+    - CRC-32 layers have a Hamming distance of 5 for frame sizes less than 360B and 4 for larger frames
+      - CRC-32 is used in 802.11, Ethernet, SATA, etc.
+      - This implies that CRC-32 can detect 4 random bit errors for most frames
+        - Actually 5 because of odd-bit guarantee
+    - There is a special 32-bit polynomial called CRC32K by Koopman that has Hamming distance of 6 fairly large frame sizes
+
+  - Hamming Distance, Detection, and Correction
+
+    - Can detect `d` random bit errors if Hamming distance is `d + 1`, because flipping `d` bits cannot move from valid codeword to another
+    - Can correct `d` errors if Hamming distance is `2d + 1`
+      - Assign invalid codewords to closest codeword
+
+- Error Recovery
+
+  - Why Error Recovery at Data Link?
+
+    - Used later: protocols like TCP use the same ideas
+    - Still used at data link: some existing protocols like HDLC and Fiber still do error recovery at data link
+    - Non-trivial protocol: our first example of the problems caused by varying message delay and errors (frame loss, crashes)
+    - Technology seesaw: hop-by-hop becoming popular again to reduce latency
+
+  - Correctness Specification
+
+    - Packets given to the sending data link must be delivered to the receiver without duplication, loss, or mis-ordering
+
+  - Assumptions
+
+    - Assumes error detection: assumes undetected error rate small enough to be ignored
+    - Loss as well as errors: whole frames can be lost in a way not detected by error detection
+    - FIFO: physical layer is FIFO
+    - Arbitrary delay: delay on links is arbitrary and can vary from frame to frame
+
+  - Motivations for Stop and Wait Protocol
+
+    - Loss: first packet drops and second arrives
+      - Must retransmit
+    - Duplication: packet is received, but sender resends before `ack` arrives
+      - Must defend against early retransmits
+    - Livelock: cannot throw away duplicates, as the data might have duplicates
+      - Need sequence numbers
+      - If the `ack` fails, then the receiver is expecting the next sequence number, but the sender is stuck resending the first packet
+        - Must `ack` even duplicates
+    - Loss: receiver sent an `ack` for a a previous packet but was interpreted by a sender as an `ack` for a later packet
+      - Must number `ack`s
+
+  - Going Deeper
+
+    - Correctness: how do we show it works in all cases (infinite sequence of executions)? => invariants
+    - Sequence number: do we need an infinite number of bits? => no
+    - Performance: send only one at a time, bad over satellites, can do better => sliding window
+    - Initialization: how do we get started and synchronize sequence numbers in the face of crashes?
+
+  - Naive Code for Stop and Wait
+
+    - Sender code:
+
+      - ```pseudocode
+        Sender keeps state variable SN, initially 0, and repeats the following loop
+        
+        Loop forever:
+        	Accept a new packet from higher layer and store it in buffer B
+        	Transmit a frame (SN, B)
+        	If (ACK, R) frame received and R != SN, then
+          	SN = R
+        		Go to beginning of loop
+        	Else if the previous condition does not occur after T sec
+        		Re-transmit
+        ```
+
+    - Receiver code:
+
+      - ```pseudocode
+        Receiver keeps state variable RN, initially 0
+        
+        When an error-free data frame (S, D) is received:
+        	On receipt:
+        		If S = RN then:
+        			Pass D to higher layer
+        			RN = RN + 1
+        			Deliver data m to client
+        			Send (ACK, RN)
+        ```
+
+  - Correct Code for Stop and Wait
+
+    - Sender code:
+
+      - ```pseudocode
+        Sender keeps state variable SN, initially 0, and repeats the following loop
+        
+        Loop forever:
+        	Accept a new packet from higher layer and store it in buffer B
+        	Transmit a frame (SN, B)
+        	If (ACK, R) frame received and R != SN, then
+          	SN = R
+        		Go to beginning of loop
+        	Else if the previous condition does not occur after T sec
+        		Re-transmit
+        ```
+
+    - Receiver code:
+
+      - ```pseudocode
+        Receiver keeps state variable RN, initially 0
+        
+        When an error-free data frame (S, D) is received:
+        	On receipt:
+        		If S = RN then:
+        			Pass D to higher layer
+        			RN = RN + 1
+        			Deliver data m to client
+        		Send (ACK, RN) // Ack needs to be unconditional
+        ```
+
+  - Correctness Observations
+
+    - When sender first gets to `N`, no frames with `N` or `ack`s with `N + 1` and receiver is at `N`
+    - When receiver first receives frame `N`, entire system only contains number `N` => only two numbers in system
+
+  - Band Invariant
+
+    - Two bands of equal values `y = x` or `x = y + 1`
+    - Prove invariant by checking a small number of state transitions
+      - 6 cases: retransmission, error, reception, receive `ack`, send `ack`, and send new frame
+      - Just need to show that invariant is preserved by these 6 protocol actions/state transitions
+
+    
+
+
+
+## Lecture 8:
 
 - 
