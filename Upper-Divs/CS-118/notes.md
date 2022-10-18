@@ -1121,8 +1121,6 @@
       - 6 cases: retransmission, error, reception, receive `ack`, send `ack`, and send new frame
       - Just need to show that invariant is preserved by these 6 protocol actions/state transitions
 
-    
-
 
 
 ## Lecture 8:
