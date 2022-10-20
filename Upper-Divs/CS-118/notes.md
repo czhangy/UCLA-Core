@@ -1123,6 +1123,162 @@
 
 
 
-## Lecture 8:
+## Lecture 8: Performance Measures and Sliding Window Protocols
+
+- Error Recovery
+
+  - State View
+    - States of sender, receiver, and links at various points in the space-time diagram
+  -  So far, we've shown:
+    - Correctness: based on band invariant
+    - Sequence number: one bit suffices
+    - Performance: send only one at a time
+      - Bad over satellites or any link where the bandwidth-delay product is large
+    - Initialization: coming up after performance
+
+- General Performance Measures
+
+  - Throughput: jobs completed per second
+    - System owners want to maximize this
+  - Latency: worst-case time to complete a job
+    - System owners want to minimize this
+
+- Network Specific Measures
+
+  - 1-way propagation delay: time for transmitted bit to reach receiver
+    - Contrast to transmission rate (rate at which sender is sending)
+  - Pipe size: `Transmission Time * Round-Trip Propagation Delay`
+    - Need to pipeline if pipe size is large
+    - Sometimes called the bandwidth-delay product
+
+- Sliding Window Protocols
+
+  - Needed to use more of a link's capacity when its pipe size is large
+
+  - Definitions
+
+    - Window: sender can send a *window* of outstanding frames before getting any `ack`s
+      - Lower window edge `L` can send up to `L + w - 1`
+    - Receiver numbers: receiver has a received sequence number `R`, which is the next number it expects
+      - `L` and `R` are initially `0`
+    - Sender code: retransmits all frames in current window until it gets an `ack`
+      - `ack` numbered `r` implicitly acknowledges all numbers `< r`
+    - Two variants: receiver accepts frames in order only (go-back-`N`) or buffers out-of-order frames (selective reject)
+      - Selective reject sends back an `ack` with a list of out-of-order packets
+
+  - Code
+
+    - Go-Back-`N`
+
+      - Sender code:
+
+        - ```
+          Sender keeps state variable L, initially 0
+          
+          Send (s, m) // Send data message m with number s
+          	The sender can send this frame if:
+          		m corresponds to s-th data item given to sender by client AND
+          		L ≤ s ≤ L + w - 1 // In allowed send window
+          		
+          Receive (r, Ack) // receive an ack number r
+          	On receipt:
+          		L := r // Slide lower window edge to ack number
+          ```
+
+      - Receiver code:
+
+        - ```
+          Receiver keeps state variable R, initially 0
+          
+          Receive (s, m) // Receive data message m with number s
+          	On receipt:
+          		If s = R then:
+          			R := s + 1
+          			Deliver data m to client
+          
+          Send (r, Ack) // Send ack with number r
+          	// Receivers typically send acks in response to data
+          	// 	messages, but our code can send acks anytime
+          	r must equal R
+          ```
+
+    - Selective Reject
+
+      - Sender code:
+
+        - ```
+          Sender keeps a lower window edge L initially 0 but also an array  with a bit set for all numbers acked so far. Initially, all bits are clear. In practice, we implement this array by a bitmap of size w which we shift.
+          
+          Send (s, m) // Send data message m with number s
+          	The sender can send this frame if:
+          		m corresponds to s-th data item given to sender by client AND
+          		L ≤ s ≤ L + w - 1 AND
+          		s has not been acked // New for selective reject
+          		
+          Receive (r, List Ack) // Receive an ack number r with List of 														//		received numbers > r
+          	On receipt:
+          		L := r // slide lower window edge to ack number, mark numbers
+          						// in List as acked at sender
+          ```
+
+      - Receiver code:
+
+        - ```
+          Receiver keeps a receiver number R initially 0, but also an array with a bit set for all numbers received so far. Initially all bits are clear. In practice, we implement this array again by a bitmap of size w which we shift. In addition to the bit map, we have a buffer for each number where we can store out of order messages.
+          
+          Receive (s, m) // Receive data message m with number s
+          	On receipt:
+          		If s ≥ R then:
+          			Mark s as acked and buffer m
+          			While R acked do:
+          				Deliver data message at position R
+          				R := R + 1
+          				
+          Send (r, List Ack) // Send ack with number r and List of received
+          										// 		received numbers > r
+          	r must equal R
+          	List contains received numbers > R
+          ```
+
+  - Implementation and Other Details
+
+    - Timers: works regardless of values, but needed for performance
+      - So caclulate round-trip delay
+      - Need only one timer (for lowest outstanding number) in go-back-`n`
+      - Need one for each window element in selective reject
+    - In selective reject, have to send an `ack` with `R` and a bitmap of numbers greater than `R` that have been received
+    - Piggybacking: to reduce frames sent
+
+  - How Big Should the Sequence Number Space Be?
+
+    - Alternating bit: modulus is 2 (just one bit)
+    - Go back `w`: need a modulus of `w + 1`
+    - Selective reject: need a modulus of `2w`
+
+  - Flow Control
+
+    - Windows provide static flow control
+      - Can provide dynamic flow control if receiver `ack`s indicate what receiver will buffer
+    - Flow control without error recovery
+      - Credits
+      - Rate control (sender does not send > `R` frames/sec)
+
+- Initializing Link Protocols
+
+  - Naive Restarts
+    - Send a restart message => wait for `ack` to initialize sender and receiver
+    - Can be fooled by prior restarts
+  - How to design a reliable initialization protocol
+    - Non memory after crash: can do correctly if sender keeps even one bit that can survive a crash
+    - Determinism: can send restart messages with random numbers and only send data when numbers are `ack`ed
+      - High probability only
+    - Message lifetimes: if no message can live on a link for more than `T` seconds, simply wait `T` seconds after a crash for all old messages to die out
+
+
+
+## Lecture 9:
 
 - 
+
+
+
