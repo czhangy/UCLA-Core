@@ -1276,11 +1276,123 @@
 
 
 
-## Lecture 9: Local Area Networks, Ethernet, and 802.11
+## Lecture 9: Local Area Networks and Ethernet
 
-- 
+- Big Transition in this Class
+
+  - From 1 sender, 1 receiver to many senders, many receivers
+  - New problem: how to share a link (MAC)
+  - Inherently sequential
+  - Link shared among multiple senders, also known as:
+    - Multiaccess links: there are multiple nodes that may simultaneously access the link
+    - Broadcast links: every transmission  can be heard by all other stations
+    - Local area networks (LANs): the geographical area serviced by a LAN is local and small
+      - Typically 1-10km
+
+- Why LANs
+
+  - Cost: connect up all computers in a local area, saves wiring costs to share one wire
+  - Bandwidth: provides high bandwidth and low error rates for local group of users
+    - Worth it because most high-bandwidth distributed computing has access locality
+
+  - Statistical multiplexing: time division multiplexing is not a good idea when user traffic is as bursty as data is, as fixed bandwidths are wasteful
+    - Bursty = high peak/average ratio
+    - Each user gets access to entire LAN bandwidth when other users are idle
+    - As more users are added, they share the bandwidth
+    - Better throughput and latency in the average case => what Ethernet does
+
+- Statistical vs. Strict Multiplexing
+
+  - Strict multiplexing: TDM or FDM where a user is given a fixed allocation regardless of whether the user has data to send or not
+  - Bursty: traffic has a high peak/average ratio
+  - Analysis: gives each user `B/N`, where `N` is the number of possible sources
+    - Statistical multiplexing attempts to give each user `B/x`, where `x` is the number of busy users
+    - `N` is large (100-1000), while `x` is small (1-10)
+
+  - Example:
+    - Suppose 100 users each transfer a 125KB file every 2 hours
+    - At 10Mbps, a 125KB file takes 0.1 seconds to transmit (statistical multiplexing)
+    - At 0.1 Mbps, file takes 10 seconds to transfer (strict multiplexing)
+
+- Aloha
+
+  - Ethernet predecessor: multiple ground stations in various parts of Hawaii
+  - Problem: couldn't detect collisions or sense when channel was busy, similar problems in 802.11
+  - Slotted Aloha: reduces vulnerable period by half, but requires a common clock
+
+- In-Transmission Collision Detection and Semi-Reliability
+
+  - Metcalfe knew about Aloha and new he could do better because of the smaller distance
+  - 1500B frame involved in a collision
+    - Ethernet aborts transmission after 64B
+    - Aloha will send the entire 1500B and detect the collision when `ack` is not received
+    - Better for large frames and large frame sizes improve efficiency
+
+  - No recovery from frame corruption (1 in a million)
+    - However, collisions are infrequent
+    - Semi-reliable: detect collisions and retransmit in hardware
+
+- What is a Collision?
+
+  - The notion of a collision is nuanced
+
+  - Definition: a station `A` detects a collision if two or more signals from different senders coexist at `A`
+
+  - Like relativity: different stations detect collisions at different times
+
+    - Worse, without care, some stations may detect collisions and some may not
+
+  - Need mechanisms: want to convert relativity to universality, so that if receiver detects a collision, so does the sender, so sender can retransmit
+
+    - One big mechanism is forcing a minimum packet size
+    - If a long enough packet is sent, then the sender can detect the collision, causing a retransmission
+
+  - Waves, not balls: on Ethernet and 802.11, frames are sent as waves that pass through each other and don't collide and rebound like balls
+
+  - Answers:
+
+    - The min packet size is the pipe size
+
+      - $$
+        \text{Round trip delay}\times\text{Transmission speed}
+        $$
+
+    - Ethernet does binary exponential backoff
+
+      - After attempt `I`, each station randomly picks a random number of slots between `0` and `2^I - 1`
+      - A slot is 51.2 µsec
+
+    - Both ideas are now classic
+
+- Ethernet
+
+  - Three main mechanisms:
+    - Carrier sense and deference: no point transmitting when someone else is speaking
+    - Collision detection: stop frame (< 1500B) when before 64B, you detect a collision
+    - Exponential backoff: collisions very frequent, so must retransmit
+      - Random backoff avoids synchronized collisions
+      - Dynamically adjust to number of colliders
+
+  - Smaller mechanisms to make main ideas work:
+    - Slot time = `2T`, where `T` is 1-way propagation delay limited to 51.2 µsec = 64 bit times at 10Mbps: maximum delay to detect a collision
+    - Minimum packet size: 64B to avoid finishing transmission before collision is detected
+      - Pad if needed
+
+    - Jam: transmit small number of bits after you detect a collision to ensure that other transmitters also detect collision
+    - Collision detection: one way is to use Manchester with average DC level per bit
+      - Collision detection by detecting increased voltage level
+      - Better ways today
+
+  - Implementation Details
+    - Limited distance (2.5km)
+      - 500m wires, 4 repeaters
+
+    - Thin wire, thick wire
+    - Repeaters/hubs: important device, reads in a bit and writes out a bit on other side, boosting signal strength
+    - Physical topology is a star or trees
 
 
+  
 
 ## Lecture 10:
 
