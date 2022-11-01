@@ -1392,9 +1392,212 @@
     - Physical topology is a star or trees
 
 
-  
 
-## Lecture 10:
+
+## Lecture 10: 802.11 and Bridging
+
+- Ethernet (cont.)
+
+  - Cost of Statistical Multiplexing in Ethernet
+    - If distance goes up by a factor of 10 or speed, then what happens to minimum packet size?
+      - Why is it wasteful?
+
+    - 100 Mbps Ethernet proposal only has 200m extent
+    - Gigabit Ethernet? Span too small
+      - Instead replace shared wire with point-to-point links and hubs with switches
+
+    - The cost of statistical multiplexing is why Ethernet is limited to LANs
+
+  - From CSMA/CD to Switching
+    - If `A` talks to `R` at same time as `B` talks to `S`, there is a collision
+    - `A` can talk to `R` at the same time as `B` talks to `S` with no collision
+      - Switch buffers and allows parallel connections
+
+    - Gigabit Ethernet no longer uses CSMA/CD
+      - We study it because similar Media Access protocols are used, especially in wireless and 802.11
+
+- 802.11
+
+  - WLAN: IEEE 802.11b
+    - Data rate:
+      - 1, 2, 5.5, 11 Mbit/s
+      - User data rate maximum is approximately 6 Mbit/s
+
+    - Transmission range:
+      - 300m outdoor, 30m indoor
+      - Maximum dat rate is ~10m indoor
+
+    - Frequency
+      - Free 2.4GHz ISM-band
+
+  - Physical Channels
+    - 12 channels available for use in the US
+      - Each channel is 22MHz wide
+      - Only 3 orthogonal channels
+      - Using any others causes interference
+
+  - Carrier Sense Multiple Access
+    - CSMA: listen before transmit
+    - If channel sensed idle: transmit entire packet
+    - If channel sensed busy: defer transmission
+      - Persistent CSMA: retry immediately with probability `p` when channel becomes idle (may cause instability)
+      - Non-persistent CSMA: retry after random interval
+
+  - Hidden Terminal Problem
+    - `B` can communicate with both `A` and `C`
+    - `A` and `C` cannot hear each other – not a single shared channel
+    - Problem:
+      - When `A` transmits to `B`, `C` cannot detect the transmission using the carrier sense mechanism
+      - If `C` transmits, collision will occur at node `B`
+
+    - Solution:
+      - Hidden sender `C` needs to defer
+
+  - RTS/CTS (MACA)
+    - When `A` wants to send a packet to `B`, `A` first sends a Request-to-Send (RTS) to `B`
+    - On receiving the RTS, `B` responds by sending Clear-to-Send (CRS), provided that `A` is able to receive the packet
+    - When `C` overhears a CTS, it keeps quiet for the duration of the transfer
+      - Transfer duration is included in both RTS and CTS
+
+  - Backoff Interval
+    - Problem: with many contending nodes, RTS packets will frequently collide
+    - Solution: when transmitting a packet, choose a backoff interval in the range `[0, CW]`
+      - `CW` is contention window
+      - Wait the length of the interval when medium is idle
+        - Countdown is suspended if medium becomes busy
+        - Transmit when backoff interval reaches 0
+
+      - Need to adjust `CW` as contention varies
+        - Similar in spirit to Ethernet backoff
+
+  - Concepts/Conclusions
+    - Statistical multiplexing is a big idea
+    - Important of pipe size or bandwidth delay product in determining efficiency
+    - Logical vs. physical topology
+      - 10M Ethernet is logically a bus, but physically a star
+
+    - Ethernet ideas mostly gone in Gigabit Ethernet, but some ideas like CSMA live on in 802.11
+      - Also, 10-100 Mbps Ethernet is still used
+
+- Bridging
+
+  - Overview
+
+    - Review of what Gigabit Ethernet is and 802.11
+    - Understand the structure of Ethernet addresses (still used today when you have a MAC address)
+    - Then, move on to how to interconnect Ethernets at the data link level (same as switches in Gigabit Ethernet)
+      - Not a router, something in between
+
+  - Multicasting
+
+    - One sender sending to multiple receivers
+      - Generalizes broadcasting (sending to all) by sending to a subset of stations
+
+    - Useful for auto-configuration
+    - 3 examples:
+      - Solicitation: clients multicast to any server
+      - Advertisement: servers multicast to any client
+      - Free copies: servers multicast to all clients
+
+    - If the most significant bit of the address is a `1`, then it is a multicast address
+
+  - Multicast Addresses
+
+    - 6-byte Ethernet addresses assigned by 802 committee
+      - Vendors buy a fixed 3-byte code
+      - They can then assign the remaining 3 bytes (for destination addresses) or 2 bytes (for 5-byte type fields)
+      - Can buy more codes
+
+    - Multicast address denoted by MSB
+      - Get 2^24 multicast and unicast addresses and 2^16 types/block
+
+    - Common multicast addresses (i.e., all IP end-nodes, all IP routers) and type fields are standardized
+    - Broadcast address is all `1`s
+      - Multicast is better
+      - Ethernet hardware should only pass up to software packets with DA = my address or a multicast that station listens to
+      - Hashing or CAMs
+
+  - Local Area Networks Review
+
+    - Till last lecture, all the physical links we studied were a single wire with one sender and one receiver
+      - A local area network (LAN) is like a shared wire with multiple senders and multiple receivers
+
+    - Common LANs are Ethernet and token ring
+      - In Ethernet, stations transmit when they want to; if two or more transmit at the same time, there is a collision and they retransmit
+      - Token rings when station has token
+
+    - Ethernets were successful but had limitations
+      - Hence the need for bridging to "extend" LANs
+
+    - Bridges are different from hubs (they are more akin to switches) because they are data link relays, they store and buffer frames and relay frames, not bits
+      - First, a small detour into "multicasting"
+
+  - Bridging: An Exercise in Invention
+
+    - Problem Statement
+
+      - c. 1980 at Digital: Ethernets under attack
+      - Ethernet had limited distance (2.5km) and stations (8,000)
+        - Also, perception that Ethernet collapsed at high loads
+        - Token ring emerging
+
+      - Question: how can we extend 2 Ethernets to make a larger Ethernet that has twice the distance, twice the bandwidth, and twice the number of stations?
+      - Repeaters don't work, as they repeat all bits everywhere
+        - So bandwidth will not be doubled
+        - Routers work, but are expensive because we need different routers for each high-level routing protocol on the Ethernet
+          - Make it work without looking at the routing header
+
+      - How can we extend LANs *transparently*: without end-stations knowing that they are on an extended LAN?
+
+    - Initial Solution
+
+      - Receive frame with destination and source headers
+      - If the received frame's destination is on the same interface, we drop it
+        - Otherwise we forward it on the destination's interface
+
+    - Refinements for Efficiency and Correctness
+
+      - Database could be built manually => error prones
+      - Learn based on source address and forward based on destination address and send to other interface when no info is known (flooding)
+
+    - Generalizations
+
+      - Any LAN or data link that puts both sources and destination addresses in frames (includes all 802 LANs)
+      - Any topology without cycles
+      - More than two bridge ports
+
+    - Code
+
+      - ```
+        Receive frame F on interface X
+        AddTable(F.Source) // Learn source, refresh timer
+        Y = Lookup(F.Dest) // Lookup destination
+        If (Y = NIL) then // Unknown destination
+        	Forward frame F on all interfaces Y != X // Flood
+        Else if (Y != X) then
+        	Forward frame F on interface Y
+        Else if (Y == X) // Filtering
+        	Drop frame F
+        
+        TimerExpiry(E) // Timer for entry E fires
+        E.interface = NIL // Re-enable flooding
+        ```
+
+
+    - Bridge Terminology and Summary
+      - Transparency, promiscuous receive, flooding, filtering
+      - Main idea: learn based on source addresses and forward based on destination addresses
+        - Use flooding when there is no info, and timeout to handle stale learning information
+    - Realization
+      - Need much higher performance than router, which handles all frames addressed to it
+      - Need to decide whether to drop or forward frames in minimum inter-frame time on Ethernet, 51.2us on each port
+        - Otherwise, could drop some frames that need to be forwarded while examining others that have to be filtered
+      - First DEC implementation by Mark s in 1984 technology
+        - Achieved forwarding in minimum frame time with low cost
+
+
+
+
+## Lecture 11:
 
 - 
-
