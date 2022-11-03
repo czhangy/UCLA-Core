@@ -1582,22 +1582,110 @@
         TimerExpiry(E) // Timer for entry E fires
         E.interface = NIL // Re-enable flooding
         ```
+  
+  - Bridge Terminology and Summary
+    - Transparency, promiscuous receive, flooding, filtering
+    - Main idea: learn based on source addresses and forward based on destination addresses
+      - Use flooding when there is no info, and timeout to handle stale learning information
+  
+  - Realization
+    - Need much higher performance than router, which handles all frames addressed to it
+    - Need to decide whether to drop or forward frames in minimum inter-frame time on Ethernet, 51.2us on each port
+      - Otherwise, could drop some frames that need to be forwarded while examining others that have to be filtered
+    - First DEC implementation by Mark Kempf in 1984 technology
+      - Achieved forwarding in minimum frame time with low cost
 
 
-    - Bridge Terminology and Summary
-      - Transparency, promiscuous receive, flooding, filtering
-      - Main idea: learn based on source addresses and forward based on destination addresses
-        - Use flooding when there is no info, and timeout to handle stale learning information
-    - Realization
-      - Need much higher performance than router, which handles all frames addressed to it
-      - Need to decide whether to drop or forward frames in minimum inter-frame time on Ethernet, 51.2us on each port
-        - Otherwise, could drop some frames that need to be forwarded while examining others that have to be filtered
-      - First DEC implementation by Mark s in 1984 technology
-        - Achieved forwarding in minimum frame time with low cost
+
+
+## Lecture 11: Spanning Tree and Routing vs. Bridging
+
+- Bridging
+
+  - Avoiding Cycles
+
+    - Cycles are useful for the purposes of redundancy
+    - Designate a root bridge based on a shortest path
+
+  - Centralized Algorithm
+
+    - Root is minimum ID nodes
+    - Other bridges find the minimum port, the port through which it has the shortest path to root (parent link)
+    - Each bridge also finds the ports for which this bridge is on the shortest path between root and corresponding LAN: designated ports
+    - Each bridge turns on the minimum port and all designated ports
+      - On/off are software states
+      - Always receive hello and management messages on all ports
+      - Drop data packets to/from off ports
+    - To be atree, each LAN must have a unique path to every other LAN
+    - Algorithm guarantees that each LAN can get to the root only through the designated bridge for the LAN
+      - Designated bridges have a unique path through their parent LAN
+
+  - Distributed Algorithm
+
+    - All nodes send a hello message saying their ID and current estimates to root `(ID, r, d)`
+
+      - Every node `N` keeps an estimate `r(N)` and `d(N)` of its current estimate of root and distance
+
+    - On hearing a smaller root, adopt that root and update your distance as `d + 1`:
+
+      - ```
+        On receipt of (r, d) at node N:
+        	If (r < r(N)) then:
+        		r(N) = r
+        		d(N) = d + 1
+        	Else if (r = r(N) and d < d(N)) then:
+        		d(N) = d + 1
+        ```
+
+    - Bridges must wait some time after the estimates stabilize to turn on ports and start forwarding to avoid loops
+
+  - Conclusion
+
+    - Necessity is the mother of invention
+    - Find new problems that matter and find creative solutions
+      - Challenge the dogma
+    - The big ideas: auto-configuration, filtering, flooding, wire speed forwarding, spanning tree, designated bridges
+    - Link layer relays versus physical layer relays
+      - Next: routing layer relays, aka Internet routers
+
+- Bridges vs. Routers
+
+  - Bridges only see MAC addresses, not routers
+  - Bridges are short-circuited from the router's point of view
+  - Routers maintain an ARP table (populated by a demand-driven protocol) to map MAC addresses
+  - Basic Question
+    - Original data link was single hop, but bridges make things multi-hop
+    - So why have routers?
+      - Main reason is that data link headers were developed before bridges, so there's no support for data link relays in the data link header
+      - The opposite is true for routing headers
+  - Why Bridges are Bad
+    - Address incompatibility
+    - Max packet size incompatibility
+    - Bandwidth incompatibility
+    - Large networks
+      - 802 address is flat, routing addresses are hierarchical
+        - Bridges have to learn all addresses in an extended LAN (more memory)
+        - Routers only learn addresses within each level of their hierarchy
+      - Spanning tree is inefficient
+        - Does not route packet on shortest path between two points
+        - Increased latency and smaller throughput
+        - Flooding wastes throughput
+  - Why Hierarchical Addresses?
+    - If we used bridges to connect the global Internet, each bridge would store billions of MAC addresses
+    - MAC addresses are flat and unique worldwide, but IP addresses are hierarchical
+    - Scalability requires hierarchy
+  - Why Bridges are Good
+    - Generality: bridges allow stations with different routing protocols to use the same extended LAN
+    - Cost-performance: since they do less, bridges cost less than routers with the same performance
+    - Control traffic: smaller amount of routing control traffic (spanning tree is small by comparison)
+  - Conclusion
+    - Each has a place
+    - Bridges can be used to connect a small number of compatible LANs to form an extended LAN
+    - Routers connect extended LANs to form a routing network
+    - Most routers today are multi-port devices, where some ports can be bridges and some can be routers
 
 
 
-
-## Lecture 11:
+## Lecture 12:
 
 - 
