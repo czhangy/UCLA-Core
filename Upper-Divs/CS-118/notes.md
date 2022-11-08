@@ -1688,7 +1688,22 @@
 
 ## Lecture 12: IP Addressing and Overview
 
-- 
+- Topology
+  - Terminology: ISPs, POPs, autonomous systems, NAPs, peering
+    - Autonomous systems: very much synonymous with domains
+      - The whole philosophy of the Internet is ordered chaos => everyone should be able to do their own things *while following certain rules*
+    - NAP (Network Access Point): commercial vendors must come together at a point called a NAP
+      - NAPs are very congested placed, so most people today use peering
+    - Peering: commercial networks build a line between their networks
+      - Ex) MCI tells Sprint that they will carry their customers for free if they do the sames
+      - Encourages the interconnectedness represented by the Internet
+- Basic Internetworking in IP
+  - Goal from start: unlike DECNET, SNA, etc. starts with a hierarchy of physical networks with network specific routing that IP doesn't care about, to create an Internetwork of physical networks
+  - IP's role: to route packets to the right physical network based on the network number
+    - Not to forward within a network, but to forward between networks
+      - Allow different networks to talk to each other
+    - Offers a so-called datagram service with possible fragmentation and reassembly to deal with different maximum packet sizes
+  - Error messages: companion protocol called ICMP for error messages (header checksum failed, maximum time exceeded, redirect, etc.)
 
 
 
