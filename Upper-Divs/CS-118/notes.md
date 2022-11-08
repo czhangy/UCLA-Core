@@ -1686,7 +1686,7 @@
 
 
 
-## Lecture 12: IP Addressing and Overvir
+## Lecture 12: IP Addressing and Overview
 
 - 
 
