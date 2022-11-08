@@ -1697,13 +1697,197 @@
     - Peering: commercial networks build a line between their networks
       - Ex) MCI tells Sprint that they will carry their customers for free if they do the sames
       - Encourages the interconnectedness represented by the Internet
+
 - Basic Internetworking in IP
   - Goal from start: unlike DECNET, SNA, etc. starts with a hierarchy of physical networks with network specific routing that IP doesn't care about, to create an Internetwork of physical networks
   - IP's role: to route packets to the right physical network based on the network number
     - Not to forward within a network, but to forward between networks
       - Allow different networks to talk to each other
     - Offers a so-called datagram service with possible fragmentation and reassembly to deal with different maximum packet sizes
+      - Datagram service: send things, if they get there, then great
+    - Realized that IP routers would have to fragment messages if necessary
+      - Different networks had different limits
   - Error messages: companion protocol called ICMP for error messages (header checksum failed, maximum time exceeded, redirect, etc.)
+
+- IP Evolution
+
+  - ARPANET started by linking government and university sites in the 70s
+  - NSFNet in 1983: ARPANET splits up into MILNET and ARPANET
+    - In 1984, NSF establishes NSFNet to be backbone
+    - Campuses attached to backbone via regional networks
+    - Strict hierarchy breaks down because of direct connections between providers
+
+  - Multiple providers by the late 80s: Internet becomes worldwide
+    - From a research network to production quality
+    - Multiple autonomous providers that need to work together
+
+- Names and Address
+
+  - Names: when you send to a domain name, a resolver in your host translate the name to a 32-bit IP address
+    - All messages carry UP destination addresses
+
+  - Domain Name Service (DNS): the translation is done using using the DNS
+
+- Original IP Addresses: Classful
+
+  - Original model: small number of large networks (class A), moderate number of campus networks, large number of LANs
+  - Idea: hierarchical address with a moveable boundary
+    - Analogous to phone area codes, which give multiple area codes to larger areas
+
+  - Classes:
+    - Class A: starts with a `0`, 1 byte reserved for the net, and 3 bytes reserved for the host
+    - Class A: starts with a `10`, 2 byte reserved for the net, and 2 bytes reserved for the host
+    - Class A: starts with a `110`, 3 byte reserved for the net, and 1 bytes reserved for the host
+
+- Old IP Forwarding
+
+  - Find destination: extract network number of destination address by parsing and checking out for class A, class B, etc.
+  - Find hop reached?: if the network number of destination is equal to the network number of one of this router's local interfaces, deliver the packet
+    - Map to local address using ARP or some such network specific protocol
+
+  - Lookup router table: lookup network number in the corresponding routing table
+    - If it exists, deliver packet to corresponding next hop
+    - If no route entry exists, send to default router
+      - Looks silly, but is a great way to avoid keeping lots of table entries in stub organizations like UCLA
+
+- Challenge-Response
+
+  - One level of hierarchy is good, but IP quickly ran into two scaling challenges
+    - Inefficient address usage: any organization that needed more than 255 addresses asked for a class B address (64,000) and they quickly ran out
+    - Routing table growth: the response to no more class B addresses was to assign multiple class C addresses
+      - But now, every backbone router needed to know more addresses, more routing traffic, search times, etc.
+
+  - Response: changed IP forwarding to longest matching prefix
+    - Why?
+
+- Subnetting and Supernetting
+
+  - Supernetting: done recursively, leads to backbone routers only having hundreds of thousands of prefixes of lengths 8-32
+    - Longest matching prefix matching helps routers scale => we want longest matching because it's deeper down in the hierarchy
+    - Problem is even worse today
+
+  - Temporary measures: often today, new organizations are given 1 IP address and use NAT (use of TCP port numbers to extend the range of an organization's address)
+    - Need the move to IPv6 (128 bits)
+
+- IP Evolved to Meet Challenges
+
+  - Challenge 1: interconnecting diverse networks => net numbers (Class A, 1 byte)
+  - Challenge 2: Ethernets led to an explosion of networks => hack to add Class B/C
+  - Challenge 3: Class B addresses ran out => give consecutive class Cs and use longest prefix match
+  - Challenge 4: even class Cs started running out => NAT and concurrent move to IPv6
+
+- New IP Forwarding
+
+  - Lookup: find longest matching prefix `P` of destination IP address in packet of forwarding table
+  - Default or local?: if `P` is `NIL`, forward on default route
+    - If the next hop associated with `P` is a local interface, deliver packet
+    - Map to local address using ARP or some such network specific protocol
+
+  - Send on its way: if not, send packet to next hop route associated with `P`
+  - Backbone routers in default-free zones have to have many hundred thousand prefixes to reach everyone
+    - Enterprise routers have 1,000s because of heavy use of default routes
+
+- Four Problems Endnodes Must Solve
+
+  - Problem 1: Routers need data link addresses of endnodes
+  - Problem 2: Endnodes need DL address of 1 router
+  - Problem 3: Endnodes on the same LAN should be able to communicate without a router
+  - Problem 4: Endnodes should go through as direct a path as possible
+
+- IP Solutions to Endnode Problems
+
+  - Problem 1: ARP for MAC address of destination
+  - Problem 2: a service called DHCP gives you the IP address of one router (autoconfiguration)
+    - DHCP protocol has a well-known multicast address
+    - Routers are configured by a manager for DHCP
+
+  - Problem 3: two endnodes know they are on the same subnet by comparing masks, then ARP
+  - Problem 4: send to router and router sends redirect if packet returns on interface it entered router
+    - Ignore this code in project
+
+- IP Forwarding: Overview
+
+  - Need to understand how to forward packets using longest matching prefix (linear search is fine)
+  - Need to understand how to implement ARP in your router
+  - Need to understnad how to implement ACLs using simple linear search
+  - To implement all this and ACLs, you need to understand all the fields in an IP packet, including the TCP header
+
+- Basic Packet Formats
+
+  - Ethernet Frame:
+    - Destination address
+    - Source address
+    - Type
+    - Payload
+
+  - ARP Packet:
+    - Opcode
+      - Request or reply
+
+    - Source MAC address
+    - Source IP address
+    - Destination MAC address
+    - Destination IP address
+    - Payload
+
+  - IPv4 Packet:
+    - Version
+    - TTL
+    - Checksum
+    - Source IP address
+    - Destination IP address
+    - Payload
+
+- ACLs refer to TCP ports: ports are like extensions
+
+- IP Header => we do longest match on the destination IP address
+
+  - ACLs also check source IP address
+  - Also Protocol field and TTL
+
+- ACL Syntax
+
+  - Different for different vendors
+  - Logically, a conjunction of predicates on IP and TCP fields and an action
+    - Ex) Dest IP = `129.97.*` and Dest Port = `1433` => drop
+
+  - Most routers allow 100-1,000 of them
+
+- Forwarding Pseudocode
+
+  - ```
+    Find input network interfaceL findIfaceByName
+    Drop packet if interface is unknown
+    
+    Read ethernet header and check the eth_type field
+    Ignore all but ARP and IPv4 types
+    
+    If eth_type is ARP:
+    	If ARP request packet:
+    		Prepare and send ARP response packet
+      If ARP response packet
+      	Record IP-MAC mapping information in ARP cache
+      	Send out all enqueued packets for ARP entry
+      	
+    If eth_type is IPv4:
+    	Verify checksum, length, discard invalid packets
+    	Check 5-tuple (IP dest, IP source, protocol, dest, source ports) in input
+    	ACL and drop if needed
+    
+    Use the longest prefix match algorithm to find a next-hop IP address in the routing table
+    
+    Lookup ARP cache for MAC address mapped to the next hip destination IP address
+    	If valid entry found: forward packet
+    	Else: queue received packet and send ARP request to discover the IP-MAC
+    	mapping
+    ```
+
+- Aside on Fragmentation and Reassembly
+
+  - Path MTU instead: modern endnodes find the right size instead of asking the routers to fragment
+    - Fields ignored by most routers and in your project
+
+
 
 
 
