@@ -356,7 +356,7 @@ Then, `cd` into the project directory and run the following command to build you
 
 Finally, you will need to open a terminal window in your Docker container to run any necessary code.
 
-`sudo docker run -it <name_of_your_container> bash`
+`sudo docker run -it --privileged <name_of_your_container> bash`
 
 Now you should be able to run the commands in [Running Your Router](#running-your-router) without any issues.
 
@@ -367,13 +367,20 @@ It is worth noting that after making edits to any code on your local machine (eg
 
 To run your router, you will need to run in parallel two commands: Mininet process that emulates network topology and your router app. For ease of debugging, can run them in `screen` (or `tmux`) environments or simply in separate SSH sessions:
 
+*   Make sure openvswitch is running in your container. If it is not running, execute the following command:
+
+          service openvswitch-switch start
+
 *   To run Mininet network emulation process
     
           ./run.py
           ...
           mininet>
-        
     
+*   Before you run your router, you need to run a pox script at the background using the following command: 
+
+          python2.7 -u /opt/pox/pox.py --verbose ucla_cs118 &
+
 *   To run your router
     
           #
