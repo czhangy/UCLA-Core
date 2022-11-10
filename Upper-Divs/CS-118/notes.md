@@ -1891,6 +1891,180 @@
 
 
 
-## Lecture 13:
+## Lecture 13: Route Computation
+
+- Digression on Fast IP Lookups
+
+  - Approach 1: Uni-bit Trie
+    - 32 steps in worst case
+    - Considered too slow today
+    - Start with the most significant bit at the root and keep walking the trie until you reach a dead ends
+  - Approach 2: Multi-bit Trie
+    - 11 steps in worst case
+    - Slow and too much memory
+    - Reduces the height of the trie, but results in duplicate nodes
+  - Approach 3: Ternary CAM
+    - Memory where each bit can be `0`, `1`, or `*` that can be searched in parallel
+    - 1 step in worst case
+    - Too much power at high speeds
+
+- Route Computation
+
+  - The Big Picture
+
+    - Only focus on routing within organizations
+    - Next lecture is on routing between organizations via BGP
+
+  - Four Parts to Routing
+
+    - Set up addresses and topology: assign IP addresses and connect routers
+    - Neighbor determination: endnodes talk to routers (things like ARP), routers to router neighbors
+    - Compute routes: most complex piece, this lecture, but only for within organizations
+    - Forward packets: as we studied last lectures
+
+  - Flavors of Route Computation
+
+    - Intra-domain routing: routing within an enterprise managed by one entity
+      - Often shortest paths
+      - Will study two flavors:
+        - Distance vector: gossip protocol
+          - Has problems with failures, count-to-infinity
+        - Link state: more resilient to failures, often used
+    - Inter-domain routing: routing between ISPs owned by different entities
+      - Policy routing
+
+  - Distance Vector
+
+    - Routers gossip with neighbors to spread information but does badly with node failures
+    - Two principal methods for route computation: distance vector (IP) and link state (OSI)
+      - We will study both
+    - Distance vector: how can we use the spanning tree protocol idea?
+      - We found distances to the min ID node by "gossip"
+      - Use the same idea for updating distance to all nodes
+    - Previously, we kept `(root, distance, parent)`
+      - Now, we keep a vector of `(ID, distance)`, hence, distance vector
+    - Distance Vector Databases
+      - As in spanning tree, we have port and central databases
+      - Central is computed based on best port database
+        - Use the minimum of all neighbors
+        - Send new information to neighbors upon change
+    - Link Failures and Distance Vector
+      - On link failure, delete stored distance vector for that port
+        - Link failure is reported by neighbor discovery (because we haven't received a "hello" from that neighbor for a while)
+      - Different from spanning tree in that there is no aging of information except the local aging used to detect link failures
+        - Instead, must rely on something called count-to-infinity => when the distance reaches 32
+      - Also, unlike spanning tree, you send whenever information changes
+        - Periodic sending is a good idea for robustness, but not strictly necessary
+      - Data Packet Looping
+        - After `A` crashes, `B` and `C` keep thinking the best way to get to `A` is through each other
+        - Thus, a data packet destined to `A` will keep looping until either the hop-count in the packet reaches its maximum value or `B` and `C` finally decide that `A` is down
+
+  - Link State
+
+    - Each router broadcasts its local neighborhood to all other routers within its organization, but must solve the bootstrapping problem
+
+    - Link State History
+
+      - The ARPANET is a large national network that is part of the global Internet
+        - Classic network in a historic sense
+      - Originally, ARPANET used distance vector
+        - However, failure recovery times were very slow after node failures because of the count-to-infinity problem
+        - Also, data packets kept looping during this period
+      - New ARPANET moved to link state routing, which has quicker response to failures and no count-up problem
+        - Similar design used by OSPF inside most ISPs
+
+    - Basic Idea
+
+      - Each node knows the default (or manager-settable) cost of its outgoing links
+        - Neighbor discovery is used to compile a list of neighbors that are UP
+        - This information, along with link costs, is placed in a Link State Packet (LSP)
+      - Each source broadcasts its LSP to all other nodes using a primitive flooding mechanism called intelligent flooding
+      - After the LSP propagation process stabilizes, each node has a complete and identical picture of the network graph
+      - Then, each node `S` uses any shortest path algorithm (i.e., Dijkstra's) to compute the next node on the shortest path from `S` to every other node `D`
+
+    - LSP Generation on Failure
+
+      - If link `AC` fails, neighbor discovery in `A` and `C` will eventually detect failure
+      - Only `A` and `C` recompute their LSP values and broadcast their LSPs again to all other nodes
+        - Other nodes don't recompute or rebroadcast their LSPs
+
+    - Sequence Numbers
+
+      - LSPs must include sequence numbers to prevent infinite loops during flooding
+        - Sequence numbers are associated with source IPs in a table at each router
+        - Larger sequence numbers are accepted, equal or smaller are rejected
+      - If a sequence number reaches the upper limit, the router can simply reconnect using a different IP
+        - Routers have multiple IPs available to them
+        - Restart at sequence number 0 and re-flood
+
+    - Dijkstra's Algorithm
+
+      - Start with your own link state packets
+      - Once a link is made permanent (found to be the shortest path), you can then look at their LSPs
+      - When a new LSP comes in, you must rerun the algorithm
+
+    - Equal Cost Routes
+
+      - Today, especially in data centers, need a lot of parallelism (multiple 10 or 100 Gbps links to get more bandwidth)
+      - To use all bandwidth, its very easy to modify Dijkstra's to keep track of all equal cost next hops
+      - Because TCP doesn't like reordering within a connection, routers today to ECMP (Equal Cost Multi-Path) by splitting traffic between equal cost next hops based on a hash function that can hash the Dest and Src IP address and Dest/Src TCP ports
+      - This hashing idea guarantees no TCP connection is reordered
+
+    - Code
+
+      - ```
+        RECEIVE LSP(A, s, D) on PORT P
+        	IF s < SEQ(A) THEN:
+        		SEND STORED-LSP(A) ON PORT P
+        		ACK[A,P] = TRUE
+          ELSE IF s > SEQ(A) THEN:
+          	IF A = ME THEN: // source must jump
+          		SEQ(ME) = s + 1
+          		SEND STORED-LSP(A) ON ALL PORTS
+          		FOR ALL PORTS Q, ACK[ME, Q] = TRUE
+            ELSE:
+            	STORED-LSP(A) = LSP(A, s, D)
+            	SEND ACK(A, s) ON PORT P
+            	SEND STORED-LSP(A) ON ALL PORTS
+            	P <> Q FOR ALL PORTS Q <> P, ACK[A, Q] = TRUE
+          ELSE:
+          	SEQ(ME) = SEQ(ME) + 1
+          	SEND ACK(A, s) ON PORT P
+          	ACK[A, P] = FALSE
+          	
+        PERIODICALLY
+        	FOR ALL PORTS P and A WITH ACK[A, P] = TRUE DO:
+        		SEND STORED-LSP(A) ON PORT P
+        		
+        RECEIVE ACK(A, s)
+        	IF s = SEQ(A) THEN:
+        		ACK[A, P] = FALSE
+        		
+        LINK ON PORT P COMES UP
+        	FOR ALL SOURCES A DO:
+        		SET ACK[A, P] = TRUE // send all LSPs on P
+        ```
+
+  - Looking Back
+
+    - General Principles
+      - Best effort: no guarantees (TCP will fix if needed)
+      - Soft state: not like the hard state of a database that must be correct; we keep transmitting route updates so if it's wrong, it will fix itself
+      - Decentralized: no central person who knows all routes, but things are changing
+    - Generalizations
+      - Both flavors generalize nicely
+      - Can easily generalize distance vector to find minimum bandwidth paths or maximum reliability
+      - So does link state
+        - Once you have the whole network, it's easy to compute other metrics
+        - One famous example is Constrained Shortest Path for traffic engineering and another is equal cost load splitting
+    - Conclusions
+      - Distance vector is still used as part of a protocol called RIP and Cisco's IGRP
+      - Link state or OSPF is used widely within ISPs because it's more reliable after failure and can be easily modified to do traffic engineering based on, say, bandwidth
+      - Next lecture, we will see how ISPs use something called policy vectors to compute routes between ISPs instead of merely shortest paths
+      - Note how private clouds like Google are doing their own routing based on centralized views so they can give their applications better guarantees
+
+
+
+## Lecture 14:
 
 - 
