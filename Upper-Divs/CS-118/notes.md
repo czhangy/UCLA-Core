@@ -2065,6 +2065,143 @@
 
 
 
-## Lecture 14:
+## Lecture 14: Border Gateway Protocol
+
+- Brief Overview
+  - Who does policy routing?
+    - ISPs
+  - Why policy routing?
+    - Every ISP is trying to maximize its economic gain amongst competitors
+      - i.e., hot potato routing
+    - Some entities want to avoid other entities
+  - How do we do policy routing?
+    - Small modification of distance vector called path vector
+- IP Addresses and Prefixes
+  - 32 bytes written as `A.B.C.D`, where `A`, `B`, `C`, and `D` are integers from 1 to 255 representing one byte
+    - For example, an EE server in CMU can be `128.2.1.155`, where the first byte is `10000000` (remove dots)
+  - A prefix is represented by slash or wildcard notation
+    - For example, CMU is `128.2/16`, which means that all IP addresses in CMU start with `10000000 00000010 *`
+      - `16` is the length of the prefix
+  - Another way to encode prefixes is with a mask
+    - Represent a `/16` with a bit-mask starting with 16 `1`s followed by 16 `0`s
+    - Can AND with mask to find prefix
+- Why Inter-domain Routing: Policy
+  - Multiple providers implies need for independence and independent policies
+  - Different metrics, trust patterns, different charging policies, different administrative and legal requirements (e.g., ARPANET only for government business, Canadian traffic stays within Canada)
+  - Not very well developed
+    - Basic conflict between abstraction and hierarchies (for scaling) and ability to specify arbitrary policies
+- Possible Policies
+  - Never use routing domain `X` for any destination
+  - Never use domains `X` and `Y`
+  - Don't use `X` to get to a destination in domain `Y`
+  - Use `X` only as a last resort
+  - Minimize number of domains in path
+  - Government messages can traverse the ARPANET, but not others
+- BGP Overview
+  - Border Gateway Protocol (BGP)
+    - The canonical path vector protocol
+    - How routing gets done on the Internet today
+  - BGP Operation
+    - Basic BGP and differences from distance vector
+    - BGP features (local pref, MED, community)
+    - Issues with BGP
+  - BGP Alternatives
+- Border Gateway Protocol
+  - Inter-domain routing protocol for the Internet
+    - Prefix-based path-vector protocol
+    - Policy-based routing based on AS paths
+    - Evolved during the past 28 years
+- Basic BGP Operations
+  - Border routers cannot to other domains' border routers
+  - While connection is alive, exchange route update messages
+  - BGP runs over TCP
+    - Allows for incremental changes
+  - Step-By-Step
+    - A node learns multiple paths to the destination
+      - Stores all of the routes in a routing table
+      - Applies policy to select a single active route, and may advertise the route to its neighbors, depending on its policy
+    - Incremental updates, unlike distance vector
+      - Announcement
+        - Upon selecting a new active route, add own node ID to path and (optionally) advertise to each neighbor
+      - Withdrawal
+        - If the active route is no longer available, send a withdrawal message to the neighbors
+  - A Simple BGP Route
+    - Destination prefix
+      - e.g., `128.112.0.0/16`
+    - Route attributes, including:
+      - AS path (e.g., `7018 88`)
+      - Next-hop IP address (e.g., `12.127.0.121)`
+  - Data packets flow in the opposite direction from BGP updates
+    - Notice how next hop info is crucial to build forwarding table at each route used to choose next hop
+    - Have to do ARP as well to get MAC address of next hop
+  - Distance Vector vs. BGP
+    - Only way in distance vector to tune routes is via cost
+    - In BGP, one can "control" routes in more complex ways
+    - Distance Vector
+      - Within an AS
+      - Only attribute is cost
+      - Always pick and propagate shortest
+    - Path Vector
+      - Between ASes
+      - Multiple attributes
+      - Complex
+      - Choices settable in config files
+- BGP Attributes
+  - AS path: the ASes the announcement traversed
+  - Next-hop: where the route was heard from
+  - Origin: route came from IGP or EGP
+  - Local pref: statically configured ranking of routes within AS
+  - Multi-exit discriminator: preference for where to *exit* network
+  - Community: opaque data used to tag routes that are to be treated equivalently
+- BGP Decision Process
+  - Default decision for route selection
+    - Highest local pref, shortest AS path, lowest MED, prefer eBGP over iBGP, lowest IGP cost, router ID, etc.
+  - Many policies built on default decision process, but...
+    - Possible to create arbitrary policies in principle
+    - Limited only by power of vendor-specific routing language
+  - More intricate feature: MEDs
+    - Way to do load balancing by passing a hint to next AS
+  - Feature 2: Community
+    - Way to tag multiple routes with same tag value
+    - Then, remote routers can act on tag (e.g., filter)
+- BGP Has Lots of Problems
+  - Instability
+    - Route flapping (network `x.y/z` goes down... tell everyone)
+    - Not guaranteed to converge, NP-hard to tell if it does
+  - Scalability still a problem
+    - Over 1,000,000 network prefixes in default-free table today
+    - Tension: want to manage traffic to very specific networks, but also want aggregation
+  - Performance
+    - Non-optimal, doesn't balance load across paths
+- Business Relationships
+  - Neighboring ASes have business contracts
+    - How much traffic to carry
+    - Which destinations to reach
+    - How much money to pay
+  - Common business relationships
+    - Customer-provider
+    - Peer-peer
+- Multi-Homing
+  - Customers may have more than one provider
+    - Extra reliability, survive single ISP failure
+    - Financial leverage through competition
+    - Better performance by selecting better path
+    - Gaming the 95th-percentile billing model
+- Beyond BGP
+  - SND-inspired approaches like Google's Espresso
+    - Google border routers talk BGP to the outside world, but send all BGP announcements to a service that also has latency information from Google Apps, and so picks better routers to the external internet
+  - Link state versions of BGP (IDRP, Radia proposal)
+
+- Conclusions
+  - Link state and distance vector are used to route within a domain/AS/ISP/enterprise
+  - BGP is used to compute routes between ASes
+  - Basically like distance vector gossip, except you add not just a total cost, but a list of all ASes in path so far
+  - AS path helps policy because any router can choose to drop based on ASes in path
+  - AS path also helps prevent loops without a hop count
+  - BGP has issues and there are alternatives to BGP
+
+
+
+## Lecture 15:
 
 - 
