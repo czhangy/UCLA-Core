@@ -2204,7 +2204,233 @@
 
 ## Lecture 15: Naming
 
-- 
+- Overview
+
+  - Philosophy: why so many addresses?
+    - i.e., domain, IP, MAC, etc.
+  - Glue:
+    - DHCP: my IP address
+    - DNS: other IP addresses
+    - NAT: how to cope with IP addresses from `N > 1` users
+  - Intro to TCP
+
+- BGP
+
+  - Review: Routes Flow from Sources
+    - Princeton CS router sends route to border router
+    - Border router sends aggregate prefix route to ISP
+    - Left border router in ATT sends route to right border
+  - Review: Data Packets Flow in Reverse
+    - The best routes are installed in the forwarding table
+    - Now a data packet to Princeton CS flows in reverse
+    - For traffic *to* Harvard, need routes *from* Harvard
+  - So What Does BGP Do?
+    - Only way in distance vector to tune routes is via link cost
+    - In BGP, one can "control" routes in more specific ways
+    - Choose between routes based on attributes and local network policy specified in config files at routers
+  - Common Uses of Attributes
+    - Local Preference
+      - Prioritize route received on an interface (e.g., cheaper ISP)
+    - AS Path Length
+      - Rough measure of shortest (count of networks to destination)
+    - MED
+      - Hint to one's ISP as to how to split traffic when there are multiple exits to the ISP
+    - Community
+      - A way to tag all routes of a specific type so that remote routers can act on tag (say drop route) based on one community value as opposed to a long list of prefixes
+  - Default Route Selection
+    - First Local Preference
+      - Operator knows best
+    - AS Path Length
+      - After that, shortest path (roughly speaking) makes sense
+    - MED
+      - Other things being equal, honor MED priorities
+    - eBGP over iBGP
+      - Other things being equal, a router from an external border router makes more sense than one from an internal router
+    - Shortest IGP Weight (from Link State or Distance Vector)
+      - Other things being equal, pick shortest cost to border router
+  - BGP is Suboptimal
+    - Local Knowledge Only
+      - Your neighbors' best routes may not be your best
+    - AS Path Length
+      - Does not measure real distance or latency
+    - Other Metrics
+      - May care about cost, etc. and have to hack BGP attributes
+    - New: Software-Defined Networks within Organizations
+      - Google Espresso has BGP speakers, but they send all BGP messages to a central cluster that also does measurements and picks more globally optimal route to customer ISPs
+
+- Naming
+
+  - Three Topics in Naming
+    - How to get an IP address to get started (DHCP)
+    - How to map from user-friendly names like `ccle.ucla.edu` to an IP address to send (DNS)
+    - How to build a large private network with only one assigned public IP address (NAT)
+  - Big Questions
+    - Q: How do we go from `ccle.edu` to an IP address for CCLE?
+      - App (browser) maps using the Domain Name Service
+    - Q: How do IP addresses get assigned?
+      - DHCP (Dynamic Host Control Protocol)
+  - Layers of Identifiers
+    - Host Name (e.g., `ccle.ucla.edu`)
+      - Used by *humans* to specify host of interest
+      - Unique, selected by host administrator
+      - Hierarchical, variable-length string of alphanumeric characters
+    - IP Address (e.g., `131.71.29.8`)
+      - Used by *routers* to forward packets
+      - Unique, topologically meaningful locator
+      - Hierarchical namespace of 32 bits
+    - MAC Address (e.g., `58:B0:35:F2:3C:D9`)
+      - Used by *network adapters* to identify interesting frames
+      - Unique, hard-coded identifier burned into network adapter
+      - Flat namespace (of 48 bits in Ethernet)
+  - Naming Hierarchies
+    - Host name: `ccle.ucla.edu` (human-readable)
+      - Domain: registrar for each top-level domain (e.g., `.edu`)
+      - Host name: local administrator at UCLA assigns to each host
+    - IP addresses: `131.71.70.238` (for scalable routing)
+      - Prefixes: ICANN, regional Internet registries, and ISPs
+      - Hosts: static configuration, or dynamic using DHCP
+    - MAC addresses: `58:B0:35:F2:3C:D9` (for unique ID)
+      - OIDs (first 3 bytes): assigned to vendors by the IEEE
+      - Adapters: assigned by the vendor from its block
+  - Mapping Between Identifiers
+    - Domain Name System (DNS)
+      - Given a host name, provide the IP address
+      - Given an IP address, provide the host name
+    - Address Resolution Protocol (ARP)
+      - Given an IP address, provide the MAC address
+      - To enable communication within the LAN
+    - Dynamic Host Configuration Protocol (DHCP)
+      - Automates host boot-up process
+      - Given a MAC address, assign a unique IP address
+        - And, tell host other stuff about the LAN
+  - Address Resolution Protocol
+    - Recall: every node maintains an ARP table
+      - `(IP, MAC)` pair
+    - Consult the table when sending a packet
+      - Map destination IP address to MAC address
+      - Encapsulate and transmit the data packet
+    - What if the IP address is not in the table?
+      - Broadcast: "Who has IP address `x.x.x.x`"
+      - Response: "MAC address `yy:yy:yy:yy:yy:yy`"
+      - Sender caches the result in its ARP table
+  - Whence Come IP Addresses
+    - You already have a bunch from the days when you called Jon Postel and asked for them
+    - You get them from another provide
+      - e.g., buy service from Sprint and get a `/24` from one of their address blocks
+    - You get one directly from a routing registry
+      - Registries get address from IANA (Internet Assigned Numbers Authority)
+    - How Do You and I Get One?
+      - Well, from a provider
+      - But, how do you know what it is?
+      - Manual Configuration
+        - They tell you and you type that number into your computer (along with default gateway, DNS server, etc.)
+      - Automated Configuration
+        - Dynamic Host Resolution Protocol (DHCP)
+  - Bootstrapping Problem
+    - Host doesn't have an IP address yet
+      - So, host doesn't know what source address to use
+    - Host doesn't know who to ask for an IP address
+      - So, host doesn't know what destination address to use
+    - Solution:
+      - Shout on LAN using well-known DHCP multicast address (like ARP, but not broadcast) to discover server who can help
+      - Install DHCP server on the LAN to answer distress calls
+  - DHCP
+    - Broadcast-based LAN protocol algorithm:
+      - Host broadcasts "DHCP discover" on LAN (e.g., Ethernet broadcast)
+      - DHCP server responds with "DHCP offer" message
+      - Host requests IP address: "DHCP request" message
+      - DHCP server sends address: "DHCP ack" message with IP address
+    - Easy to have fewer addresses than hosts (e.g., UCLA wireless) and to *renumber* network (use new addresses)
+    - What if host goes away? How to get address back?
+      - Address is a "lease", not a "grant", has timeout
+      - Host may have different IP addresses at different times
+  - Domain Name System (DNS)
+    - Distributed Administrative Control
+      - Hierarchical name space divided into zones
+      - Distributed over a collection of DNS servers
+    - Hierarchy of DNS Servers
+      - Root servers
+      - Top-level domain (TLD) servers
+      - Authoritative DNS servers
+    - Performing the Translations
+      - Local DNS servers
+      - Resolver software
+    - DNS Root Servers
+      - 13 root servers
+        - Labeled A through M
+        - Default servers that know where the rest of the servers are
+    - Using DNS
+      - Local DNS Server ("default name server")
+        - Usually near the end hosts who use it
+        - Local hosts configured with local server (e.g., `/etc/resolv.conf`) or learn the server via DHCP
+      - Client Application
+        - Extract server name (e.g., from the URL)
+        - Do `gethostbyname()` to trigger resolver code
+      - Server Application
+        - Extract client IP address from socket
+        - Optional `gethostbyaddr()` to translate into name
+    - Akamai: Fake out DNS to find "closest" copy of service
+      - Finding the closest server
+    - Reliability
+      - DNS servers are replicated
+        - Name service available if at least one replica is up
+        - Queries can be load balanced between replicas
+      - UDP used for queries
+        - Need reliability: must implement this on top of UDP
+        - Try alternate servers on timeout
+        - Exponential backoff when retrying same server
+      - Cache responses to decrease load
+        - Both at end hosts and local servers
+  - Private Address Space
+    - Sometimes you can't get/don't want IP addresses
+      - An organization wants to change service providers without having to renumber its entire network
+      - A network may be unable to obtain (or cannot afford) enough IP addresses for all of its hosts
+        - Recall IP address depletion
+    - IP provides private address space anyone can use
+      - `10/8`, `192.168/16`, `172.16.0/20`
+      - These addresses are not routable – Internet routers should drop packets destined to these so-called bogons
+    - What good are they if they can't use them on the Internet?
+  - Network Address Translation
+    - Gateway router can rewrite IP addresses as packets leave or enter a given network
+      - i.e., replace private addresses with public ones
+      - Router needs to see and update every packet
+    - Maintains a mapping of private-to-public addresses
+      - Simple case is a one-to-one mapping
+      - Anytime network changes provider, just update mapping table
+      - In more clever scenarios, can map a set of private addresses to a smaller set of public addresses
+      - In the extreme, map the entire private network to one public IP
+    - IP Masquerading
+      - AKA Network Address and port Translation (NApT), Port Address Translation (PAT), or, colloquially, just NAT
+      - Entire local network uses just one IP address as far as outside world is concerned:
+        - Can change addresses of devices in local network without notifying outside world
+        - Can change ISP without changing addresses of devices in local network
+        - Devices inside local net not explicitly addressable, visible by outside world (a security plus)
+    - NAT Challenges
+      - End hosts may not be aware of external IP address
+        - Some applications include IP addresses in application data
+        - Many NATs will inspect/rewrite certain protocols, e.g., FTP
+      - NAT'd end hosts are not reachable from the Internet
+        - All connections must be initiated from within private network
+        - Many protocols for NAT traversal to get around this
+    - NAT: What's the Trick?
+      - How can we communicate with multiple hosts in a private network using 1 public IP?
+        - Hack: we use the TCP port numbers to disambiguate
+        - So we are extending IP space from 32 to 32 + 32 = 64
+      - But, like all hacks, it causes issues (challenges)
+        - Right solution is IPv6, 128-bit addresses
+          - Enough for everyone and their devices without hacks like NAT
+          - IPv6 development increasing
+          - Big pushes in Japan/India
+
+  - Summary
+    - IP to MAC address Mapping
+      - Dynamic Host Configuration Protocol (DHCP)
+      - Address Resolution Protocol (ARP)
+    - Domain Name System
+      - Distributed, hierarchical database
+      - Distributed collection of servers
+      - Caching to improve performance
+      - Hacks like Akamai to find "closest" service
 
 
 
