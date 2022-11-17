@@ -2202,6 +2202,12 @@
 
 
 
-## Lecture 15:
+## Lecture 15: Naming
+
+- 
+
+
+
+## Lecture 16:
 
 - 
