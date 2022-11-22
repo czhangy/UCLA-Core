@@ -62,7 +62,7 @@ Your router will route real packets between emulated hosts in a single-router to
           |                      |                |                   +-----------+
           |                      |                |                  server2-eth0
           +----------------------+                +----------------+ 172.64.3.10/16
-    
+
 
 The corresponding routing table for the SimpleRouter `sw0` in this default topology:
 
@@ -71,7 +71,7 @@ The corresponding routing table for the SimpleRouter `sw0` in this default topol
     0.0.0.0      10.0.1.100   0.0.0.0          sw0-eth3
     192.168.2.2  192.168.2.2  255.255.255.0    sw0-eth1
     172.64.3.10  172.64.3.10  255.255.0.0      sw0-eth2
-    
+
 
 Do not hardcode any IP addresses, network, or interface information. We will be testing your code on other single-router topologies with different number of servers and clients, and different IP and network addresses.
 
@@ -85,7 +85,6 @@ If your router is functioning correctly, all of the following operations should 
           ...
           mininet> client ping 10.0.1.1
           ...
-        
     
 *   `ping` from the client to any of the app servers:
     
@@ -93,7 +92,6 @@ If your router is functioning correctly, all of the following operations should 
           ...
           mininet> client ping server2  # or client ping 172.64.3.10
           ...
-        
     
 *   `traceroute` from the client to any of the router’s interfaces:
     
@@ -103,7 +101,6 @@ If your router is functioning correctly, all of the following operations should 
           ...
           mininet> client traceroute 10.0.1.1
           ...
-        
     
 *   Tracerouting from the client to any of the app servers:
     
@@ -136,7 +133,7 @@ The starter code will provide you with a [raw Ethernet frame](https://en.wikiped
     |                                                               |
     |                                                               |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    
+
 
 Note that actual Ethernet frame also includes a 32-bit Cyclical Redundancy Check (CRC). In this project, you will not need it, as it will be added automatically.
 
@@ -153,7 +150,7 @@ For your convenience, the starter code defines Ethernet header as an `ethernet_h
       uint8_t  ether_shost[ETHER_ADDR_LEN]; /* source ethernet address */
       uint16_t ether_type;                  /* packet type ID */
     } __attribute__ ((packed)) ;
-    
+
 
 **Requirements**
 
@@ -193,7 +190,7 @@ Note that ARP requests are sent to the broadcast MAC address (`FF:FF:FF:FF:FF:FF
         ~                  Destination protocol address                 ~
         |                                                               |
         +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    
+
 
 *   `Hardware Type`: `0x0001` (Ethernet)
     
@@ -222,7 +219,7 @@ For your convenience, the starter code defines the ARP header as an `arp_hdr` st
       unsigned char   arp_tha[ETHER_ADDR_LEN]; /* target hardware address      */
       uint32_t        arp_tip;                 /* target IP address            */
     } __attribute__ ((packed)) ;
-    
+
 
 **Requirements**
 
@@ -271,7 +268,7 @@ For your convenience, the starter code defines the ARP header as an `arp_hdr` st
         |                                                               |
         |                                                               |
         +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    
+
 
 For your convenience, the starter code defines the IPv4 header as an `ip_hdr` structure in `core/protocol.hpp`:
 
@@ -288,7 +285,7 @@ For your convenience, the starter code defines the IPv4 header as an `ip_hdr` st
       uint16_t ip_sum;                 /* checksum */
       uint32_t ip_src, ip_dst;         /* source and dest address */
     } __attribute__ ((packed));
-    
+
 
 **Requirements**
 
@@ -300,7 +297,7 @@ For your convenience, the starter code defines the IPv4 header as an `ip_hdr` st
     *   For (1), packets should be discarded.
         
     *   For (2), your router should use the longest prefix match algorithm to find a next-hop IP address in the routing table and attempt to forward it there
-        
+    
 *   For each forwarded IPv4 packet, your router should correctly decrement TTL and recompute the checksum.
     
 ### Access Control List
@@ -388,13 +385,13 @@ To run your router, you will need to run in parallel two commands: Mininet proce
           #
           make
           ./router
-        
+    
     
     Note If after start of the router, you see the following message
     
           Resetting SimpleRouter with 0 ports
           Interface list empty
-        
+    
     
     You should start or restart Mininet process. The expected initial output should be:
     
@@ -429,7 +426,7 @@ Here is the overal structure of the starter code:
     |            |      |              |   |           |    |           |
     +------------+      +--------------+   +-----+-----+    +-----------+
      arp-cache.hpp      routing-table.hpp  acl-table.cpp    core/interface.hpp
-    
+
 
 *   `SimpleRouter`
     
@@ -461,7 +458,6 @@ Your router receives a raw Ethernet frame and sends raw Ethernet frames when sen
            */
           void
           SimpleRouter::handlePacket(const Buffer& packet, const std::string& inIface);
-        
     
 *   Implemented Method to send raw Ethernet frames (`simple-router.hpp|cpp`):
     
@@ -470,7 +466,6 @@ Your router receives a raw Ethernet frame and sends raw Ethernet frames when sen
            */
           void
           SimpleRouter::sendPacket(const Buffer& packet, const std::string& outIface);
-        
     
 *   Need to implement Method to handle ARP cache events (`arp-cache.hpp|cpp`):
     
@@ -480,7 +475,6 @@ Your router receives a raw Ethernet frame and sends raw Ethernet frames when sen
            */
           void
           ArpCache::periodicCheckArpRequestsAndCacheEntries();
-        
     
 *   Need to implement Method to lookup entry in the routing table (`routing-table.hpp|cpp`):
     
@@ -490,7 +484,7 @@ Your router receives a raw Ethernet frame and sends raw Ethernet frames when sen
            */
            RoutingTableEntry
            RoutingTable::lookup(uint32_t ip) const;
-        
+    
     
 
 ### Debugging Functions
@@ -511,17 +505,17 @@ We have provided you with some basic debugging functions in `core/utils.hpp` (`c
 You can use Mininet to monitor traffic that goes in and out of the emulated nodes, i.e., router, server1 and server2. For example, to see the packets in and out of `server1` node, use the following command in Mininet command-line interface (CLI):
 
     mininet> server1 sudo tcpdump -n -i server1-eth0
-    
+
 
 Alternatively, you can bring up a terminal inside `server1` using the following command
 
     mininet> xterm server1
-    
+
 
 then inside the newly opened `xterm`:
 
     $ sudo tcpdump -n -i server1-eth0
-    
+
 
 ### Length of Assignment
 
@@ -562,7 +556,7 @@ To submit your project, you need to prepare:
     To create the submission, **use the provided Makefile** in the starter code. Just update `Makefile` to include your UCLA ID and then just type
     
          make tarball
-        
+    
     Then submit the resulting archive to Gradescope.
     
 
@@ -596,7 +590,7 @@ Grading
     *   1.7. (10 pts) Ping from client a non-existing IP, router sends proper ARP requests (+ no segfaults)
         
     *   1.8. (3 pts) Ping from client, receive host unreachable message
-        
+    
 2.  Traceroute tests
     
     *   2.1. (10 pts) Traceroute from client to all other hosts, including a non-existing host
@@ -606,12 +600,13 @@ Grading
     *   2.3. (10 pts) Traceroute from server2 to all other hosts, including a non-existing host
         
     *   2.4. (2 pts) Traceroute from client to router’s interfaces (get 1 line)
-        
+    
 3. ACL Tests
     *   3.1. (10 pts) Pings from client to serverX where packet is allowed to be forwarded according to ACL. Check logs to see if correct ACL rule has been applied.
 
     *   3.2 (5 pts) Pings from client to serverX where packet is NOT allowed to be forwarded according to ACL. Check logs to see if correct ACL rule has been applied
         
+
 Note that the router should work in other single-router network topologies / with different routing tables
 
 Acknowledgement
