@@ -2436,4 +2436,141 @@
 
 ## Lecture 16: Transition to Transport
 
+- Overview
+  - Process naming/demultiplexing
+  - User Datagram Protocol (UDP)
+  - Transport Control Protocol (TCP)
+    - Three-way handshake
+    - Flow control
+- Basic Transport Questions
+  - What function does a transport provide?
+    - Provides an in-order, reliable, bytestream
+  - What is a connection?
+    - State kept at sender *and* receiver and a link between them using a common ID
+  - Why not have just one connection for all data?
+    - We don't want one slow process to slow down others
+  - Why not keep connections up always?
+    - Too expensive
+  - How do we address the receiving process in the receiver machine?
+    - OS names are too OS-specific, need a generic name: ports
+- Transport Layer Tasks
+  - Multiplexing (UDP does only this, so does TCP)
+  - Reliability (TCP only)
+  - Flow control (TCP only)
+  - Congestion control (TCP only)
+- Naming Processes/Services
+  - Process here is an abstract term for your Web browser (HTTP), email servers (SMTP), hostname translation (DNS), etc.
+  - How do we identify for remote communication?
+    - Process ID or memory address are OS-specific and transient
+  - So TCP and UDP use **ports**
+    - 16-bit integers representing mailboxes that processes "rent"
+    - Identify process uniquely as `(IP address, protocol, port)`
+  - Picking Port Numbers
+    - We still have the problem of allocating port numbers
+      - What port should a Web server use on host `X`?
+      - To what port should you send to contact that Web server
+    - Servers typically bind to *well-known* port numbers
+      - e.g., HTTP 80, SMTP 25, DNS 53, etc.
+        - Look in `/etc/services/`
+      - Ports below 1024 traditionally reserved for well-known services
+    - Clients use OS-assigned temporary (**ephemeral**) ports
+      - Above 1024, recycled by OS when client finished
+- User Datagram Protocol (UDP)
+  - Provides *unreliable message delivery* between processes
+    - What does it do? => multiplexing
+    - Source port filled in by OS as message is sent
+    - Destination port identifies UDP delivery queue at endpoint
+  - Connectionless (no state about who talks to whom)
+  - UDP Checksum
+    - UDP includes optional protection against errors
+      - Checksum intended as an end-to-end check on delivery
+      - So it covers data, UDP header, and IP pseudo-header
+  - Applications for UDP
+    - Streaming media (e.g., live video)
+    - DNS (Domain Name Service)
+    - NTP (Network Time Protocol) (synchronizing clocks)
+    - FPS multiplayer games (e.g., CoD)
+    - Why might UDP be appropriate for these
+- Transmission Control Protocol (TCP)
+  - Reliable bidirectional **bytestream** between processes
+    - Uses a sliding window protocol for efficient transfer
+  - Connection-oriented
+    - Conversation between two endpoints with a beginning and end
+  - Flow control (generalization of sliding window)
+    - Prevents sender from overrunning receiver buffers
+    - Tells sender how much buffer is left at receiver
+  - Congestion control
+    - Prevents sender from overrunning network capacity
+  - TCP is a Reliable Data Link
+    - Remember we said that when we did reliable data links that TCP would be similar (but end-to-end)
+      - This is where we "cash in" for all the hard work we did in sliding windows, go back N, restart protocols, etc.
+    - As a first approximation, TCP takes the bytes the user writes to the queue, packages them in segments, adds a sequence number, and does go back N
+    - But, there are differences we need to understand
+  - Differences between Data Link Reliability and TCP
+    - Network instead of single FIFO link
+      - Packets can be delayed for large amounts of time
+      - Duplicates can be created by packet looping: delayed duplicates imply need for larger sequence numbers
+      - Packets can be reordered by route changes
+    - Connection management
+      - Only done for a data link when a link crashes/comes up
+      - Lots of clients dynamically requesting connections
+      - HDLC didn't work: here there is more at stake, so we have to do it right
+    - Data link only needs speed matching between receiver and sender (flow control)
+      - Here, we also need speed matching between sender and network (congestion control)
+    - Transport needs to dynamically calculate round-trip delay to set retransmit timers
+  - Three-Way Handshake
+    - Opens both directions for transfer
+    - Nonce proposes initial sequence number
+    - Exchange of SYN + ACKs before data can be communicated
+    - We could abbreviate this setup, but it was chosen to be robust, especially against delayed duplicates
+    - Choice of changing initial sequence numbers (ISNs) minimizes the chance of hosts that crash getting confused by a previous incarnation of a connection
+    - How to choose ISNs?
+      - Maximize period between reuse
+      - Minimize ability to guess (why?)
+  - How do we Disconnect?
+    - Need timers anyway to get rid of connection state to dead nodes
+    - However, timer should be large so that "keepalive" hello overhead is low
+    - If communication is working, would prefer graceful closing (so receiver process knows quickly) to long times
+    - Hence, 3-phase disconnect handshake
+      - After sending disconnect and receiving disconnect ack, both sender and receiver set short timers
+    - The `TIME_WAIT` state
+      - We wait `2 * MSL` (maximum segment lifetime) before completing the close
+      - `ACK` might have been lost and so `FIN` will be resent
+        - Could interfere with a subsequent connection
+      - Real life: abortive close
+        - Don't wait for `2 * MSL`, just send reset packet (`RST`)
+  - Reliable Delivery
+    - Usual sequence numbers, except:
+      - Very large to deal with out of order (modulus > `2W` etc., only works on FIFO links)
+      - TCP numbers bytes not segments: allows it to change packet size in the middle of a connection
+      - The sequence numbers don't start with 0, but with an ISN
+    - Reliable mechanisms similar, except:
+      - TCP has a quicker way to react to lost messages
+      - TCP does a crude form of selective reject, not go-back-N
+      - TCP does flow control by allowing a dynamic window, which receiver can set to reduce traffic rate
+    - Recall: Go-Back-N
+      - Retransmit all packets from point of loss
+        - Packets sent after loss event are ignored (i.e., sent again)
+    - Deciding When to Retransmit
+      - How do you know when a packet has been lost?
+        - Ultimately, sender users timers to decide when to retransmit
+      - But how long should the timer be?
+        - Too long: inefficient (large delays, poor use of bandwidth)
+        - To short: may retransmit unnecessarily, causing extra traffic
+      - Right timer is based on the **round-trip time** (RTT)
+        -  Which can vary greatly, so we need to measure
+        - But OS granularity makes it large (ms)
+        - So we need another trick for common case error recovery
+    - TCP Trick: Fast Retransmit
+      - Don't bother waiting
+        - Receipt of duplicate acknowledgement indicates loss
+        - Retransmit immediately
+      - Used in TCP
+        - Need to be careful if frames can be reordered
+        - Today's TCP identifies a loss if there are *three* duplicate acks in a row
+
+
+
+## Lecture 17:
+
 - 
