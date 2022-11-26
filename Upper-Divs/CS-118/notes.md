@@ -2571,6 +2571,246 @@
 
 
 
-## Lecture 17:
+## Lecture 17: TCP Congestion Control
+
+- Flow vs. Congestion Control
+
+  - Flow control: matching the speed of the sender to the receiver's speed
+    - Windows provide static flow control
+      - Can provide dynamic flow control if receiver ACKs indicate the *lower* and *upper* window edge
+    - Need to avoid *deadlock* if window is reduced to 0 and then increase to `c > 0`
+      - In OSI, receiver keeps sending `c`
+      - In TCP, sender periodically probes an empty window
+  - Congestion control: matching the speed of the sender to the network's speed
+
+- Why Congestion Control is Needed
+
+  - When the link from `S` to the first router was upgraded from 19.2 Kbps to 1 Mbps, the time for a file transfer went up from a few seconds to a few hours
+    - First router drops packets due to fast receiving speed relative to slow sending speed
+    - Sender slowed down to a crawl after too many dropped packets
+  - This happened in an experiment in Dec. in the 1980s
+    - Showed the need for congestion control (DECbit)
+  - Very similar experiences in Internet led Van Jacobson to propose TCP congestion control
+
+- TCP Congestion Control Summary
+
+  - Optimal to send at the rate of the bottleneck in the network
+  - If we can reduce the window size of the sender, we can effectively reduce the rate that it sends at
+    - `cwnd` starts off slow in a process called slow start
+      - Starts by sending one segment, when it gets an ack, it doubles the window size => exponential increase
+      - Conservative
+    - At some threshold, TCP begins to increase the window size linearly instead of exponentially
+    - If packets are dropped, the window size cuts in half => fast transmit
+      - Signified by 3 duplicate acks
+      - Goes back to linear increase afterwards
+      - Ideally, we stay in this phase of congestion control
+    - If a lot of packets are dropped, we get a full-scale timeout, causing `cwnd` to start back at 1 segment
+
+  - How fast should a send host transmit data?
+    - Not too fast, not too slow
+  - Should not be faster than the sender's share
+    - Other senders on the same link
+    - Bandwidth allocation
+  - Should not be faster than the network can process
+    - Congestion control
+  - Congestion control and bandwidth allocation are separate ideas, but frequently combined
+
+- Fair Bandwidth Allocation
+  - How much bandwidth should each *flow* from a source to a destination received when they compete for resources?
+    - What is a "fair" allocation?
+  - If some sources cannot use certain allocations, take the rest of the available bandwidth and divide it amongst those that can
+
+- Congestion
+  - A router's buffer is intended to absorb bursts when the input rate is greater than the output rate
+  - If the sending rate is persistently higher than the drain rate, a queue builds up
+  - Dropped packets represent wasted work: goodput is less than throughput
+  - Uncontrolled Congestion?
+    - As network load increases, the throughput decreases, plateaus, and ultimately tanks back to 0 during congestion collapse
+    - Meanwhile, the latency increases exponentially
+    - Why Congestion Collapse Can Occur
+      - All packets go one hop and get dropped because of congestion
+      - No packets make progress => goodput goes to 0
+      - Livelock
+      - When an increase in network load produces a decrease in useful work
+      - Why does it happen?
+        - Sender sends faster than the *bottleneck link* speed
+        - Packets queue until dropped
+        - In response to packets being dropped, the sender retransmits
+        - All hosts repeat in steady state
+  - Mitigation Options
+    - Increase network resources
+      - More buffers for queuing
+        - Postpones the problem
+      - Increase link speed
+        - Cannot account for all possible routes
+    - Reduce network load (TCP strategy)
+      - Send data more slowly
+      - How much more slowly?
+      - When to slow down?
+  - Designing a Control Scheme
+    - Open loop
+      - Explicitly reserve bandwidth in the network in advance
+    - Closed loop (TCP strategy)
+      - Respond to feedback and adjust bandwidth allocation
+    - Network-based
+      - Network implements and enforces bandwidth allocation
+    - Host-based (TCP strategy)
+      - Hosts are responsible for controlling their sending rate
+  - Feedback Congestion Control
+    - Steps:
+      - Detect congestion
+      - Feedback information to the source
+      - Source adjusts window: increase/decrease policy
+    - Two interesting cases:
+      - How a source reaches steady state
+        - When linear increases enter fast transmission
+      - How a source reacts to a new source to provide a fair allocation
+        - Halving at fast retransmission => larger shares drop by a larger absolute amount, allowing sources to converge
+    - Congestion avoidance vs. congestion control
+      - Congestion avoidance: try to stay to the left of the knee
+        - When the throughput begins to plateau
+      - Congestion control: try to stay to the left of the cliff
+      - When the throughput rapidly decreases in congestion collapse
+  - Detecting Congestion
+    - Explicit congestion signaling
+      - Source quench: ICMP message from router to sender
+      - DECbit/Explicit Congestion Notification (ECN)
+        - Router *marks* packet based on queue occupancy (i.e., indication that packet encountered congestion along the way)
+        - Receiver tells sender if queues are getting too full
+    - Implicit congestion signaling
+      - Packet loss
+        - Assume congestion is primary source of packet loss
+        - Lost packets indicate congestion
+      - Packet delay
+        - Round-trip time increases as packets queue
+        - Packet inter-arrival time is a function of bottleneck link
+  - Throttling Options
+    - Window-based (TCP)
+      - Constrain number of outstanding packets allowed in network
+      - Increase window to send faster; decrease to send slower
+      - Pros:
+        - Cheap to implement
+        - Good failure properties
+      - Con:
+        - Creates traffic *bursts* (requires bigger buffers)
+    - Rate-based (many streaming media protocols, BBR)
+      - Two parameters: `(period, packets)`
+      - Allow sending of `x` packets in period `y`
+      - Pro:
+        - Smooth traffic
+      - Con:
+        - Fine-grained per-connection timers => what if receiver fails?
+  - Choosing a Send Rate
+    - Ideally, keep equilibrium at "knee" of power curve
+      - Find "knee" somehow
+      - Keep number of packets "in flight" the same
+      - Don't send a new packet into the network until you know one has left (i.e., by receiving an ack)
+      - What if you guess wrong, or if the bandwidth availability changes?
+    - Compromise: adaptive approximation
+      - If congestion is signaled, reduce sending rate by `x`
+      - If data is delivered successfully, increase sending rate by `y`
+      - How to relate `x` and `y`? Most choices don't converge
+  - TCP's Probing Approach
+    - Each source independently probes the network to determine how much bandwidth is available
+      - Changes over time, since everyone does this
+    - Assume that packet loss implies congestion
+      - Since errors are rate; also, requires no support from routers
+- Basic TCP Algorithm
+  - Window-based congestion control
+    - Unified congestion control and flow control mechanism
+    - `rwin`: advertised flow control window from receiver
+    - `cwnd`: congestion control window
+      - Estimate of how much outstanding data network can deliver in a round-trip time
+    - Sender can only send `min(rwin, cwnd)` at any time
+  - Idea: decrease `cwnd` when congestion is encountered, increase `cwnd` otherwise
+    - Question: how much to adjust?
+  - Congestion Avoidance
+    - Goal: adapt to changes in available bandwidth
+    - Additive Increase, Multiplicative Decrease (AIMD)
+      - Increase sending rate by a constant (e.g., MSS)
+      - Decrease sending rate by a linear factor (e.g., divide by 2)
+    - Rough intuition for why multiplicative is good
+      - One source reaches steady state window of 24
+      - New source comes up and starts with window of 1
+      - When both increase and detect congestion, first source cuts to 12 and other to 1
+        - Eventually, they equalize => fairness!
+  - Slow Start
+    - Goal: quickly find the equilibrium sending rate
+    - Quickly increase sending rate until congestion detected
+      - Remember last rate that worked and don't overshoot it
+    - TCP Reno Algorithm:
+      - On new connection, or after timeout, set `cwnd = 1 MSS`
+      - For each segment acknowledged, increment `cwnd` by `1 MSS`
+      - If timeout, then divide `cwnd` by 2, and set `ssthresh = cwnd`
+      - If `cwnd >= ssthresh`, then exit slow start
+  - Fast Retransmit and Recovery
+    - Fast retransmit
+      - Timeouts are slow (default often 200ms or 1s)
+      - When packet is lost, receiver still acks last in-order packet
+      - Use 3 duplicate acks to indicate a loss, detect losses quickly
+    - Fast recovery
+      - Goal: avoid stalling after loss
+      - If there are still acks coming in, then no need for slow start
+      - If a packet has made it through => we can send another one
+      - Divide `cwnd` by 2 after fast retransmit
+      - Increment `cwnd` by `1 MSS` for each additional duplicate ack
+- TCP Issues
+  - Short Connections
+    - Short connection: only contains a few packets
+    - How do short connections and slow start interact?
+      - What happens when a packet is lost during slow start?
+        - Doesn't increase back as fast
+      - What happens when a SYN is dropped?
+        - Long timeout
+    - Bottom line: which packet gets dropped matters a lot
+      - SYN vs. slow start vs. congestion avoidance
+    - Do you think most flows are short or long?
+      - Many flows are short today
+    - Do you think most traffic is in short flows or long flows?
+  - Open Issues
+    - TCP is designed around the premise of cooperation
+      - What happens to TCP if it competes with a UDP flow?
+      - What if we divide `cwnd` by 3 instead of 2 after a loss
+    - There are a bunch of magic numbers
+      - Decrease by 2, 2 duplicate ACKs, initial timeout of 3s, etc.
+    - Overall, it works very well
+      - Still being constantly tweaked
+- TCP Congestion Control Summary
+  - TCP probes the network for bandwidth, assuming that loss signals congestion
+  - The congestion window is managed with additive increase/multiplicative decrease policy
+    - It took fast retransmit and fast recovery to get there
+    - Fast recovery keeps pipe "full" while recovering from a loss
+  - Slow start is used to avoid lengthy initial delays
+    - Ramp up to near target rate, then switch to AIMD
+- TCP + Router Scheduling
+  - So far, we've done flow-based *traffic policing*
+    - Limit the rate of one flow regardless of the load in the network
+  - In general, need *scheduling at routers as well*
+    - Dynamically allocate resources when multiple flows compete
+    - Give each "flow" (or traffic class) its own queue (at least theoretically)
+  - Weighted fair scheduling
+    - Schedule round-robins among queues in proportion to some weight parameter => deficit round robin
+  - Why Routers Also Do Random Early Detect
+    - Why would a router drop a perfectly good packet, even if it has buffer space?
+      - As an early form of congestion warning if one doesn't have a congestion bit
+- More New Ideas
+  - TCP builds large queues
+    - DCTCP uses ECN, but counts how often ECN is set and so can cut window proportionally
+  - HTTP pipelining: to reduce latency, browser opens up multiple connections
+    - Still slow over TCP
+  - QUIC: layered below HTTP and above TCP, place multiple streams in a single connection
+    - Finesses slow start
+    - Loss on one stream doesn't interrupt other stream
+    - *Shares congestion among streams*
+- Lecture Summary
+  - Unlike a reliable data link, we also need to match speed of sender to receiver *and* the whole network
+  - TCP increases and decreases its window using slow start + AIMD, decreasing on loss or ECN
+  - Needs to be accompanied by router scheduling mechanisms like DDR and RED/ECN setting
+  - TCP fluctuates too much
+    - New protocols like DCTCP and Google's BBR adjust more smoothly
+
+
+
+## Lecture 18:
 
 - 
