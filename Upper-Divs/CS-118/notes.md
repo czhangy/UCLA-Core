@@ -60,7 +60,7 @@
       - Time scale is closer to being on the order of milliseconds
 - Layering More Formally
   - Layering
-    - Recall that in the Hazel's Hats analogy, we simplified a complex task (transferring hats) by outsourcing reliable transmission to an import-export agency who in turn outsourced package delivery to the post office who in turn oursourced single-hop package transmission to a carrier, etc.
+    - Recall that in the Hazel's Hats analogy, we simplified a complex task (transferring hats) by outsourcing reliable transmission to an import-export agency who in turn outsourced package delivery to the post office who in turn outsourced single-hop package transmission to a carrier, etc.
     - Similarly, in networking, an email transfer is simplified by subcontracting reliable delivery to transport like TCP who subcontracts packet delivery to the network layer who subcontracts to the data link etc.
     - This division of labor in networking is called layering; each horizontal slice (layer) is given a number, starting with 1 for physical, 2 for data link. etc.
       - While TCP only uses the bottom 4 layers, the most general model is the OSI/ISO model
@@ -181,7 +181,7 @@
 
     - Sine Waves
 
-      - Sine waves are spvial because all signals can be rewritten in terms of sine waves
+      - Sine waves are special because all signals can be rewritten in terms of sine waves
 
       - Mathematically:
 
@@ -197,7 +197,7 @@
 
       - Express angle in radians!
 
-    - Fournier Analysis: The Big Picture
+    - Fourier Analysis: The Big Picture
 
       - If we forget about noise, most channels are "nice" to sine waves
         - A sine wave of frequency `f` is always scaled by a fixed factor `s(f)` and phase shifted by a fixed amount `p(f)`, regardless of amplitude
@@ -311,7 +311,7 @@
 
   - Sampling Bits
 
-    - Receivers recover the bits in the input signal by ssmpling output signal close to middle of bit period
+    - Receivers recover the bits in the input signal by sampling output signal close to middle of bit period
     - Two limits to bit rate: channel bandwidth (Nyquist) and noise (Shannon)
 
   - Main Topic
@@ -335,7 +335,7 @@
     - Example: parse: "nohewontgosoon"
       - Need spaces and punctuations to parse speech
     - Stream of bits without transitions (change in signal value) is equally hard to parse
-    - Real data may contain all `0`s, so how w can you ensure transitions?
+    - Real data may contain all `0`s, so how can you ensure transitions?
       - Coding => adds cost
     - Code to ensure that every `n` bits, you get at least `m` transitions
       - Different coding schemes parameterized by `m` and `n`
@@ -492,7 +492,7 @@
 
 - Review: Where is the Physical Layer
 
-  - Roughly, what happens which I click on a webpage?
+  - Roughly, what happens when I click on a webpage?
     - Web request => turn click into HTTP request
     - Name resolution => check DNS for where the webpage is
     - Data transport => break message into packets/TCP segments
@@ -602,9 +602,9 @@
       - May be cheaper than installing cable
       - Reasonable bandwidth
       - Has problems with rain
-      - Up to 100km distance
+      - Up to 100 km distance
     - Geosync Satellite
-      - Avoides right of way
+      - Avoids right of way
       - Good bandwidth
         - Limited from larger bandwidth due to limited sky space
       - Worldwide span
@@ -618,15 +618,15 @@
 
 - Media Pros and Cons
 
-  - | Medium       | Speed             | Distance Span | Pros                           | Cons                          |
-    | ------------ | ----------------- | ------------- | ------------------------------ | ----------------------------- |
-    | Twisted Pair | 1Mbps-1Gbps       | 1-2km         | Cheap, easy to install         | Low distance                  |
-    | Digital Coax | 10-100Mbps        | 1-2km         | Broadcast                      | Hard to install in a building |
-    | Analog Coax  | 100-500Mbps       | 100km         | Cable companies use it now     | Expensive amplifiers          |
-    | Fiber        | Terabits          | 100km         | Security, low noise, bandwidth | No broadcast, needs digging   |
-    | Microwave    | 10-100Mbps        | 100km         | Bypass, no right of way need   | Fog outages                   |
-    | Satellite    | 100-500Mbps       | Worldwide     | Cost independent of distance   | 250ms delay, antenna size     |
-    | RF/Infrared  | 1-100Mbps/ <4Mbps | 1km/3m        | Wireless                       | Obstacles for infrared        |
+  - | Medium       | Speed               | Distance Span | Pros                           | Cons                          |
+    | ------------ | ------------------- | ------------- | ------------------------------ | ----------------------------- |
+    | Twisted Pair | 1 Mbps-1 Gbps       | 1-2 km        | Cheap, easy to install         | Low distance                  |
+    | Digital Coax | 10-100 Mbps         | 1-2 km        | Broadcast                      | Hard to install in a building |
+    | Analog Coax  | 100-500 Mbps        | 100 km        | Cable companies use it now     | Expensive amplifiers          |
+    | Fiber        | Terabits            | 100 km        | Security, low noise, bandwidth | No broadcast, needs digging   |
+    | Microwave    | 10-100 Mbps         | 100 km        | Bypass, no right of way need   | Fog outages                   |
+    | Satellite    | 100-500 Mbps        | Worldwide     | Cost independent of distance   | 250 ms delay, antenna size    |
+    | RF/Infrared  | 1-100 Mbps/ <4 Mbps | 1 km/3 m      | Wireless                       | Obstacles for infrared        |
 
 - Problems in All Layers
 
@@ -721,7 +721,7 @@
 
 - Stuffing Design by Sublayering
   - Frame => Stuffer => Add flags => Physical layer => Remove flags => Destuffer
-  - Sublayering is a good design technique within layers as well
+  - Sub-layering is a good design technique within layers as well
   - What happens if input data contains `01111110`? If the receiver gets `111110`?
 - Byte Stuffing
   - Same as bit stuffing, except at byte (character) level
@@ -743,7 +743,7 @@
   - Lower layers should not depend for correctness on assumptions about higher layers
   - All layers have some common problems to solve: e.g., synchronization, multiplexing
   - The best principles will/should be violated for pragmatic reasons
-  - Layering and sublayering are a good way to understand and design new protocols
+  - Layering and sub-layering are a good way to understand and design new protocols
 
 
 
@@ -879,7 +879,7 @@
   - The current remainder is held in a register initialized with the first `r` bits of the message
   - If the MSB of the current remainder is `1`, then XOR the current remainder with the divisor; if the MSB is `0`, then do nothing
   - Shift the current remainder 1 bit to the left and shift in the next message bit
-  - Faster to shift more bits at a time using a table of precomputed checksums
+  - Faster to shift more bits at a time using a table of pre-computed checksums
 
 - CRC: Polynomial View
 
@@ -1031,14 +1031,14 @@
 
     - Loss: first packet drops and second arrives
       - Must retransmit
-    - Duplication: packet is received, but sender resends before `ack` arrives
+    - Duplication: packet is received, but sender resends before ACK arrives
       - Must defend against early retransmits
     - Livelock: cannot throw away duplicates, as the data might have duplicates
       - Need sequence numbers
-      - If the `ack` fails, then the receiver is expecting the next sequence number, but the sender is stuck resending the first packet
-        - Must `ack` even duplicates
-    - Loss: receiver sent an `ack` for a a previous packet but was interpreted by a sender as an `ack` for a later packet
-      - Must number `ack`s
+      - If the ACK fails, then the receiver is expecting the next sequence number, but the sender is stuck resending the first packet
+        - Must ACK even duplicates
+    - Loss: receiver sent an ACK for a previous packet but was interpreted by a sender as an ACK for a later packet
+      - Must number ACKs
 
   - Going Deeper
 
@@ -1047,7 +1047,7 @@
     - Performance: send only one at a time, bad over satellites, can do better => sliding window
     - Initialization: how do we get started and synchronize sequence numbers in the face of crashes?
 
-  - Naive Code for Stop and Wait
+  - Naïve Code for Stop and Wait
 
     - Sender code:
 
@@ -1111,14 +1111,14 @@
 
   - Correctness Observations
 
-    - When sender first gets to `N`, no frames with `N` or `ack`s with `N + 1` and receiver is at `N`
+    - When sender first gets to `N`, no frames with `N` or ACKs with `N + 1` and receiver is at `N`
     - When receiver first receives frame `N`, entire system only contains number `N` => only two numbers in system
 
   - Band Invariant
 
     - Two bands of equal values `y = x` or `x = y + 1`
     - Prove invariant by checking a small number of state transitions
-      - 6 cases: retransmission, error, reception, receive `ack`, send `ack`, and send new frame
+      - 6 cases: retransmission, error, reception, receive ACK, send ACK, and send new frame
       - Just need to show that invariant is preserved by these 6 protocol actions/state transitions
 
 
@@ -1157,14 +1157,14 @@
 
   - Definitions
 
-    - Window: sender can send a *window* of outstanding frames before getting any `ack`s
+    - Window: sender can send a *window* of outstanding frames before getting any ACKs
       - Lower window edge `L` can send up to `L + w - 1`
     - Receiver numbers: receiver has a received sequence number `R`, which is the next number it expects
       - `L` and `R` are initially `0`
-    - Sender code: retransmits all frames in current window until it gets an `ack`
-      - `ack` numbered `r` implicitly acknowledges all numbers `< r`
+    - Sender code: retransmits all frames in current window until it gets an ACK
+      - ACK numbered `r` implicitly acknowledges all numbers `< r`
     - Two variants: receiver accepts frames in order only (go-back-`N`) or buffers out-of-order frames (selective reject)
-      - Selective reject sends back an `ack` with a list of out-of-order packets
+      - Selective reject sends back an ACK with a list of out-of-order packets
 
   - Code
 
@@ -1197,8 +1197,8 @@
           			Deliver data m to client
           
           Send (r, Ack) // Send ack with number r
-          	// Receivers typically send acks in response to data
-          	// 	messages, but our code can send acks anytime
+          	// Receivers typically send ACKs in response to data
+          	// 	messages, but our code can send ACKs anytime
           	r must equal R
           ```
 
@@ -1207,30 +1207,30 @@
       - Sender code:
 
         - ```
-          Sender keeps a lower window edge L initially 0 but also an array  with a bit set for all numbers acked so far. Initially, all bits are clear. In practice, we implement this array by a bitmap of size w which we shift.
+          Sender keeps a lower window edge L initially 0 but also an array  with a bit set for all numbers ACKed so far. Initially, all bits are clear. In practice, we implement this array by a bitmap of size w which we shift.
           
           Send (s, m) // Send data message m with number s
           	The sender can send this frame if:
           		m corresponds to s-th data item given to sender by client AND
           		L ≤ s ≤ L + w - 1 AND
-          		s has not been acked // New for selective reject
+          		s has not been ACKed // New for selective reject
           		
           Receive (r, List Ack) // Receive an ack number r with List of 														//		received numbers > r
           	On receipt:
           		L := r // slide lower window edge to ack number, mark numbers
-          						// in List as acked at sender
+          						// in List as ACKed at sender
           ```
 
       - Receiver code:
 
         - ```
-          Receiver keeps a receiver number R initially 0, but also an array with a bit set for all numbers received so far. Initially all bits are clear. In practice, we implement this array again by a bitmap of size w which we shift. In addition to the bit map, we have a buffer for each number where we can store out of order messages.
+          Receiver keeps a receiver number R initially 0, but also an array with a bit set for all numbers received so far. Initially all bits are clear. In practice, we implement this array again by a bitmap of size w which we shift. In addition to the bitmap, we have a buffer for each number where we can store out of order messages.
           
           Receive (s, m) // Receive data message m with number s
           	On receipt:
           		If s ≥ R then:
-          			Mark s as acked and buffer m
-          			While R acked do:
+          			Mark s as ACKed and buffer m
+          			While R ACKed do:
           				Deliver data message at position R
           				R := R + 1
           				
@@ -1243,10 +1243,10 @@
   - Implementation and Other Details
 
     - Timers: works regardless of values, but needed for performance
-      - So caclulate round-trip delay
+      - So calculate round-trip delay
       - Need only one timer (for lowest outstanding number) in go-back-`n`
       - Need one for each window element in selective reject
-    - In selective reject, have to send an `ack` with `R` and a bitmap of numbers greater than `R` that have been received
+    - In selective reject, have to send an ACK with `R` and a bitmap of numbers greater than `R` that have been received
     - Piggybacking: to reduce frames sent
 
   - How Big Should the Sequence Number Space Be?
@@ -1258,7 +1258,7 @@
   - Flow Control
 
     - Windows provide static flow control
-      - Can provide dynamic flow control if receiver `ack`s indicate what receiver will buffer
+      - Can provide dynamic flow control if receiver ACKs indicate what receiver will buffer
     - Flow control without error recovery
       - Credits
       - Rate control (sender does not send > `R` frames/sec)
@@ -1266,11 +1266,11 @@
 - Initializing Link Protocols
 
   - Naive Restarts
-    - Send a restart message => wait for `ack` to initialize sender and receiver
+    - Send a restart message => wait for ACK to initialize sender and receiver
     - Can be fooled by prior restarts
   - How to design a reliable initialization protocol
     - Non memory after crash: can do correctly if sender keeps even one bit that can survive a crash
-    - Determinism: can send restart messages with random numbers and only send data when numbers are `ack`ed
+    - Determinism: can send restart messages with random numbers and only send data when numbers are ACKed
       - High probability only
     - Message lifetimes: if no message can live on a link for more than `T` seconds, simply wait `T` seconds after a crash for all old messages to die out
 
@@ -1325,7 +1325,7 @@
   - Metcalfe knew about Aloha and new he could do better because of the smaller distance
   - 1500B frame involved in a collision
     - Ethernet aborts transmission after 64B
-    - Aloha will send the entire 1500B and detect the collision when `ack` is not received
+    - Aloha will send the entire 1500B and detect the collision when ACK is not received
     - Better for large frames and large frame sizes improve efficiency
 
   - No recovery from frame corruption (1 in a million)
@@ -1425,7 +1425,7 @@
 
     - Transmission range:
       - 300m outdoor, 30m indoor
-      - Maximum dat rate is ~10m indoor
+      - Maximum data rate is ~10m indoor
 
     - Frequency
       - Free 2.4GHz ISM-band
@@ -1616,7 +1616,7 @@
       - On/off are software states
       - Always receive hello and management messages on all ports
       - Drop data packets to/from off ports
-    - To be atree, each LAN must have a unique path to every other LAN
+    - To be a tree, each LAN must have a unique path to every other LAN
     - Algorithm guarantees that each LAN can get to the root only through the designated bridge for the LAN
       - Designated bridges have a unique path through their parent LAN
 
@@ -1809,7 +1809,7 @@
 
   - Need to understand how to forward packets using longest matching prefix (linear search is fine)
   - Need to understand how to implement ARP in your router
-  - Need to understnad how to implement ACLs using simple linear search
+  - Need to understand how to implement ACLs using simple linear search
   - To implement all this and ACLs, you need to understand all the fields in an IP packet, including the TCP header
 
 - Basic Packet Formats
@@ -2460,7 +2460,7 @@
   - Congestion control (TCP only)
 - Naming Processes/Services
   - Process here is an abstract term for your Web browser (HTTP), email servers (SMTP), hostname translation (DNS), etc.
-  - How do we identify for remote communication?
+  - How do we identify remote communication?
     - Process ID or memory address are OS-specific and transient
   - So TCP and UDP use **ports**
     - 16-bit integers representing mailboxes that processes "rent"
@@ -2535,7 +2535,7 @@
       - After sending disconnect and receiving disconnect ack, both sender and receiver set short timers
     - The `TIME_WAIT` state
       - We wait `2 * MSL` (maximum segment lifetime) before completing the close
-      - `ACK` might have been lost and so `FIN` will be resent
+      - ACK might have been lost and so `FIN` will be resent
         - Could interfere with a subsequent connection
       - Real life: abortive close
         - Don't wait for `2 * MSL`, just send reset packet (`RST`)
@@ -2567,7 +2567,7 @@
         - Retransmit immediately
       - Used in TCP
         - Need to be careful if frames can be reordered
-        - Today's TCP identifies a loss if there are *three* duplicate acks in a row
+        - Today's TCP identifies a loss if there are *three* duplicate ACKs in a row
 
 
 
@@ -2601,12 +2601,12 @@
       - Conservative
     - At some threshold, TCP begins to increase the window size linearly instead of exponentially
     - If packets are dropped, the window size cuts in half => fast transmit
-      - Signified by 3 duplicate acks
+      - Signified by 3 duplicate ACKs
       - Goes back to linear increase afterwards
       - Ideally, we stay in this phase of congestion control
     - If a lot of packets are dropped, we get a full-scale timeout, causing `cwnd` to start back at 1 segment
 
-  - How fast should a send host transmit data?
+  - How fast should a host transmit data?
     - Not too fast, not too slow
   - Should not be faster than the sender's share
     - Other senders on the same link
@@ -2746,11 +2746,11 @@
   - Fast Retransmit and Recovery
     - Fast retransmit
       - Timeouts are slow (default often 200ms or 1s)
-      - When packet is lost, receiver still acks last in-order packet
-      - Use 3 duplicate acks to indicate a loss, detect losses quickly
+      - When packet is lost, receiver still ACKs last in-order packet
+      - Use 3 duplicate ACKs to indicate a loss, detect losses quickly
     - Fast recovery
       - Goal: avoid stalling after loss
-      - If there are still acks coming in, then no need for slow start
+      - If there are still ACKs coming in, then no need for slow start
       - If a packet has made it through => we can send another one
       - Divide `cwnd` by 2 after fast retransmit
       - Increment `cwnd` by `1 MSS` for each additional duplicate ack
@@ -2808,9 +2808,3 @@
   - Needs to be accompanied by router scheduling mechanisms like DDR and RED/ECN setting
   - TCP fluctuates too much
     - New protocols like DCTCP and Google's BBR adjust more smoothly
-
-
-
-## Lecture 18:
-
-- 
