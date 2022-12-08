@@ -35,5 +35,5 @@
 |  Exam   | Score  |
 | :-----: | :----: |
 | Midterm | 89/100 |
-|  Final  |  ???   |
+|  Final  | 89/100 |
 
