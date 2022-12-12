@@ -3,8 +3,8 @@
 | Course                                                       |    Term    |  Professor  | Grade |
 | :----------------------------------------------------------- | :--------: | :---------: | :---: |
 | CS 111 - Operating Systems Principles                        | Spring '21 |  Eyolfson   |  A+   |
-| CS 118 - Computer Network Fundamentals                       |    Fall '22     |     Varghese     |  IP |
-| CS 130 - Software Engineering                                |    ???     |     ???     |  ???  |
+| CS 118 - Computer Network Fundamentals                       |    Fall '22     |     Varghese     | A+ |
+| CS 130 - Software Engineering                                |    Spring '23    |     ???     |  ???  |
 | CS 131 - Programming Languages                               | Winter '21 |   Eggert    |   A   |
 | CS M151B - Computer Systems Architecture                     | Winter '22 |   Reinman   |   A   |
 | CS M152A - Introductory Digital Design Laboratory            |  Fall '21  | Sarrafzadeh |  A+   |
