@@ -14,8 +14,8 @@
 | Course | Term | Grade |
 |:----|:---:|:---:|
 | CS 111 | Spring '21 | A+ |
-| CS 118 | Fall '22 | IP |
-| CS 130 | ??? | ??? |
+| CS 118 | Fall '22 | A+ |
+| CS 130 | Spring '23 | ??? |
 | CS 131 | Winter '21 | A |
 | CS M151B | Winter '22 | A |
 | CS M152A | Fall '21 |  A+  |
