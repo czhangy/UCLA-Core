@@ -2,7 +2,7 @@
 
 # Varghese - Fall '22
 
-## Overall: IP | Raw Percentage: 95.6%
+## Overall: A+ | Raw Percentage: 95.6%
 
 ## Grading:
 
