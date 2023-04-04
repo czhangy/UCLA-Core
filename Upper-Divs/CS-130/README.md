@@ -5,3 +5,24 @@
 ## Overall: IP | Raw Percentage: IP
 
 ## Grading:
+
+|  Category   | Percentage |
+| :---------: | :--------: |
+| Assignments |    70%     |
+|   Midterm   |    15%     |
+|    Final    |    15%s    |
+
+## Assigments
+
+| Assignment | Score |
+| :--------: | :---: |
+|    ???     |  ???  |
+|    ???     |  ???  |
+
+## Exams
+
+|  Exam   | Score |
+| :-----: | :---: |
+| Midterm |  ???  |
+|  Final  |  ???  |
+
