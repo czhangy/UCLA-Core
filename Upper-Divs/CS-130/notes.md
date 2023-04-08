@@ -171,9 +171,9 @@ Nothing to see here!
         	TEST(TestCaseName, TestName) {...} // A test
         	class FooTest : public ::testing::Test {...}; // A fixture
         	TEST_F(FooTest, Bar) { // A test using the fixture
-            EXPECT_TRUE(...);
-            ASSERT_TRUE(...)
-          }
+                EXPECT_TRUE(...);
+                ASSERT_TRUE(...)
+            }
         ```
 
       - `foo_test.cc` layout:
