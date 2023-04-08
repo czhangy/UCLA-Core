@@ -10,7 +10,7 @@
 | :---------: | :--------: |
 | Assignments |    70%     |
 |   Midterm   |    15%     |
-|    Final    |    15%s    |
+|    Final    |    15%     |
 
 ## Assigments
 
