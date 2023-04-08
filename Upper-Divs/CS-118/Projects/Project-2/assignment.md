@@ -322,7 +322,7 @@ An [Access Control List (ACL)](https://en.wikipedia.org/wiki/Access-control_list
 
 *   For each incoming packet, your router should check if any of the rules in the ACL apply to the packet (eg. check source/destination IP address, port, protocol, etc. against each entry in the ACL) and then perform the action described by the matched rule with the highest priority, if any exist. If no rules apply to the packet, then your router should just forward the packet as usual.
 
-*   When your router decides to drop a packet because of an ACL rule, it should log the ACL rule entry that causes the drop in file "./router-acl.log".
+*   When your router decides to drop a packet because of an ACL rule, it should log the ACL rule entry that causes the drop in file `./router-acl.log`.
 
 *   Sample ACL Log:
 
