@@ -429,7 +429,7 @@
       - Look up tables get too big if we try to go higher
     - Why transitions?
       - Because all 10-bit patterns with no transitions (`0000000000` and `1111111111`) are not used
-      - In fact, we can rule out even patterns with 1 transition as we have 1024 patterns to code a byte
+      - In fact, we can rule out even patterns with one transition as we have 1024 patterns to code a byte
     - Receiver decoding: a 1024 entry table that looks up the 8-bit data corresponding to each received 10-bit pattern
 
   - What Makes a Code Good?
