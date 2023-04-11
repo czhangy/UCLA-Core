@@ -205,10 +205,83 @@ Nothing to see here!
           }
           ```
 
-          
 
 
 
-## Lecture 3:
+## Lecture 3: Code Reviews
+
+- Main Idea
+  - The majority of the code you write at a company is building on someone else's code => code should be accessible to future developers
+  - Source code isn't valuable unless someone else can use it
+- Code Reviews
+  - Best proof of reusability is review
+  - For code intended for reuse:
+    - Give it to someone else and see if they appreciate it
+    - They should be able to merge it into the stack and use it
+  - Code review ensures that someone else values and understands the code
+- Thinking Systems
+  - 2 types of systems:
+    - System 1: Intuitive, fast, but has higher error rates
+    - System 2: Methodical, slow, low error rates, but is hard to engage
+  - We often have system 2 blindspots while coding
+  - The addition of a code reviewer helps to generate "system 2 code"
+  - Rubber duck debugging
+    - Explain the problem to a rubber duck:
+      - Go through the problem step-by-step
+      - Think about each step clearly
+      - Realize what the problem is
+    - This is **system 2** thinking!
+- Research on Code Reviews
+  - Code review catches *60-90%* of errors according to a study by Fagan in 1976
+  - The first reviewer and first review matter the most according to a study by Cohen in 2006
+    - Following reviewers have too much trust in the first reviewer
+  - Defect rates in code are related to program size, and seemingly little else according to a study by El Imam in 2001
+- Before Sending Code for Review
+  - Write code that is easy to review
+    - Even if the final state of the code works, any hacky solutions/assumptions should be reviewed to prevent unnecessary growth in complexity
+  - Keep changes small and focused
+  - Send a work in progress review out early
+    - A completely finished product is not necessary to submit a review
+    - Especially if you're unfamiliar with the task, early feedback may be helpful
+  - Review your own work
+    - Goal should be to submit a change and get no comments back
+    - Saves time on small changes
+  - Change Descriptions
+    - More than just "what" the change is
+    - "Why" was the change made?
+    - "How" was the "why" addressed?
+    - Any new testing?
+    - Add additional context on the change with whatever tooling available to you
+- During Code Review
+  - Flag errors of execution
+    - Unclear documentation, typos, style violations, bad/missing tests, bugs, etc.
+  - Apply deliberative thinking to find errors
+    - Is this algorithm correct?
+    - Is this built to specifications?
+    - Does this code need to exist?
+    - Is this the most elegant solution?
+  - Develop a shared understanding about the purpose of the code
+    - Align team on "landmarks"
+    - Small changes can lead to target drift
+      - One small change may adjust the behavior of a feature, which can get exacerbated as people build on it
+    - Each code review is an opportunity to course-correct
+    - How will this code be used in the future?
+  - Establish "N + 1" availability on understanding of the code
+    - Teams are dybamic
+    - Minibus number
+      - The amount of people that could become unavailable and the team can still function
+- Methods of Code Review
+  - Projection code in a meeting
+  - Pair programming
+  - Pull requests
+- Final Code Review Guidelines
+  - Be thoughtful and careful with words
+  - Avoid personal attacks
+  - Reviews are not a competition
+  - Don't be too easy
+
+
+
+## Lecture 4:
 
 - 
