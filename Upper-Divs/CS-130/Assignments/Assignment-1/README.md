@@ -2,67 +2,70 @@
 
 ## To-Do
 
-- [x] Environment Setup
+### Environment Setup
 
-  - [x] Setup [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install) and initialize an Ubuntu 20.04 distro
+- [x] Setup [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install) and initialize an Ubuntu 20.04 distro
 
-  - [x] Configure WSL to mount drives at `/` instead of `/mnt`
+- [x] Configure WSL to mount drives at `/` instead of `/mnt`
 
-    ```bash
-    sudo tee -a /etc/wsl.conf << EOF
-    [automount]
-    root = /
-    options = "metadata"
-    EOF
-    ```
+  ```bash
+  sudo tee -a /etc/wsl.conf << EOF
+  [automount]
+  root = /
+  options = "metadata"
+  EOF
+  ```
 
-  - [x] Create the `cs130` directory
+- [x] Create the `cs130` directory
 
-    ```bash
-    mkdir cs130
-    cd cs130
-    ```
+  ```bash
+  mkdir cs130
+  cd cs130
+  ```
 
-  - [x] Append `nameserver 1.1.1.1` to `/etc/resolv.conf` using `nano`
+- [x] Append `nameserver 1.1.1.1` to `/etc/resolv.conf` using `nano`
 
-    ```bash
-    sudo nano /etc/resolv.conf
-    ```
+  ```bash
+  sudo nano /etc/resolv.conf
+  ```
 
-  - [x] Download the CS130 tools into `cs130`
+- [x] Download the CS130 tools into `cs130`
 
-    ```bash
-    git clone https://code.cs130.org/tools
-    ```
+  ```bash
+  git clone https://code.cs130.org/tools
+  ```
 
-  - [x] Install [Docker](https://docs.docker.com/desktop/install/windows-install/) and run it
+- [x] Install [Docker](https://docs.docker.com/desktop/install/windows-install/) and run it
 
-  - [x] Verify Docker is installed properly
+- [x] Verify Docker is installed properly
 
-    ```bash
-    docker run -it hello-world
-    ```
+  ```bash
+  docker run -it hello-world
+  ```
 
-  - [x] Start the dev environment
+- [x] Start the dev environment
 
-    ```bash
-    tools/env/start.sh -u charleszhang -n -r
-    ```
+  ```bash
+  tools/env/start.sh -u charleszhang -n -r
+  ```
 
-  - [x] Append `nameserver 1.1.1.1` to `/etc/resolv.conf` using `nano` in the dev environment
+- [x] Set new username and email in git config
 
-  - [x] Set new username and email in git config
+  ```bash
+  git config --global user.name "charleszhang"
+  git config --global user.email "charleszhang@g.ucla.edu"
+  ```
 
-    ```bash
-    git config --global user.name "charleszhang"
-    git config --global user.email "charleszhang@g.ucla.edu"
-    ```
+### Repository Setup
 
-- [x] Repository Setup
+- [x] Set up SSH access on [Gerrit](https://code.cs130.org/dashboard/self)
 
-  - [x] Set up SSH access on [Gerrit](https://code.cs130.org/dashboard/self)
-  - [x] Create a repository named `charleszhang-config-parser`
-  - [x] Set the owner field to `user/CHARLES ZHANG (charleszhang)`
+  ```bash
+  ssh-keygen -t ed25519 -C "charleszhang@g.ucla.edu"
+  cat /root/.ssh/id_ed25519.pub
+  ```
+- [x] Create a repository named `charleszhang-config-parser`
+- [x] Set the owner field to `user/CHARLES ZHANG (charleszhang)`
 
 - [x] Initial Skeleton Code
 
@@ -119,104 +122,111 @@
     git log -2
     ```
 
-- [x] Build Project
+### Build Project
 
-  - [x] Create a new branch `fix_build`
+- [x] Create a new branch `fix_build`
 
-    ```bash
-    git checkout -b fix_build
-    ```
+  ```bash
+  git checkout -b fix_build
+  ```
 
-  - [x] Open the project in VSCode
+- [x] Open the project in VSCode
 
-    ```bash
-    code .
-    ```
+  ```bash
+  code .
+  ```
 
-  - [x] Remove all references to Boost from `CMakeLists.txt`
+- [x] Remove all references to Boost from `CMakeLists.txt`
 
-  - [x] Remove the test coverage targets from `CMakeLists.txt`
+- [x] Remove the test coverage targets from `CMakeLists.txt`
 
-  - [x] Address all `# TODO(!)` instructions in `CMakeLists.txt`
+- [x] Address all `# TODO(!)` instructions in `CMakeLists.txt`
 
-    - [x] [Investigate](https://www.cs130.org/guides/cmake/#important-functions) `add_library`, `add_executable`, `target_link_libraries`, and `gtest_discover_tests`
-    - [x] Create a library with `config_parser.cc` code
-    - [x] Create an executable with `config_parser_main.cc` code and link it to the library
-    - [x] Create an executable with `config_parser_test.cc` code and link it to the library
-    - [x] Update test discovery
-    - [x] Remove all `# TODO(!)` lines
+  - [x] [Investigate](https://www.cs130.org/guides/cmake/#important-functions) `add_library`, `add_executable`, `target_link_libraries`, and `gtest_discover_tests`
+  - [x] Create a library with `config_parser.cc` code
+  - [x] Create an executable with `config_parser_main.cc` code and link it to the library
+  - [x] Create an executable with `config_parser_test.cc` code and link it to the library
+  - [x] Update test discovery
+  - [x] Remove all `# TODO(!)` lines
 
-  - [x] Create a `build` directory at the repository's root
+- [x] Create a `build` directory at the repository's root
 
-    ```bash
-    mkdir build
-    cd build
-    ```
+  ```bash
+  mkdir build
+  cd build
+  ```
 
-  - [x] Run `cmake` to perform an [out-of-source build](https://www.cs130.org/guides/cmake/#out-of-source-builds)
+- [x] Run `cmake` to perform an [out-of-source build](https://www.cs130.org/guides/cmake/#out-of-source-builds)
 
-    ```bash
-    cmake ..
-    make
-    ```
+  ```bash
+  cmake ..
+  make
+  ```
 
-  - [x] Run tests using `make`/`cmake` and directly from the command line
+- [x] Run tests using `make`/`cmake` and directly from the command line
 
-    ```bash
-    make test
-    cd ../tests && ../build/bin/config_parser_test && cd ..
-    ```
+  ```bash
+  make test
+  cd ../tests && ../build/bin/config_parser_test && cd ..
+  ```
 
-  - [x] Push code to Gerrit and review it
+- [x] Push code to Gerrit and review it
 
-    ```bash
-    git add .
-    git status
-    git commit -m "Fixed broken skeleton code"
-    git review -f
-    ```
+  ```bash
+  git add .
+  git status
+  git commit -m "Fixed broken skeleton code"
+  git review -f
+  ```
 
-  - [x] Update the `main` branch of your local repository
+- [x] Update the `main` branch of your local repository
 
-    ```bash
-    git pull
-    ```
+  ```bash
+  git pull
+  ```
 
-- [ ] Unit Testing
+### Quoted Tokens
 
-  - [x] Get familiar with the config format [here](http://nginx.org/en/docs/beginners_guide.html#conf_structure) and [here](https://docs.nginx.com/nginx/admin-guide/basic-functionality/managing-configuration-files/#)
+- [x] Create and incorporate a new token type `TOKEN_TYPE_QUOTED_STRING` in `ParseToken`
+- [x] Update `Parse` logic with new `TOKEN_TYPE_QUOTED_STRING`
+- [x] Force quoted strings to be followed by whitespace
+- [x] Allow for backslash-escaping within strings
 
-  - [x] Create a new branch `unit_tests`
+### Unit Testing
 
-    ```bash
-    git checkout -b "unit_tests"
-    ```
+- [x] Get familiar with the config format [here](http://nginx.org/en/docs/beginners_guide.html#conf_structure) and [here](https://docs.nginx.com/nginx/admin-guide/basic-functionality/managing-configuration-files/#)
 
-  - [x] Create a [test fixture](https://github.com/google/googletest/blob/main/docs/primer.md#test-fixtures-using-the-same-data-configuration-for-multiple-tests-same-data-multiple-tests) for the parser
+- [x] Create a new branch `unit_tests`
 
-  - [ ] Write more unit tests for the config parser in `config_parser_test.cc`
+  ```bash
+  git checkout -b "unit_tests"
+  ```
 
-  - [ ] Fix bugs identified by the unit tests
+- [x] Create a [test fixture](https://github.com/google/googletest/blob/main/docs/primer.md#test-fixtures-using-the-same-data-configuration-for-multiple-tests-same-data-multiple-tests) for the parser
 
-  - [ ] Push code to Gerrit for review
+- [ ] Write more unit tests for the config parser in `config_parser_test.cc`
 
-    ```bash
-    git add .
-    git status
-    git commit -m "Added unit tests"
-    git review -f
-    ```
+- [x] Fix at least 1 bug identified by the unit tests
 
-- [ ] Code Reviews
+- [ ] Push code to Gerrit for review
 
-  - [x] Find a partner for [code reviews](https://docs.google.com/spreadsheets/d/1bQqnl7h12Dw64KHyZDEQhNp5My3OU16YB0d45lhSM4k/edit#gid=0)
-  - [ ] Learn how to [respond to reviews](https://www.cs130.org/guides/gerrit/#responding-to-reviews)
-  - [ ] Submit at least 3 changes for review
-  - [ ] Respond to a comment with new changes on at least 1 review
-  - [ ] Submit code to the `main` branch
+  ```bash
+  git add .
+  git status
+  git commit -m "Added unit tests"
+  git review -f
+  ```
 
-- [ ] Submission
+### Code Reviews
 
-  - [ ] Ensure all code is in the `main` branch
-  - [ ] Submit assignment to [form](https://docs.google.com/forms/d/e/1FAIpQLSdZuTeUOab1IcXsMHcqeyORBlVIDN88h6rabpCBWJclBVhKAg/viewform)
+- [x] Find a partner for [code reviews](https://docs.google.com/spreadsheets/d/1bQqnl7h12Dw64KHyZDEQhNp5My3OU16YB0d45lhSM4k/edit#gid=0)
+- [x] Learn how to [respond to reviews](https://www.cs130.org/guides/gerrit/#responding-to-reviews)
+- [ ] Submit at least 3 changes for review
+- [x] Respond to a comment with new changes on at least 1 review
+- [ ] Submit code to the `main` branch
+
+### Submission
+
+- [ ] Ensure all code is in the `main` branch
+- [ ] Submit assignment to [form](https://docs.google.com/forms/d/e/1FAIpQLSdZuTeUOab1IcXsMHcqeyORBlVIDN88h6rabpCBWJclBVhKAg/viewform)
 
