@@ -222,5 +222,5 @@
 ### Submission
 
 - [x] Ensure all code is in the `main` branch
-- [ ] Submit assignment to [form](https://docs.google.com/forms/d/e/1FAIpQLSdZuTeUOab1IcXsMHcqeyORBlVIDN88h6rabpCBWJclBVhKAg/viewform)
+- [x] Submit assignment to [form](https://docs.google.com/forms/d/e/1FAIpQLSdZuTeUOab1IcXsMHcqeyORBlVIDN88h6rabpCBWJclBVhKAg/viewform)
 
