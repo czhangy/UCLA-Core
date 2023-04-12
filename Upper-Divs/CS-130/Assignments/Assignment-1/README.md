@@ -204,29 +204,23 @@
 
 - [x] Create a [test fixture](https://github.com/google/googletest/blob/main/docs/primer.md#test-fixtures-using-the-same-data-configuration-for-multiple-tests-same-data-multiple-tests) for the parser
 
-- [ ] Write more unit tests for the config parser in `config_parser_test.cc`
+- [x] Write more unit tests for the config parser in `config_parser_test.cc`
 
 - [x] Fix at least 1 bug identified by the unit tests
 
-- [ ] Push code to Gerrit for review
+- [x] Push code to Gerrit for review
 
-  ```bash
-  git add .
-  git status
-  git commit -m "Added unit tests"
-  git review -f
-  ```
 
 ### Code Reviews
 
 - [x] Find a partner for [code reviews](https://docs.google.com/spreadsheets/d/1bQqnl7h12Dw64KHyZDEQhNp5My3OU16YB0d45lhSM4k/edit#gid=0)
 - [x] Learn how to [respond to reviews](https://www.cs130.org/guides/gerrit/#responding-to-reviews)
-- [ ] Submit at least 3 changes for review
+- [x] Submit at least 3 changes for review
 - [x] Respond to a comment with new changes on at least 1 review
-- [ ] Submit code to the `main` branch
+- [x] Submit code to the `main` branch
 
 ### Submission
 
-- [ ] Ensure all code is in the `main` branch
+- [x] Ensure all code is in the `main` branch
 - [ ] Submit assignment to [form](https://docs.google.com/forms/d/e/1FAIpQLSdZuTeUOab1IcXsMHcqeyORBlVIDN88h6rabpCBWJclBVhKAg/viewform)
 
