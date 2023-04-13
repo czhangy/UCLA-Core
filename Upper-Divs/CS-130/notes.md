@@ -282,6 +282,446 @@ Nothing to see here!
 
 
 
-## Lecture 4:
+## Lecture 4: Build Systems Deployment
+
+- Vocab
+
+  - **Build**: Compiling your code
+    - Source code => Executable binary
+  - **Deploy**: Get your code running
+    - Run an executable
+
+- Process
+
+  - In the beginning...
+    - Run compiler from the command line directly
+    - Inputs are a few `.cc` files
+    - Output is a single executable
+    - Need to know all the flags
+  - One step up...
+    - Write it down
+
+- Lessons
+
+  - Builds should have one simple step
+
+    - ```bash
+      ./build.sh
+      ```
+
+  - Builds should be repeatable
+
+    - Different engineers, different times => same output
+
+  - Build scripts go into revision control
+
+- Bash
+
+  - Bash scripts can be tricky to write
+  - Bash scripts aren't very readable/maintainable
+
+- Building the Config Parser
+
+  - Input source files are compiled into intermediate files (`.o`), which are linked into executables
+  - These intermediate files can be reused if needed, allowing the compilation to only be run once
+
+- Makefiles
+
+  - Encodes the dependency graph of the build
+  - Makefiles can get real complex, real fast
+  - Difficult to:
+    - Detect compilers
+    - Detect and build with installed packages
+  - Solution: generate Makefiles!
+
+- GNU Build System
+
+  - Autoconf + Automake
+
+  - Notable files:
+
+    - `Makefile.am`
+    - `configure`
+    - `Makefile.in`
+    - `config.h`
+
+  - Run:
+
+    - ```bash
+      ./configure
+      make
+      ```
+
+  - Creates GNU-compatible Makefiles
+
+- CMake
+
+  - Single tool
+
+  - Notable files:
+
+    - `CMakeLists.txt`
+    - `build/`
+      - For out-of-source builds
+    - A ton of generated files
+
+  - Run:
+
+    - ```bash
+      cd build
+      cmake ..
+      make
+      ```
+
+  - Supports multiple output formats
+
+- Build System Wishlist
+
+  - A good build system has many desirable features, but unfortunately, some of them are contradictory
+
+  - Correct
+
+    - The build should be a faithful representation of the current state of your source code
+    - What if a file has changed somewhere, but the build system didn't realize it?
+      - Easy to happen in GNU Make
+      - `make clean` to the rescue
+      - GMake detects changes by timestamps
+        - Hashing is slower, but more accurate
+    - The build should be as close as possible to what you're going to release
+    - Very hard to achieve!
+      - Debug vs. optimized builds
+      - Instrumented binaries (e.g., to find memory bugs, coverage)
+      - Extra logging?
+
+  - Hermetic
+
+    - Different users, different environments => same result
+      - Different OSes?
+      - Diferent compilers?
+        - Almost never check your compiler into version control
+      - Different shell configs?
+        - `.bashrc`, `umask`, etc.
+    - Possible solutions:
+      - Build in a VM
+      - Build in a Docker container
+
+  - Flexible
+
+    - Change compilation and linking options
+    - Support other languages
+    - Support custom build rules
+
+  - Easy to use
+
+    - Build in one step
+    - Easy to set up for your project
+    - One obvious correct way to do things (Make fails here!)
+      - Confusion arises when there is more than one way to achieve the same output
+
+  - Automatable
+
+    - Builds should happen automatically, and frequently
+      - Nightly?
+      - After every submit? (continuous build)
+      - Whenever you save a file you're editing?
+
+  - Fast
+
+    - The more builds you want to do, the faster it needs to be
+
+      - Tell GMake to run 4 build commands at a time (`-j4`)
+
+        - ```bash
+          make -j4
+          ```
+
+      - Build cluster
+
+      - Cache intermediates => only build what has changed
+
+  - Manages dependencies
+
+    - Very important for "fast" and "scalable"
+    - In GMake, you have to declare your dependancies:
+      - `foo.cc`: `#include "bar.h"`
+      - `Makefile`: `foo.o: foo.cc foo.h bar.o`
+      - Now you have dependencies in two places
+      - Implicit rules
+        - Easier to maintain complex Makefiles
+        - Don't always manage dependencies very well
+    - Automatic management
+      - Read my code, figure out the dependencies
+      - Very language-dependent
+      - Example: ekam
+        - Works by exploration
+          - `.h` file: might want to add current directory to `#include` path
+          - `.cc` file: try compiling it; what goes wrong?; missing header?
+          - `.o` file: does it contain `main()`?; try linking it into a binary
+        - Experimental, C++ only
+        - If it can't figure something out, it's hard to intervene
+      - CMake does this for you!
+
+  - Integrated
+
+    - Build and test when you send a code review, display results to reviewer
+    - Save test results to a database you can query
+      - How many times was this test run in the past week?
+    - Works with your packaging and release system
+    - Can query dependencies
+      - What targets depend on `X`?
+      - How does `X` depend on `Y`?
+
+  - Scalable
+
+    - Supports large codebases
+    - Supports many users
+
+- Scalability
+
+  - Build scalability the typical way
+    - Constrain the change rate of your dependencies
+      - Separate repositories
+      - Long-lived release branches
+    - Example:
+      - Your project depends on a library built by another team
+      - Other team builds, tests, releases the library to you once a quarter
+      - Side effect: when you get a new release of the library, you spend a week fixing things that have broken
+  - Multi-repo vs. mono-repo
+    - Multi-repo
+      - Separate repositories
+      - Release branches
+      - Library built/released quarterly
+      - Some manual testing possible
+      - Spend a week fixing things after release
+      - Builds are fast because you only build your code
+    - Mono-repo
+      - One repository
+      - Development on `HEAD`
+      - You always have the latest version
+      - Test must be automated
+      - Fix things as soon as they are broken
+      - Have to build the whole codebase to test your code
+  - Google's problem
+    - We want:
+      - Fast builds for engineers
+      - Build and test every commit
+      - Have to build the whole source tree
+    - You can't ever build from scratch
+    - You can't `make clean`
+    - Reasons to `make clean`:
+      - Untracked dependencies
+      - Builds aren't reproducible
+  - Google's solution
+    - Each commit changes only a small part of the source tree
+      - The rest of the object files shouldn't need to be recompiled
+    - If our builds are always correct, we can cache the results
+    - Achieving correctness if really hard!
+  - Cloud storage
+    - Engineers work on a small part of the code
+      - CitC stores and snapshots your changes in the cloud
+      - FUSE filesystem makes it transparent (looks like local files you've checked out)
+    - Send diffs to the cloud to compile
+    - Fetch back binaries (don't care about intermediate object files)
+    - Reuse other people's builds
+    - Process:
+      - Computer sends diffs to build workers
+      - SrcFS talks to build workers
+      - Build workers and ObjFS talk to each other
+      - ObjFS sends the binary to the computer
+
+- Deployment
+
+  - What is deployment?
+
+    - Process that takes you from dev to prod
+    - Production:
+      - Server: running in the cloud
+      - Application: running on users' phones, computers, etc.
+
+  - History
+
+    - To run a web server, you used to have to:
+      - Buy hardware
+      - Find a place to put your hardware
+      - Get a network connection
+      - Install and configure an OS
+      - Install and configure your software
+    - 1997 - 2000: datacenters
+    - 2000s: hosting providers, virtualization (computer rental)
+
+  - Where are we now?
+
+    - Recent past:
+      - "Here's a VM image, please run 200 instances for me"
+        - Configure OS and install software once, then use the image to start
+        - No more manual labor
+      - Get billed per machine
+        - 200 instances will be paid for, regardless of traffic, wasting resources
+    - Current:
+      - "Here's my web server image, please run enough instances for me"
+        - Start with a few, spin up more when usage rises, kill machines when usage falls
+      - Get billed for CPU/RAM/storage
+        - Much more efficient in sharing/using resources
+
+  - Observations
+
+    - Deployment requires packaging, isolation, and resource management
+    - VMs provide these, but at high overhead, is there a better way?
+
+  - An aside on virtualization
+
+    - Widely-used term in CS, but hard to define
+
+    - Easiest to define as the antonym of "actual"
+
+      - Virtual memory vs. actual memory
+      - Virtual machine vs. actual machine
+
+    - Predates computers
+
+    - Examples:
+
+      - Virtual functions: specify an interface without an implementation
+
+      - Memory virtualization: present a large address space independent of RAM
+
+      - Storage virtualization: make many disks on many computers appear as one
+
+      - JVM: consistent data, memory, computation model on different architectures
+
+      - Machine virtualization
+
+        - | Technology              | CPU       | Hardware  | OS        | Overhead |
+          | ----------------------- | --------- | --------- | --------- | -------- |
+          | Emulation               | Different | Different | Different | Higher   |
+          | OS-level virtualization | Same      | Different | Different |          |
+          | Paravirtualization      | Same      | Different | Different |          |
+          | Hypervisor              | Same      | Same      | Different |          |
+          | Containerization        | Same      | Same      | Same      | Lower    |
+
+  - Containerization
+
+    - A restricted view of the underlying OS
+      - See group of related processes
+      - Manage and limit resource usage
+      - Separate or restricted filesystem
+      - Restrict system calls
+    - Linux kernel magic
+
+  - Docker
+
+    - Utilities and glue for Linux containerization
+    - A way to build filesystems in layers
+    - Defines a package format
+      - Basically, a filesystem and a config
+    - A package repository
+    - Uses the Moby Linux VM to provide Linux utility to Mac/Windows
+
+  - Docker Concepts
+
+    - Image
+
+      - Snapshot of OS, defined by commands, stacked in layers
+      - Created by `docker build`
+      - Defined by `Dockerfile`
+      - Base is another image
+        - e.g., `ubuntu:latest`
+      - Can be tagged with versions
+        - e.g., `latest`
+      - Analogous to a binary executable
+
+    - Container
+
+      - Running instance of an image
+      - Created by `docker run`
+      - Analogous to a running process
+
+    - Volume
+
+      - Virtual disk image
+
+      - Created by:
+
+        - ```bash
+          docker run -v/--mount
+          docker volume
+          ```
+
+      - Persists across restarts
+
+      - Shareable between containers
+
+    - Bind mount
+
+      - Mount the host filesystem in container
+
+      - Created by:
+
+        - ```bash
+          docker run -v/--mount
+          ```
+
+      - Share data between host and container
+
+      - Volume that lives in host filesystem
+
+    - Port
+
+      - Expose ports inside container to:
+        - Host: `127.0.0.1`
+        - Internet: `0.0.0.0`
+      - Define in:
+        - Image (`Dockerfile`)
+          - For documentation
+        - Container (`docker run`)
+          - For implementation
+
+    - Container registries
+
+      - Storage for built container images
+
+      - Local storage:
+
+        - ```bash
+          docker image ls
+          ```
+
+      - Remote storage:
+
+        - `docker push`
+        - `docker pull`
+        - And other tools
+
+      - Implicit pull when docker build needs a base image
+
+  - Google Cloud Build
+
+    - Define series of build steps in `cloudbuild.yaml`
+
+    - Start a build with some directory/files as the source
+
+      - ```bash
+        gcloud builds submit
+        ```
+
+    - Build is performed in the cloud
+
+    - Build is performed hermetically
+
+      - No context from previous builds
+
+    - Output:
+
+      - Build logs
+        - Console
+        - Web UI
+      - Build artifacts
+        - Container images
+        - Compiled outputs
+
+
+
+## Lecture 5:
 
 - 
+
