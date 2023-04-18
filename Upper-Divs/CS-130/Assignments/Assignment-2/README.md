@@ -4,21 +4,21 @@
 
 ### Team Resource Setup
 
-- [ ] Get in contact with the team
-- [ ] Assign a TL for the assignment
-- [ ] Choose a team name
-- [ ] Set up Gerrit for the team
-  - [ ] Create a [group](https://www.cs130.org/guides/gerrit/#group-setup) for the team in Gerrit and make the group visible to all registered users in Group Options
-  - [ ] Create a [repository](https://www.cs130.org/guides/gerrit/#creating-a-git-repository) for the team in Gerrit and set the owner to the team's group
-- [ ] Make a new project in [GCP](https://console.cloud.google.com/projectcreate?organizationId=461747480190) with your @g.ucla.edu account
-  - [ ] Enter the team name as the project name and ensure the billing account matches the name of your recently created account
-  - [ ] Set the organization to `cs130.org`, the location to 2023, and create the project
-  - [ ] Grant access to your project to all team members as "New principals" with the "Owner" role through the IAM & Admin section of the project dashboard
-  - [ ] [Initialize](https://www.cs130.org/guides/gcloud/#initialization) `gcloud`
+- [x] Get in contact with the team
+- [x] Assign a TL for the assignment
+- [x] Choose a team name
+- [x] Set up Gerrit for the team
+  - [x] Create a [group](https://www.cs130.org/guides/gerrit/#group-setup) for the team in Gerrit and make the group visible to all registered users in Group Options
+  - [x] Create a [repository](https://www.cs130.org/guides/gerrit/#creating-a-git-repository) for the team in Gerrit and set the owner to the team's group
+- [x] Make a new project in [GCP](https://console.cloud.google.com/projectcreate?organizationId=461747480190) with your @g.ucla.edu account
+  - [x] Enter the team name as the project name and ensure the billing account matches the name of your recently created account
+  - [x] Set the organization to `cs130.org`, the location to 2023, and create the project
+  - [x] Grant access to your project to all team members as "New principals" with the "Owner" role through the IAM & Admin section of the project dashboard
+  - [x] [Initialize](https://www.cs130.org/guides/gcloud/#initialization) `gcloud`
 
 ### Skeleton Code
 
-- [ ] Upload skeleton code to the team repository
+- [x] Upload skeleton code to the team repository
 
   ```bash
   git clone ssh://charleszhang@code.cs130.org:29418/${REPO}
@@ -28,18 +28,18 @@
   curl http://static.cs130.org/src/boost-server.tar.gz | tar -zxv
   ```
 
-- [ ] Generate config files in the project repo
+- [x] Generate config files in the project repo
 
   ```bash
   ../tools/templates/init.sh
   ```
 
-- [ ] Edit `CMakeLists.txt`
+- [x] Edit `CMakeLists.txt`
 
   - [ ] Compile `server_main.cc` and link it with `Boost::system`
   - [ ] Comment out the test executable, the `gtest_discover_tests` rule, and the code coverage rule
 
-- [ ] Compile the server
+- [x] Compile the server
 
   ```bash
   mkdir build
@@ -48,25 +48,25 @@
   make
   ```
 
-- [ ] Launch the server with a test port
+- [x] Launch the server with a test port
 
   ```bash
   bin/server 8080
   ```
 
-- [ ] Use `netcat` in a separate terminal to check for a server response
+- [x] Use `netcat` in a separate terminal to check for a server response
 
   ```bash
   nc localhost 8080
   ```
 
-- [ ] Send this code for review on Gerrit
+- [x] Send this code for review on Gerrit
 
 ### Echoing Web Server
 
-- [ ] Refactor `server_main.cc` into a separate source and header file for each class
+- [x] Refactor `server_main.cc` into a separate source and header file for each class
 
-- [ ] Send the refactored code for review on Gerrit
+- [x] Send the refactored code for review on Gerrit
 
 - [ ] Write a server that listens on a configurable port and responds to HTTP 1.1 requests by echoing the request back to the client
 
@@ -80,7 +80,7 @@
 
   - [ ] Send the request in the body of the response
 
-  - [ ] Use the config parser code from Assignment 1 and allow the config file to configure a port number
+  - [x] Use the config parser code from Assignment 1 and allow the config file to configure a port number
 
     ```bash
     bin/webserver config_file
