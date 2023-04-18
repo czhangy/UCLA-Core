@@ -783,7 +783,22 @@ Nothing to see here!
     - As a result, people will often write tests before starting a refactor of poorly testing code
 
 - Dependency Injection
-  - 
+  - Favor composition over polymorphism
+    - Polymorphic solution looks ok, not obviously bad code
+    - Hard to test alone
+    - "Has a" relationship vs. "is a" relationship
+    - Breaks encapsulation
+    - Same choice as choosing interface over concrete implementation
+
+  - `new` considered harmful
+    - Introduces a dependency on a specific implementation
+    - Once again breaks encapsulation
+    - Same fix as previous issue
+    - This pattern is called "dependency injection"
+
+  - What is dependency injection?
+    - Design pattern in which your objects ask for what they need instead of retrieving what they need
+    - In this way, your objects will depend solely on interfaces
 
 
 
