@@ -721,7 +721,73 @@ Nothing to see here!
 
 
 
-## Lecture 5:
+## Lecture 5: Testing, Refactoring, and Debugging
+
+- Testing
+  - Bad practices propagate
+  - Be sure to test the right things
+    - You could test the assignment's boilerplate, but there's no real need to do so in a unit test
+      - Doesn't change very often
+      - Small/trivial code
+      - Obvious when broken
+
+    - Should be tested in an integration test
+
+  - Testing over the network?
+    - In future lectures, we'll look at mocks and other ways to make tests more isolated
+    - Definitely don't want to require a fully-running web server to test
+
+- Refactoring
+  - What is refactoring?
+    - Simply, it is rewriting (editing in the traditional sense) code to improve some property
+    - In this case, we are restructuring the code to be more testable
+    - Could also refactor to make it more maintainable
+      - Divide up long functions (extract method)
+      - Make a class do fewer things (extract class)
+
+    - Code is read more than it is written, so care must be taken to make it reader friendly
+    - However, code gets more complex with time through natural evolution
+    - Refactoring is all about moving code around to make it more maintainable without changing the behavior
+    - Each change is small and incremental, so the changes are more likely to be safe
+    - Best practice: create tests ahead of time so the tests can verify correct behavior after the changes
+
+  - Refactoring examples
+    - Extract method when a function gets too long or has a useful internal boundary
+    - Introduce param object when a method's param list gets too long
+      - Can also define defaults and provides more control over values before the function executes
+
+    - Replace magic numbers with symbolic constants
+      - Makes code more self-documenting
+      - Realistically not expensive for runtime
+
+    - Replace param with method is a complex way of describing an encapsulation fix
+      - In general, if a value is only used by a function you call, perhaps just have that function compute the value
+      - Typically cleans up the caller
+      - Doesn't always work
+        - e.g., when the caller is a class member function and the callee isn't
+
+    - Replace constructor with factory method when you want your constructor to be able to fail without using exceptions
+      - Can also help if you want to hide which derived type is being return based on the input values
+      - Potential downside: forces you to allocate this object on the heap
+        - Not usually a huge issue
+
+    - Introduce expression builder when your object has a required call sequence
+      - i.e., first call these setup functions, then you can use the rest of the functions
+      - Separate setup/construction functions from the runtime functions
+      - More flexible than a factory
+
+  - Recap
+    - You can be more confident that you didn't break anything if you have tests
+      - That is, if the tests still pass, your code is *probably* still working
+
+    - As a result, people will often write tests before starting a refactor of poorly testing code
+
+- Dependency Injection
+  - 
+
+
+
+
+## Lecture 6
 
 - 
-
