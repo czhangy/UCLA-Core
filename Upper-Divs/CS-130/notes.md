@@ -803,6 +803,12 @@ Nothing to see here!
 
 
 
-## Lecture 6
+## Lecture 6:
+
+- 
+
+
+
+## Lecture 7:
 
 - 
