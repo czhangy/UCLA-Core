@@ -803,9 +803,67 @@ Nothing to see here!
 
 
 
-## Lecture 6:
+## Lecture 6: Dependency Injection
 
-- 
+- Dependency Injection
+  - Injectors
+    - The injector class maintains a map of interface to implementation
+    - Ask the injector for instances of objects instead of creating them for yourself
+  - Frameworks
+    - Use a framework!
+    - Injectors are simple conceptually, but expensive to implement
+    - Lots of good frameworks to handle the tough stuff for you
+- Mocks vs. Fakes
+  - Disclaimer
+    - There are different naming conventions for these types of objects
+    - One canonical way will be used for the purposes of this class
+    - Focus more on the behavior, not the terminology
+  - Test Objects
+    - Real object: same implementation you would use in production
+      - Should be preferred for testing
+      - Mocks/fakes need to be written/could have bugs
+    - Fake object: trivial implementation of the interface that satisfies all contracts, but relies on memory only
+    - Mock object: placeholder test object that can be set up to respond to specific stimuli and report back how it was interacted with
+  - Mock Objects
+    - Pros:
+      - Only need to define the behavior you care about in your test
+      - Mocks can confirm some API contracts
+    - Cons:
+      - Maintenance cost: must be defined in every single test that has a dependency on a given object
+      - Easy to misuse: since we have these nice verify methods, might be tempted to test interaction instead of testing state
+  - Fake Objects
+    - Usually the next best thing to real objects
+    - Pros:
+      - Only need to define it once
+        - Service owner should also own and maintain the fake for thier service
+      - Fake can be tested independently to verify its behavior
+    - Cons:
+      - Maintenance cost: must be updated in lockstep with the real thing
+      - Sometimes not trivial to satisfy the service's contract in memory
+  - Testing State vs. Interaction
+    - A bad code smell is testing package private methods/making a method visible specifically visible for testing
+    - This almost always indicates you're testing some sort of interaction, since your test is now relying on implementation details
+- Integration Tests
+  - Context
+    - We've refactored all our code to make unit testing easy
+    - We've stubbed out all the really hairy stuff (network, disk, etc.)
+  - Introduction
+    - Test code end-to-end
+    - These tests tend to be VERY expensive
+      - Expensive to write (how do I connect my test code to all of these real production components?)
+      - Expensive to keep green (so many dependencies, makes it very likely something messes up your configuration)
+      - Expensive to run (since we're using resources like network, disk, tests tend to take a long time to run)
+  - Picking Integration Tests
+    - Since the cost of integration tests is so high, the benefit better be high too
+    - Pick a small handful of CRITICAL use cases for your application, and test those
+    - Want to be 100% sure that if key functionality in your app is broken (by you/your dependencies), you know about it
+- Continuous Build
+  - Introduction
+    - Automate things you do yourself
+      - Computers love repetitive tasks
+    - Ensures the project is moving from good state to good state
+    - Find errors quickly
+    - Facilitate collaboration
 
 
 
