@@ -867,6 +867,52 @@ Nothing to see here!
 
 
 
-## Lecture 7:
+## Lecture 7: Static/Runtime Analysis
+
+- Static Analysis
+  - You've used static analysis before:
+    - Compiler warnings
+    - Type checking
+      - Gives you compile-time errors about illegal operations
+      - As opposed to runtime typed languages that will only give you errors at runtime
+      - Can even do type inferencing at compile time (`auto` in C++)
+    - Linters
+      - Originally intended to catch non-portable construct
+      - May not initially seem like static analysis, but they correct more than style:
+        - Inaccurate erase/remove
+        - Suspicious semicolonl
+        - Use after `move`
+          - Helps us avoid `SIGSEGV`s
+          - Helps avoid malicious attacks that may be able to run malicious code by taking advantage of use-after-free
+        - Buffer overrun
+          - Reading/writing past the end of the buffer will produce undefined results
+          - Ideally, you run into a guard page and it causes a `SIGSEGV`
+          - Compiler can often catch this when the size is known at compile time, but it's much harder if it is dynamically sized
+        - Deadlock detection
+          - Can detect if there is a reachable state where deadlock occurs
+        - Uninitialized variable
+          - Can result in undefined behavior
+          - Easily identified by compilers or other static checks
+        - Dead code
+          - Possible to prove that certain blocks are never reachable
+          - Can attempt to determine if a guard will always be false
+      - Many errors manifest as simple typos that are allowed by the compiler, but are likely semantically wrong
+  - How it works
+    - In general, static analysis can be reduced to the halting problem, and is therefore undecidable in general
+      - By simple reduction, the halting problem is a static analysis problemn
+      - Therefore, you can't compute all properties statically
+    - But
+      - We can produce approximates
+      - We can require assumptions or annotations to assists
+    - Typical approaches:
+      - Abstract interpretation: model effect of statements on an abstract machine to identify mistakes
+        - Walk the control flow graph
+        - Keep track of things that are true when a given unit of code executes
+        - Determine if invariants are broken
+      - 
+
+
+
+## Lecture 8:
 
 - 
