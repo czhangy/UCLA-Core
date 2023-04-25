@@ -909,7 +909,31 @@ Nothing to see here!
         - Walk the control flow graph
         - Keep track of things that are true when a given unit of code executes
         - Determine if invariants are broken
-      - 
+      - Data flow analysis: attempt to determine possible input values based on the control flow graph
+        - Keep track of the set of possible values a variable can take at a given point in the program
+        - Identify statements that break invariants for a possible value a variable could take on at that point
+  - Limitations
+    - Halting problem
+    - There are an exponential number of paths through a program
+      - Keeping track for each requires an exponential amount of memory
+    - The range of possible inputs isn't limited much throughout the program
+      - Results in false positives
+  - Overcoming limitations
+    - Since it's hard to prove/disprove things in static analysis, we often have to pick between low recall (too few bugs get caught) and low precision (correct code gets erroneously flagged)
+    - One solution: extend the language
+- Runtime Analysis
+  - Introduction
+    - Alternatively, you could just run the program in an instrumented runtime
+    - Then, just inspect what happened
+    - Think of your brute force debugging sessions where you add `printf()`s until you find the issue
+  - How it works
+    - Just a VM that is checking for bad states
+    - Can keep track of real in-progress state and pinpoint issues
+  - Limitations
+    - Typically, this is slow
+      - In some cases, hardware acceleration is available
+    - You can't run your code this way in production
+    - Coverage is limited by test cases
 
 
 
