@@ -937,6 +937,171 @@ Nothing to see here!
 
 
 
-## Lecture 8:
+## Lecture 8: Logging and Error Handling
+
+- Logging
+
+  - Why log?
+    - Development
+    - Debugging
+    - Security
+    - Monitoring
+    - Usage insights
+  - How to log?
+    - `Boost.Log`
+    - C++ string streams
+    - Should include:
+      - Severity
+      - Message
+  - When to log?
+    - Every time interesting things happen!
+    - "What's happening in our webserver?"
+      - Ready to serve
+      - Serving a request
+      - Errors
+      - Shutting down
+  - What to log?
+    - Basic purpose of webserver logs:
+      - Verify correct usage
+      - Detect abuse
+    - What specific info?
+      - Per request:
+        - Timestamp
+        - Thread ID
+        - IP of request
+  - Where to log?
+    - Goals for statement logs:
+      - Inspect manually
+      - Parse with tools
+      - Do not fill disk
+      - Persist after restart or crash
+      - Resilient to hardware failures
+    - Log sinks:
+      - Console stdout/stdin
+      - File(s) on disk
+      - Remote servers
+  - Notes on severity
+    - Usually multi-level
+      - `trace`/`verbose`/`debug`
+      - `info`
+      - `warning`
+      - `error`
+    - Specify minimum severity level for log destinations
+      - `logLevel=info` includes `info`, `warning`, and `error`
+    - Consider:
+      - Only log `trace` during debugging
+      - Logging `info` and higher to files
+      - Logging only `error` to console
+  - Logging to disk
+    - How do you avoid filling up the disk?
+      - Rotate log files
+      - Cap usage
+      - Move `logname.log` to `logname_YYYYMMDDhhmm.log` when log file grows too large
+  - Logs on Docker vs. Google Cloud
+    - Docker
+      - Console logging works out of box
+      - Captures stdout, stderr
+      - `docker logs [-f] ${CONTAINER}`
+    - Google Cloud
+      - Console logging works out of box
+      - Captures stdout, stderr
+      - Find "Logs Explorer" in Cloud UX
+      - Supports monitoring and alerting based on logs
+
+- Logging vs. Privacy
+
+  - Since 2018, companies must:
+
+    - Obtain consent to log user data
+    - Report data breaches
+    - Allow takeout
+    - Right to be forgotten
+    - Design with privacy
+
+  - Privacy challenges
+
+    - Must delete all data `N` days after a user deletes their account
+      - Many logging systems are designed to be unmodifiable
+        - Appending data is fast
+        - Finding and removing arbitrary data in the middle is slow
+      - Systems with PII must now pay attention to account deletions
+      - What about tape backups?
+    - Hard analytics questions:
+      - How many visits did we see last year?
+      - How many unique visitors did we see last year
+      - How can we answer these?
+    - Solutions:
+      - Aggregation
+        - Aggregated data is generally not personally identifiable
+          - Some exceptions to this
+        - Derived counts and stats are ok to keep indefinitely
+        - Ex) How many visits did we see last year?
+          - Aggregate logs at the end of the day to record the number of visits that day
+          - Sum up daily visits over desired time period
+      - Pseudononymization
+        - Hash the PII and store the hash to count uniques
+        - HMAC-SHA2 hashes are hard to reverse (for now)
+        - Real anonymization is hard!
+        - Ex) How many unique visitors did we see last year?
+          - Hash the visitor ID and log just the hashed ID to permanent logs
+          - Count the number of unique hashed IDs over the given time period
+
+  - Privacy in practice
+
+    - Privacy needs to be a first-class concern
+    - Privacy needs to be considered early
+    - Privacy and security go hand-in-hand
+    - Data access controls are critical
+      - Where privacy and security meet
+
+    - New-ish processes:
+      - Privacy design documents
+      - Privacy sections in technical design documents
+      - Privacy review councils
+      - Privacy approvals for launch
+
+  - PII (Personally Identifiable Information)
+
+    - Information that can personally be linked to you
+
+- Error Handling and Recording Information
+
+  - You thought you were finished?
+    - Things working is just the first step
+    - Now for lots of thinking about every possible error condition
+  - Error handling strategies
+    - Crashing
+    - Returning failure responses from requests
+    - Recovering from errors
+    - Recording information
+    - When is it good to crash?
+      - When it's dangerous to keep going/you can't recover
+      - Fatal errors can be useful
+      - Worth taking some steps to avoid for high-availability servers
+      - Can you fail just one request/operation?
+        - "Light" version of crashing
+    - When is it good to surface errors to users?
+      - When they can correct it
+    - When is it good to hide errors from users?
+  - How to handle errors
+    - Boolean success return value
+      - Requires actual return value in parameter
+      - Doesn't allow for easy detailed return values
+    - Error codes
+      - Either returned directly or throughout param
+    - Exceptions
+    - "Global" (thread local) errno variable (not recommended)
+    - "StatusOr": return a class that contains an error status, or success + return value
+    - One recommendation: "translate" the error on the way up
+    - What should the user see?
+  - The difficulties of recovering from errors
+    - Seems like a good idea, but is it worth the effort?
+      - Bailing out is often a great idea in comparison
+    - Requires careful design
+      - Handling errors in complex ways greatly increases the complexity of the design
+
+
+
+## Lecture 9:
 
 - 
