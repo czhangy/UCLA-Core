@@ -1102,6 +1102,174 @@ Nothing to see here!
 
 
 
-## Lecture 9:
+## Lecture 9: API Design
+
+- Webserver Architecture
+  - Request Handlers
+    - Encapsulates a certain type of request processing behavior
+    - Behavior is often modulated by the config and triggered by a particular URL path
+  - Dispatcher
+    - Looks at the request path and routes the request to the right handler
+  - Request Container and Parser
+    - Helps parse the request, in this case mediating HTTP
+    - Serves as a higher-level representation of the logical request
+    - Could also handle things like HTTP 1.1 keep-alive
+  - Response Container and Generator
+    - Provides a place to incrementally build up a response
+    - Can encapsulate the details of actually translating the response into the HTTP protocol
+    - Might be responsible for handling streaming replies
+  - MIME Type Resolution
+    - For specialized tasks, like static file handling, you need to generate proper HTTP headers
+    - For example, you need to tell the browser what type of file to expect in the body of the response
+    - This object can encapsulate the mapping of a file's type
+  - Other Components
+    - There are many other specialized components
+    - For inspiration, think about how you'd handle:
+      - Streaming responses
+      - Async response
+      - Caching
+- API Design
+  - What is an API?
+    - Application Program Interface
+    - The de-facto boundary between parts of the software you're building
+      - Very abstract/broad
+    - You should define this "public" interface carefully and intentionally
+      - Hard to change once people start using it
+      - Security vulnerability
+      - If the interface is right, the implementation details can be changed easily
+    - If you are writing software, you are designing APIs by default
+  - Generalization
+    - Peiople often think about API design when attempting to extract some common functionality that might be reused
+    - Resist the temptation to immediately generalize; copy/paste first
+      - Wait until you have enough examples (3+) to determine that something is indeed generalizable
+    - Once you've seen enough examples, seek to generalize
+    - Creating these building blocks will ultimately help you move faster
+    - However, if your building blocks have poor APIs, they will be challenging to reuse and may even slow you down
+  - Properties of Good Design
+    - Ease-of-use
+      - Easy to use correctly => thing you're trying to do is easy
+        - Human-readable names
+        - Simple
+      - Hard to use incorrectly => hard to screw things up
+        - Ex) Weakly-typed languages
+        - Remember: failing is not bad
+        - Easy to make something easy to use while also making it easier to misuse
+      - Intuitive to learn even with limited docs (but you should document them)
+    - Singular coherent concept
+      - Do one thing well
+      - Expose a uniform level of abstraction
+        - For example, an API that exposes both `UpdatePersonRecord()` and `CreateDatabaseIndex()` is operating at multiple levels
+      - Sufficiently powerful to satisfy the requirements (but no more powerful)
+        - Stop once you answer the question you set out to answer
+    - Extensibility
+      - Easy to extend/augment when needed
+      - Exposed methods should allow multiple potential implementations
+      - The implementation details shouldn't leak through the interface
+      - Members should have limited visibility whenever possible
+  - Properties of Bad Design
+    - Doing too many things
+      - Represents several concepts
+        - Often have an "and" in the name => `CompressAndEncrypt` should be divided up
+        - Can be very subtle
+      - Kitchen sink methods
+        - Method that gets passed random stuff and handles every possible case
+        - `ioctl()` is an example, but for good reason; it's a generic interface to device drivers
+    - Usage is awkward
+      - Annoying error handling
+        - For example, many Linux system calls return errors via `errno` and `strerror()`
+        - Can be hard to find these errors
+      - Requires careful orchestration by the caller
+        - Methods must be called in a certain order
+        - Constantly handling memory back and forth
+        - Caller has to maintain lots of state
+      - Small changes in usage result in unexpected large changes in behavior
+        - For example, change one param => performance degrades dramatically
+  - API Lifecycle
+    - APIs are hard to kill
+      - You often don't control all the callers, so there is no way to fix them all
+      - For example, iOS or Linux Kernel APIs
+    - Design errors are hard to repair without breaking existing users
+    - APIs typically only get bigger over time as use cases evolve
+    - As a result, prefer to start small and simple
+    - Since APIs are generally long-lived:
+      - You want to spend lots of time polishing and documenting APIs
+      - Should be especially attentive when reviewing changes
+      - When in doubt, leave it out; prefer to push modifications to the caller until there are sufficient examples that this usage is common
+- Design Patterns
+  - Introduction
+    - A vocabulary for particular API patterns
+    - Helps when discussing these concepts
+  - An Observation
+    - These patterns often don't seem useful when you first learn about them
+    - It's still important to have these patterns in the back of your mind when building things
+    - Over time, you'll notice places where they can be used
+  - Observer
+    - Good for:
+      - One-to-many notifications
+      - When notifications should be logically handled by the same remote entity
+      - Adding instrumentation or policy pieces to code
+    - Con:
+      - You end up repeating yourself somewhat
+  - Lazy Initialization
+    - Good for:
+      - Faster startup times
+      - Simpler initialization logic
+    - Con:
+      - Can lead to unexpected and/or predictable runtime behavior
+  - Factories
+    - Good for:
+      - Self-documenting construction
+      - Named constructors
+      - Decoupling the construction of dependencies
+    - Cons:
+      - Overused
+  - Singleton
+    - Good for:
+      - Process-wide state
+      - System access
+    - Cons:
+      - Essentially a global variable
+      - Often considered harmful, particularly when testing
+  - Pools/Freelists
+    - Good for:
+      - Managing expensive objects (i.e., database connections)
+      - Central management of a scarce resource (with blocking policies)
+  - RAII
+    - Good for:
+      - Automatically managing resources
+    - Con:
+      - Verbose and error-prone in many GC languages, though they are gradually adding some auto-closing (use when available)
+  - Decorators
+    - Good for:
+      - Separating concerns of layered implementations that share an interface, and composing them together in a flexible way
+      - Adds behavior at runtime (vs. subclassing that adds at compile time)
+    - Cons:
+      - Can't always hide this layering behind the same interface, so you end up with some other form of composition
+  - Continuation
+    - Good for:
+      - Compositional lightweight interfaces
+      - Functional-style programming
+      - Better in languages with anonymous methods
+    - Cons:
+      - Can turn your code into spaghetti like using `goto`s in the wrong way
+  - Strategy
+    - Good for:
+      - When you have multiple implementations of a particular operation
+      - Allows you to move code into a polymorphic set of objects
+    - Cons:
+      - Overuse causes unecessary or convoluted class hierarchies
+      - Makes it harder to know what's going on
+- Antipatterns
+  - Stringly Typed
+    - When all params are strings rather than more meaningful types
+    - It's problematic because you have to do parsing and translation at every layer
+    - Also means that callers will need to have documentation
+  - Unclear Object Lifetime
+    - Lack of RAII object makes ownership less clear
+    - Could be partially solved if the `new`'d object is a member of another object
+
+
+
+## Lecture 10:
 
 - 
