@@ -32,7 +32,6 @@
 - [ ] Improve static handler tests
 - [ ] Document all functions
 - [ ] Improve integration tests
-- [ ] Try to fix linking errors
 - [ ] Remove unnecessary headers
 - [ ] Uniform formatting
 
