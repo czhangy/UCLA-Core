@@ -1270,6 +1270,41 @@ Nothing to see here!
 
 
 
-## Lecture 10:
+## Lecture 10: API Discussion
+
+- Comments
+  - Using `#`
+  - Should appear on their own line/at the end of lines
+  - Shouldn't be effective inside quoted strings
+- Specifying Location
+  - Location-major typed
+  - Type at the end of the declaration
+- Handler Arguments
+  - Typed
+- Misc.
+  - `location` keyword in config
+  - No quoted strings
+  - Relative paths supported
+  - Trailing slashes are optional
+- Handler Instantiation
+  - Static instantiation
+- Handler Initialization
+  - Constructor
+- Handler Configuration
+  - Config is passed
+- Handler Lifetime
+  - Short-lived
+- Dispatching
+  - Has map
+- Misc.
+  - Longest common prefix precedence
+- Requests/Responses
+  - Typed objects
+- Returning Data
+  - Status return with outparams
+
+
+
+## Lecture 11:
 
 - 
