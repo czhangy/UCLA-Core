@@ -4,27 +4,27 @@
 
 ### API Proposal Presentation
 
-- [ ] Request handler interface
-  - [ ] Important methods and what they do
-  - [ ] When and where are these methods called?
-  - [ ] How can request handlers be tested
-- [ ] Config file
-  - [ ] How are server-level params specified?
-  - [ ] How are URLs associated with request handlers?
-  - [ ] How are request handlers configured?
-  - [ ] Example config file
-- [ ] Dispatcher
-  - [ ] How does the config file construct request handlers?
-  - [ ] What is the lifetime of request handlers?
-  - [ ] How are requests parsed and dispatched to the right handler?
-- [ ] Add the slides to Discussion 1D's slidedeck
+- [x] Request handler interface
+  - [x] Important methods and what they do
+  - [x] When and where are these methods called?
+  - [x] How can request handlers be tested
+- [x] Config file
+  - [x] How are server-level params specified?
+  - [x] How are URLs associated with request handlers?
+  - [x] How are request handlers configured?
+  - [x] Example config file
+- [x] Dispatcher
+  - [x] How does the config file construct request handlers?
+  - [x] What is the lifetime of request handlers?
+  - [x] How are requests parsed and dispatched to the right handler?
+- [x] Add the slides to Discussion 1D's slidedeck
 
 ### API Design Document
 
-- [ ] Write and explain a `request_handler.h` spec
-- [ ] Description of the config file format with multiple examples
-- [ ] Description of the server's dispatch mechanism
-- [ ] Provide justification for each choice and present alternatives that were considered
+- [x] Write and explain a `request_handler.h` spec
+- [x] Description of the config file format with multiple examples
+- [x] Description of the server's dispatch mechanism
+- [x] Provide justification for each choice and present alternatives that were considered
 
 ### General Health
 
