@@ -37,6 +37,6 @@
 
 ### Submission
 
-- [ ] Make sure all changes are merged into `main`
-- [ ] Submit the TL [form](https://docs.google.com/forms/d/e/1FAIpQLScAh5mFo-L5O6wre6tpnJMS2BptVcimqS_B7TBi9GjmP4CqWQ/viewform)
+- [x] Make sure all changes are merged into `main`
+- [x] Submit the TL [form](https://docs.google.com/forms/d/e/1FAIpQLScAh5mFo-L5O6wre6tpnJMS2BptVcimqS_B7TBi9GjmP4CqWQ/viewform)
 
