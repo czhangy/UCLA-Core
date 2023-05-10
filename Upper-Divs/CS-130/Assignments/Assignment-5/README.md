@@ -28,12 +28,12 @@
 
 ### General Health
 
-- [ ] Add logger tests
-- [ ] Improve static handler tests
-- [ ] Document all functions
-- [ ] Improve integration tests
-- [ ] Remove unnecessary headers
-- [ ] Uniform formatting
+- [x] Add logger tests
+- [x] Improve static handler tests
+- [x] Document all functions
+- [x] Improve integration tests
+- [x] Remove unnecessary headers
+- [x] Uniform formatting
 
 ### Submission
 
