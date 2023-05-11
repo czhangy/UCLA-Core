@@ -1305,6 +1305,87 @@ Nothing to see here!
 
 
 
-## Lecture 11:
+## Lecture 11: The Art of Readable Code
+
+- Outline
+  - Why code readability?
+  - The Fundamental Theorem of Readability
+  - Code length
+  - Naming
+  - Commenting
+  - Comparison expressions
+  - Unnecessary variables
+  - Avoiding Complexity
+- Why Code Readability?
+  - Why Bother?
+    - Makes it easier for your teammates
+      - Hopefully they'll reciprocate
+    - Makes it easier for **you** later on
+    - Helps you right now (no so obvious)
+      - Fewer bugs, less headache developing
+  - Code Quality Mantras
+    - Use as few lines as possible
+    - Code should be modular
+    - A function should fit on a screen
+    - Law of Demeter
+    - etc.
+- The Fundamental Theorem of Readability
+  - Code should be written to minimize the time it would take for someone else to understand it
+    - Time: concrete way to capture difficulty and size
+    - Someone else: someone who didn't just write your code
+    - Understand: able to find bugs, reuse, and make changes
+- Code Length
+  - Code Size
+    - Fewer lines of code is usually better because it takes less time to understand it
+      - But not always!
+  - Function Length
+    - Some coders say a function should be at most 1 screen of code
+    - Well-intentioned advice, often right
+      - But somewhat imprecise/arbitrary rule
+    - Difficult to obey this 100% of the time
+    - Lots of false-positives and false-negatives
+- Naming
+  - Naming Variables
+    - Put units in quantity names
+  - Other "Units"
+    - Depending on the context, there might be other important attributes of a variable
+    - If there's potential confusion, add a prefix/suffix to clarify
+    - Example:
+      - Data that has been converted to UTF-8
+      - A user message that will be displayed somewhere and might or might not be unescaped
+  - Use the type-system (`boost:units`)
+  - Obscure Name vs. Clear Name
+    - A name should be:
+      - Searchable
+      - Distinct
+      - Pronounceable
+      - Meaningful
+  - Embedded Logic
+    - Complex embedded logic => give it a name
+    - Don't go overboard with this, use your judgment on a case-by-case basis
+- Commenting
+  - What to Comment
+    - Comments take up space on the screen, take time to read, and can grow stale
+    - Some people say code should be self-documenting
+    - So what should you comment?
+    - Imagine the code with and without the comment, which would take less time to understand?
+  - Be Concise
+    - Write comments with a high information/space info
+  - Be Robust
+- Comparison Expressions
+  - Arranging `a < b`
+    - You can write comparisons in either direction
+    - Which is better? How do you know in general?
+      - The expression being interrogated whose value is more in flux on the left hand side
+      - The expression being compared against whose value is more constant on the right hand side
+- Unnecessary Variables
+- Avoiding Complexity
+  - Avoid large logic trees
+  - Trick: solve the opposite problem
+  - Get a sense of "is this solution too complicated?"
+
+
+
+## Lecture 12:
 
 - 
