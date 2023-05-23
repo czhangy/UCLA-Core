@@ -26,6 +26,6 @@
 
 |  Exam   | Score |
 | :-----: | :---: |
-| Midterm |  ???  |
+| Midterm | 75/97 |
 |  Final  |  ???  |
 
