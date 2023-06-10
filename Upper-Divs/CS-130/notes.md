@@ -1386,6 +1386,36 @@ Nothing to see here!
 
 
 
-## Lecture 12:
+## Lecture 12: Multithreading
 
-- 
+Nothing to see here!
+
+
+
+## Lecture 13: Distributed Systems
+
+Nothing to see here!
+
+
+
+## Lecture 14: Performance
+
+Nothing to see here!
+
+
+
+## Lecture 15: Monitoring, Documentation, and Postmortems
+
+Nothing to see here!
+
+
+
+## Lecture 16: Team Structure
+
+Nothing to see here!
+
+
+
+## Lecture 17: Deployments, Experiments, and Launches
+
+Nothing to see here!
