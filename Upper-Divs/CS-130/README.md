@@ -28,8 +28,8 @@
 
 ## Exams
 
-|  Exam   | Score |
-| :-----: | :---: |
-| Midterm | 75/97 |
-|  Final  |  ???  |
+|  Exam   | Score  |
+| :-----: | :----: |
+| Midterm | 75/97  |
+|  Final  | 92/100 |
 
