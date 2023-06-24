@@ -2,7 +2,7 @@
 
 # Burns - Spring '23
 
-## Overall: IP | Raw Percentage: IP
+## Overall: IP | Raw Percentage: 95.2%
 
 ## Grading:
 
@@ -24,7 +24,7 @@
 |  6   |  101/100  |
 |  7   |  94/100   |
 |  8   | 92.1/100  |
-|  9   |    ???    |
+|  9   |  100/100  |
 
 ## Exams
 
